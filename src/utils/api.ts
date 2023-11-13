@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 
-const API_BASE_URL = "https://bekhruzbek.uz/api";
+const API_BASE_URL = "http://localhost:4000/api";
 
 const api = axios.create({
 	baseURL: API_BASE_URL,
@@ -18,7 +18,7 @@ api.interceptors.request.use(async (config) => {
 		if (expirationTime <= new Date()) {
 			const refreshToken = Cookies.get("refreshToken");
 			try {
-				const response = await api.post("/auth/refresh-token", {
+				const response = await api.post("/auth/refresh", {
 					refreshToken,
 				});
 				accessToken = response.data.accessToken;
@@ -41,7 +41,7 @@ api.interceptors.request.use(async (config) => {
 
 export const register = async (userData: any): Promise<AxiosResponse> => {
 	const response = await axios.post(
-		`${API_BASE_URL}/auth/register`,
+		`${API_BASE_URL}/users`,
 		userData
 	);
 	return response;
@@ -83,3 +83,5 @@ export const deleteUsers = async (
 	const response = await api.post("/users/delete", { userIds });
 	return response;
 };
+
+export default api;

@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 		try {
 			const response = await api.login(credentials);
 			console.log("Response: ",response);
-			const { accessToken, refreshToken } = response.data;
+			const { accessToken, refreshToken, user } = response.data;
 
 			Cookies.set("accessToken", accessToken);
 			Cookies.set("refreshToken", refreshToken);

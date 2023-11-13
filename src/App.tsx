@@ -1,44 +1,57 @@
 import React from "react";
 import { useAuth } from "./auth/AuthContext";
-import LoginComponent from "./components/auth/LoginComponent";
-import DashboardComponent from "./components/users/dashboard/Dashboard";
-import RegisterComponent from "./components/auth/RegisterComponent";
 import {
 	BrowserRouter as Router,
 	Routes,
 	Route,
 	Navigate,
 } from "react-router-dom";
-import ProfilePage from "./components/users/pages/Profile";
 import ResponsiveAppBar from "./components/users/appbar/AppBar";
+import ProfilePage from "./pages/users/profile/Profile";
+import Feed from "./pages/users/feed/Feed";
+import ResponsiveDrawer from "./pages/admin/dashboard/Drawer";
+import CreateCollection from "./pages/users/collection/CreateCollections";
+import ShowCollection from "./pages/users/collection/ShowCollection";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
+import ErrorBoundary from "./ErrorBoundary";
 
 const App: React.FC = () => {
 	const { isAuthenticated } = useAuth();
-
+	console.log(isAuthenticated)
 	return (
-		<div>
-			<Router>
-				<ResponsiveAppBar/>
+		<Router>
+			<ErrorBoundary
+			>
+				<ResponsiveAppBar />
 				<Routes>
-					<Route path="/login" element={<LoginComponent />} />
-					<Route path="/register" element={<RegisterComponent />} />
-					<Route path="/profile" element={<ProfilePage />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/register" element={<Register />} />
 
 					<Route
-						path="/dashboard"
+						path="/"
 						element={
 							isAuthenticated ? (
-								<DashboardComponent />
+								<Feed />
 							) : (
-								// <Navigate to="/login" />
-								<DashboardComponent />
+								<Navigate to="/login" />
 							)
 						}
 					/>
-					{/* <Route path="/*" element={<Navigate to="/login" />} /> */}
+					<Route path="/profile" element={<ProfilePage />} />
+					<Route
+						path="/create-collection"
+						element={<CreateCollection />}
+					/>
+					<Route
+						path="/show-collection/:id"
+						element={<ShowCollection />}
+					/>
+					<Route path="/admin" element={<ResponsiveDrawer />} />
+					<Route path="/*" element={<Navigate to="/login" />} />
 				</Routes>
-			</Router>
-		</div>
+			</ErrorBoundary>
+		</Router>
 	);
 };
 

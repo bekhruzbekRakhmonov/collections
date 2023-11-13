@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { TextField, Button, Typography, Box } from "@mui/material";
 import { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 
-const LoginComponent = () => {
+const Login = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  let { login, error } = useAuth();
+  let { isAuthenticated, login, error } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+	if (isAuthenticated) {
+		navigate("/");
+	}
+  }, [])
 
   const handleLogin = async () => {
 		try {
@@ -63,4 +69,4 @@ const LoginComponent = () => {
   );
 };
 
-export default LoginComponent;
+export default Login;

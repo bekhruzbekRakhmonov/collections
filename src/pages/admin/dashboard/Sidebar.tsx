@@ -3,7 +3,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
@@ -18,6 +17,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import AppBar from "../../../components/admin/appbar/Appbar";
+import { Collections, CollectionsBookmark, Comment, Group } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -40,26 +41,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 	}),
 }));
 
-interface AppBarProps extends MuiAppBarProps {
-	open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-	shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-	transition: theme.transitions.create(["margin", "width"], {
-		easing: theme.transitions.easing.sharp,
-		duration: theme.transitions.duration.leavingScreen,
-	}),
-	...(open && {
-		width: `calc(100% - ${drawerWidth}px)`,
-		marginLeft: `${drawerWidth}px`,
-		transition: theme.transitions.create(["margin", "width"], {
-			easing: theme.transitions.easing.easeOut,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	}),
-}));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
@@ -70,7 +51,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 	justifyContent: "flex-end",
 }));
 
-export default function PersistentDrawerLeft() {
+export default function SideBar() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(false);
 
@@ -85,7 +66,7 @@ export default function PersistentDrawerLeft() {
 	return (
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
-			<AppBar position="fixed" open={open}>
+			<AppBar position="fixed" open={open} drawerWidth={drawerWidth}>
 				<Toolbar>
 					<IconButton
 						color="inherit"
@@ -125,22 +106,38 @@ export default function PersistentDrawerLeft() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					{["Inbox", "Starred", "Send email", "Drafts"].map(
-						(text, index) => (
-							<ListItem key={text} disablePadding>
-								<ListItemButton>
-									<ListItemIcon>
-										{index % 2 === 0 ? (
-											<InboxIcon />
-										) : (
-											<MailIcon />
-										)}
-									</ListItemIcon>
-									<ListItemText primary={text} />
-								</ListItemButton>
-							</ListItem>
-						)
-					)}
+					<ListItem disablePadding>
+						<ListItemButton>
+							<ListItemIcon>
+								<Group />
+							</ListItemIcon>
+							<ListItemText primary="Users" />
+						</ListItemButton>
+					</ListItem>
+					<ListItem disablePadding>
+						<ListItemButton>
+							<ListItemIcon>
+								<Collections />
+							</ListItemIcon>
+							<ListItemText primary="Collections" />
+						</ListItemButton>
+					</ListItem>
+					<ListItem disablePadding>
+						<ListItemButton>
+							<ListItemIcon>
+								<CollectionsBookmark />
+							</ListItemIcon>
+							<ListItemText primary="Items" />
+						</ListItemButton>
+					</ListItem>
+					<ListItem disablePadding>
+						<ListItemButton>
+							<ListItemIcon>
+								<Comment />
+							</ListItemIcon>
+							<ListItemText primary="Comments" />
+						</ListItemButton>
+					</ListItem>
 				</List>
 				<Divider />
 				<List>

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import * as api from "../../../utils/api";
 import { useAuth } from "../../../auth/AuthContext";
-import ResponsiveAppBar from "../appbar/AppBar";
-import Collection from "../collections/Collections";
-import CollectionForm from "../collections/CollectionForm";
+import Collection from "../../../components/users/collections/CollectionsList";
 import { Fab, Modal, Box, Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
-const DashboardComponent: React.FC = () => {
+const Feed: React.FC = () => {
 	const { isAuthenticated } = useAuth();
 	const [openForm, setOpenForm] = useState(false);
 
@@ -45,14 +42,15 @@ const DashboardComponent: React.FC = () => {
 									top: "50%",
 									left: "50%",
 									transform: "translate(-50%, -50%)",
-									width: 500,
+									maxWidth: 500,
+									minWidth: 300,
 									bgcolor: "background.paper",
 									border: "2px solid #000",
 									boxShadow: 24,
 									p: 4,
 								}}
 							>
-								<CollectionForm onSubmit={handleSubmit} />
+								{/* <CollectionForm onSubmit={handleSubmit} /> */}
 								<Button onClick={handleFormClose}>
 									Cancel
 								</Button>
@@ -77,4 +75,4 @@ const DashboardComponent: React.FC = () => {
 	);
 };
 
-export default DashboardComponent;
+export default Feed;

@@ -4,7 +4,7 @@ import { TextField, Button, Typography, Box, Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { Link, useNavigate } from "react-router-dom";
 
-const RegisterComponent = () => {
+const Register = () => {
 	const navigate = useNavigate(); // Replace useHistory with useNavigate
 	const [userData, setUserData] = useState({
 		name: "",
@@ -90,4 +90,4 @@ const RegisterComponent = () => {
 	);
 };
 
-export default RegisterComponent;
+export default Register;

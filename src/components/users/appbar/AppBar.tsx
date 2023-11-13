@@ -13,11 +13,20 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Chip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../auth/AuthContext";
 
 const pages = ["Feed", "MyCollections", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = [
+	{ label: "Profile", link: "/profile" },
+	{ label: "Account", link: "/account" },
+	{ label: "Logout", link: "/logout" },
+];
 
 function ResponsiveAppBar() {
+	const navigate = useNavigate();
+	const { user } = useAuth()
+
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
 	);
@@ -179,13 +188,13 @@ function ResponsiveAppBar() {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{settings.map((setting) => (
+							{settings.map(({ label, link }, index) => (
 								<MenuItem
-									key={setting}
-									onClick={handleCloseUserMenu}
+									key={index}
+									onClick={() => navigate(link)}
 								>
 									<Typography textAlign="center">
-										{setting}
+										{label}
 									</Typography>
 								</MenuItem>
 							))}
