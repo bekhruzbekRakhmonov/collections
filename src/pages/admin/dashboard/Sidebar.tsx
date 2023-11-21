@@ -15,10 +15,20 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import AppBar from "../../../components/admin/appbar/Appbar";
-import { Collections, CollectionsBookmark, Comment, Group } from "@mui/icons-material";
+import {
+	Collections,
+	CollectionsBookmark,
+	Comment,
+	Group,
+	Inbox,
+	Mail,
+} from "@mui/icons-material";
+import SimpleTable from "../../../components/admin/table/Table";
+import { IUser } from "../../../utils/interfaces/user";
+import { admin } from "../../../utils/api/admin";
+import { ICollection } from "../../../utils/interfaces/collection";
+import { IItem } from "../../../utils/interfaces/item";
 
 const drawerWidth = 240;
 
@@ -41,7 +51,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 	}),
 }));
 
-
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
 	alignItems: "center",
@@ -51,9 +60,165 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 	justifyContent: "flex-end",
 }));
 
+interface SidebarItemProps {
+	icon: React.ReactNode,
+	text: string,
+	onClick: (e: React.SyntheticEvent) => void;
+	selected: boolean;
+}
+
+const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, onClick, selected }) => (
+	<ListItemButton onClick={onClick} selected={selected}>
+		<ListItemIcon>{icon}</ListItemIcon>
+		<ListItemText primary={text} />
+	</ListItemButton>
+);
+
+interface Column {
+	id: string;
+	label: string;
+}
+
+interface UserData {
+	id: number;
+	name: string;
+	email: string;
+}
+
+interface CollectionData {
+	id: number;
+	name: string;
+	description: string;
+}
+
+interface ItemData {
+	id: number;
+	name: string;
+	price: number;
+}
+
+interface CommentData {
+	id: number;
+	author: string;
+	content: string;
+}
+
+// Sample Data
+const users: UserData[] = [
+	{ id: 1, name: "John Doe", email: "john@example.com" },
+	{ id: 2, name: "Jane Doe", email: "jane@example.com" },
+];
+
+const collections: CollectionData[] = [
+	{
+		id: 1,
+		name: "Nature Collection",
+		description: "Beautiful nature photos",
+	},
+	{ id: 2, name: "Cityscape Collection", description: "City skyline images" },
+];
+
+const items: ItemData[] = [
+	{ id: 1, name: "Camera", price: 500 },
+	{ id: 2, name: "Laptop", price: 1200 },
+];
+
+const comments: CommentData[] = [
+	{ id: 1, author: "User1", content: "Great collection!" },
+	{ id: 2, author: "User2", content: "Love the items in this collection." },
+];
+
+// Columns for the tables
+const userColumns: Column[] = [
+	{ id: "id", label: "ID" },
+	{ id: "name", label: "Name" },
+	{ id: "email", label: "Email" },
+];
+
+const collectionColumns: Column[] = [
+	{ id: "id", label: "ID" },
+	{ id: "name", label: "Name" },
+	{ id: "description", label: "Description" },
+];
+
+const itemColumns: Column[] = [
+	{ id: "id", label: "ID" },
+	{ id: "name", label: "Name" },
+	{ id: "price", label: "Price" },
+];
+
+const commentColumns: Column[] = [
+	{ id: "id", label: "ID" },
+	{ id: "author", label: "Author" },
+	{ id: "content", label: "Content" },
+];
+
 export default function SideBar() {
 	const theme = useTheme();
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(true);
+	const [selectedOption, setSelectedOption] = React.useState("Users"); // Initial selected option
+	
+	// Data stores
+	const [usersData, setUsersData] = React.useState<{
+		data: Record<string, any>[];
+		total: number;
+	}>({data: [], total: 0});
+	const [collectionsData, setCollectionsData] = React.useState<{
+		data: Record<string, any>[];
+		total: number;
+	}>({ data: [], total: 0 });
+	const [itemsData, setItemsData] = React.useState<{
+		data: Record<string, any>[];
+		total: number;
+	}>({ data: [], total: 0 });
+	const [commentsData, setCommentsData] = React.useState<{
+		data: Record<string, any>[];
+		total: number;
+	}>({ data: [], total: 0 });
+
+	const getUsers = (page?: number, limit?: number, order?: string, orderBy?: string) => {
+		(async () => {
+			const result = await admin.getUsers(page, limit, order, orderBy);
+			setUsersData(result);
+		})();
+	}
+
+	const getCollections = (
+		page?: number,
+		limit?: number,
+		order?: string,
+		orderBy?: string
+	) => {
+		console.log(page, limit);
+		(async () => {
+			const result = await admin.getCollections(page, limit, order, orderBy);
+			setCollectionsData(result);
+			console.log(result)
+		})();
+	};
+
+	const getItems = (
+		page?: number,
+		limit?: number,
+		order?: string,
+		orderBy?: string
+	) => {
+		(async () => {
+			const result = await admin.getItems(
+				page,
+				limit,
+				order,
+				orderBy
+			);
+			setItemsData(result);
+		})();
+	};
+
+	React.useEffect(() => {
+		getUsers();
+		getCollections();
+		getItems();
+	}, [])
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -61,6 +226,82 @@ export default function SideBar() {
 
 	const handleDrawerClose = () => {
 		setOpen(false);
+	};
+
+	const handleSidebarItemClick = (option: string) => {
+		setSelectedOption(option);
+	};
+
+	const renderMainContent = () => {
+		switch (selectedOption) {
+			case "Users":
+				const userColumns = [
+					{ id: "id", label: "ID" },
+					{ id: "name", label: "Name" },
+					{ id: "email", label: "Email" },
+					{ id: "role", label: "Role" },
+					{ id: "status", label: "Status" },
+					{ id: "created_at", label: "Joined" },
+				];
+				return (
+					<SimpleTable
+					key="users"
+						result={usersData}
+						columns={userColumns}
+						containerStyle={{ marginTop: "60px" }}
+						onEdit={(id) => console.log(id)}
+						onDelete={(id) => console.log(id)}
+						onDeleteSelected={() => console.log("selected")}
+						refreshData={getUsers}
+					/>
+				);
+			case "Collections":
+				// Similar structure for other cases
+				return (
+					<SimpleTable
+						key="collections"
+						result={collectionsData}
+						columns={collectionColumns}
+						containerStyle={{ marginTop: "60px" }}
+						onEdit={(id) => console.log(id)}
+						onDelete={(id) => console.log(id)}
+						onBlock={(id) => console.log(id)}
+						refreshData={getCollections}
+					/>
+				);
+			case "Items":
+				return (
+					<SimpleTable
+						key="items"
+						result={itemsData}
+						columns={itemColumns}
+						containerStyle={{ marginTop: "60px" }}
+						onEdit={(id) => console.log(id)}
+						onDelete={(id) => console.log(id)}
+						refreshData={getItems}
+					/>
+				);
+			case "Comments":
+				return (
+					<SimpleTable
+						key="comments"
+						result={collectionsData}
+						columns={commentColumns}
+						containerStyle={{ marginTop: "60px" }}
+						onEdit={(id) => console.log(id)}
+						onDelete={(id) => console.log(id)}
+						refreshData={getUsers}
+					/>
+				);
+			default:
+				return (
+					<Typography paragraph>
+						{/* Default content */}
+						Lorem ipsum dolor sit amet, consectetur adipiscing
+						elit...
+					</Typography>
+				);
+		}
 	};
 
 	return (
@@ -106,38 +347,30 @@ export default function SideBar() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					<ListItem disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<Group />
-							</ListItemIcon>
-							<ListItemText primary="Users" />
-						</ListItemButton>
-					</ListItem>
-					<ListItem disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<Collections />
-							</ListItemIcon>
-							<ListItemText primary="Collections" />
-						</ListItemButton>
-					</ListItem>
-					<ListItem disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<CollectionsBookmark />
-							</ListItemIcon>
-							<ListItemText primary="Items" />
-						</ListItemButton>
-					</ListItem>
-					<ListItem disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<Comment />
-							</ListItemIcon>
-							<ListItemText primary="Comments" />
-						</ListItemButton>
-					</ListItem>
+					<SidebarItem
+						icon={<Group />}
+						text="Users"
+						onClick={() => handleSidebarItemClick("Users")}
+						selected={selectedOption === "Users"}
+					/>
+					<SidebarItem
+						icon={<Collections />}
+						text="Collections"
+						onClick={() => handleSidebarItemClick("Collections")}
+						selected={selectedOption === "Collections"}
+					/>
+					<SidebarItem
+						icon={<CollectionsBookmark />}
+						text="Items"
+						onClick={() => handleSidebarItemClick("Items")}
+						selected={selectedOption === "Items"}
+					/>
+					<SidebarItem
+						icon={<Comment />}
+						text="Comments"
+						onClick={() => handleSidebarItemClick("Comments")}
+						selected={selectedOption === "Comments"}
+					/>
 				</List>
 				<Divider />
 				<List>
@@ -146,9 +379,9 @@ export default function SideBar() {
 							<ListItemButton>
 								<ListItemIcon>
 									{index % 2 === 0 ? (
-										<InboxIcon />
+										<Inbox />
 									) : (
-										<MailIcon />
+										<Mail />
 									)}
 								</ListItemIcon>
 								<ListItemText primary={text} />
@@ -157,42 +390,7 @@ export default function SideBar() {
 					))}
 				</List>
 			</Drawer>
-			<Main open={open}>
-				<DrawerHeader />
-				<Typography paragraph>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-					do eiusmod tempor incididunt ut labore et dolore magna
-					aliqua. Rhoncus dolor purus non enim praesent elementum
-					facilisis leo vel. Risus at ultrices mi tempus imperdiet.
-					Semper risus in hendrerit gravida rutrum quisque non tellus.
-					Convallis convallis tellus id interdum velit laoreet id
-					donec ultrices. Odio morbi quis commodo odio aenean sed
-					adipiscing. Amet nisl suscipit adipiscing bibendum est
-					ultricies integer quis. Cursus euismod quis viverra nibh
-					cras. Metus vulputate eu scelerisque felis imperdiet proin
-					fermentum leo. Mauris commodo quis imperdiet massa
-					tincidunt. Cras tincidunt lobortis feugiat vivamus at augue.
-					At augue eget arcu dictum varius duis at consectetur lorem.
-					Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-					sapien faucibus et molestie ac.
-				</Typography>
-				<Typography paragraph>
-					Consequat mauris nunc congue nisi vitae suscipit. Fringilla
-					est ullamcorper eget nulla facilisi etiam dignissim diam.
-					Pulvinar elementum integer enim neque volutpat ac tincidunt.
-					Ornare suspendisse sed nisi lacus sed viverra tellus. Purus
-					sit amet volutpat consequat mauris. Elementum eu facilisis
-					sed odio morbi. Euismod lacinia at quis risus sed vulputate
-					odio. Morbi tincidunt ornare massa eget egestas purus
-					viverra accumsan in. In hendrerit gravida rutrum quisque non
-					tellus orci ac. Pellentesque nec nam aliquam sem et tortor.
-					Habitant morbi tristique senectus et. Adipiscing elit duis
-					tristique sollicitudin nibh sit. Ornare aenean euismod
-					elementum nisi quis eleifend. Commodo viverra maecenas
-					accumsan lacus vel facilisis. Nulla posuere sollicitudin
-					aliquam ultrices sagittis orci a.
-				</Typography>
-			</Main>
+			<Main open={open}>{renderMainContent()}</Main>
 		</Box>
 	);
 }

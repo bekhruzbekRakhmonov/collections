@@ -18,6 +18,7 @@ api.interceptors.request.use(async (config) => {
 		if (expirationTime <= new Date()) {
 			const refreshToken = Cookies.get("refreshToken");
 			try {
+				console.log("refreshing....")
 				const response = await api.post("/auth/refresh", {
 					refreshToken,
 				});

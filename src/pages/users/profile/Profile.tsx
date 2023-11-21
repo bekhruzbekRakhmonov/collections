@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Tabs, Tab } from "@mui/material";
-import Collection from "../../../components/users/collections/CollectionsList";
+import Collection from "../../../components/users/collections/show/CollectionsList";
 import ProfileCard from "../../../components/users/profile/ProfileCard";
 
 const ProfilePage: React.FC = () => {

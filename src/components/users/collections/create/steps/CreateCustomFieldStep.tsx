@@ -1,36 +1,45 @@
 import React from "react";
-import {
-	Box,
-	Button,
-	SelectChangeEvent,
-	FormControl,
-	InputLabel,
-	MenuItem,
-	Typography,
-	Select,
-} from "@mui/material";
-import { ICustomField } from "../../../../utils/interfaces/custom-fields";
-import { MyTextField, WizardStep } from "../WizardComponents";
+import { ICustomField } from "../../../../../utils/interfaces/custom-fields";
+import { Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem, Button, TextField } from "@mui/material";
 
-interface CustomFieldProps {
-	handleCustomFieldChange: (
+interface CreateCustomFieldStepProps {
+	customFields: ICustomField[];
+	setCustomFields: (data: React.SetStateAction<ICustomField[]>) => void;
+}
+
+const CreateCustomFieldStep: React.FC<CreateCustomFieldStepProps> = ({ customFields, setCustomFields }) => {
+
+    const handleCustomFieldChange = (
 		index: number,
 		e:
 			| React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 			| SelectChangeEvent<string>
-	) => void;
-	addCustomField: () => void;
-	removeCustomField: (index: number) => void;
-	formData: ICustomField[];
-}
+	) => {
+		if (customFields[index]) {
+			const { name, value } = e.target;
 
-const CreateCustomFieldsForm: React.FC<CustomFieldProps> = ({ handleCustomFieldChange, addCustomField, removeCustomField, formData }) => {
-	return (
-			<Box>
-				<Typography variant="h5" textAlign="center" marginTop="20px">
-					Custom Fields
-				</Typography>
-				{formData.map((field, index) => (
+			setCustomFields((prevFields) => {
+				const updatedFields = [...prevFields];
+				updatedFields[index] = {
+					...updatedFields[index],
+					[name]: value,
+				};
+				return updatedFields;
+			});
+		}
+	};
+
+	const addCustomField = () => {
+		setCustomFields((prevFields) => ([...prevFields, {name: "", type: ""}]))
+	};
+
+	const removeCustomField = (index: number) => {
+		setCustomFields((prevFields) => prevFields.filter((_, i) => index !== i));
+	};
+    return (
+		<div>
+			<h2>Create Custom Field</h2>
+				{customFields.map((field, index) => (
 					<Box
 						key={index}
 						display="flex"
@@ -67,14 +76,16 @@ const CreateCustomFieldsForm: React.FC<CustomFieldProps> = ({ handleCustomFieldC
 								<MenuItem value="boolean">boolean</MenuItem>
 							</Select>
 						</FormControl>
-						<MyTextField
+						<TextField
 							fullWidth
 							variant="outlined"
 							margin="normal"
 							label={`Custom Field Name ${index + 1}`}
 							name="name"
 							value={field.name}
-							onChange={(e: any) => handleCustomFieldChange(index, e)}
+							onChange={(e: any) =>
+								handleCustomFieldChange(index, e)
+							}
 							required
 						/>
 						<Button
@@ -96,8 +107,8 @@ const CreateCustomFieldsForm: React.FC<CustomFieldProps> = ({ handleCustomFieldC
 				>
 					Add Custom Field
 				</Button>
-			</Box>
+		</div>
 	);
-};
+}
 
-export default CreateCustomFieldsForm;
+export default CreateCustomFieldStep;

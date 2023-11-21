@@ -12,20 +12,42 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Chip } from "@mui/material";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import Switch from "@mui/material/Switch";
+import SearchIcon from "@mui/icons-material/Search";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import LanguageIcon from "@mui/icons-material/Language";
+import TextField from "@mui/material/TextField";
+import { Chip, colors, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/AuthContext";
+import { DarkMode, LightMode } from "@mui/icons-material";
+import { SupportedLanguages } from "../../../utils/i18/enums";
+import { useTranslation } from "react-i18next";
 
-const pages = ["Feed", "MyCollections", "Blog"];
-const settings = [
-	{ label: "Profile", link: "/profile" },
-	{ label: "Account", link: "/account" },
-	{ label: "Logout", link: "/logout" },
-];
+interface ResponsiveAppBarProps {
+	handleDarkModeToggle: () => void;
+	darkMode: boolean;
+	language: SupportedLanguages;
+	setLanguage: (language: SupportedLanguages) => void;
+}
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggle, darkMode, language, setLanguage }) => {
 	const navigate = useNavigate();
-	const { user } = useAuth()
+	const { user } = useAuth();
+	const { t } = useTranslation();
+	const theme = useTheme();
+
+	const pages = [
+		{ label: "Feed", link: "/" },
+		{ label: "Profile", link: "/profile" },
+	];
+	const settings = [
+		{ label: "Profile", link: "/profile" },
+		{ label: "Account", link: "/account" },
+		{ label: t("logout"), link: "/logout" },
+	];
 
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null
@@ -33,6 +55,7 @@ function ResponsiveAppBar() {
 	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
 		null
 	);
+	const [searchQuery, setSearchQuery] = React.useState("");
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -49,18 +72,50 @@ function ResponsiveAppBar() {
 		setAnchorElUser(null);
 	};
 
+	const handleLanguageChange = (
+		event: React.ChangeEvent<{ value: unknown }>
+	) => {
+		setLanguage(event.target.value as SupportedLanguages);
+	};
+
+	const handleSearchInputChange = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setSearchQuery(event.target.value);
+	};
+
 	return (
-		<AppBar position="static">
+		<AppBar
+			position="static"
+			color="inherit"
+		>
+			<TextField
+				placeholder="Search"
+				value={searchQuery}
+				onChange={handleSearchInputChange}
+				InputProps={{
+					startAdornment: (
+						<IconButton color="inherit" size="small">
+							<SearchIcon />
+						</IconButton>
+					),
+				}}
+				sx={{
+					marginLeft: "auto",
+					display: { xs: "block", md: "none" },
+				}}
+			/>
+
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					<AdbIcon
+					<CollectionsIcon
 						sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
 					/>
 					<Typography
 						variant="h6"
 						noWrap
 						component="a"
-						href="#app-bar-with-responsive-menu"
+						href="/"
 						sx={{
 							mr: 2,
 							display: { xs: "none", md: "flex" },
@@ -71,7 +126,7 @@ function ResponsiveAppBar() {
 							textDecoration: "none",
 						}}
 					>
-						LOGO
+						Collections
 					</Typography>
 
 					<Box
@@ -91,7 +146,7 @@ function ResponsiveAppBar() {
 							<MenuIcon />
 						</IconButton>
 						<Menu
-							id="menu-appbar"
+							id="menu-appbar-nav"
 							anchorEl={anchorElNav}
 							anchorOrigin={{
 								vertical: "bottom",
@@ -110,11 +165,11 @@ function ResponsiveAppBar() {
 						>
 							{pages.map((page) => (
 								<MenuItem
-									key={page}
-									onClick={handleCloseNavMenu}
+									key={page.label}
+									onClick={() => navigate(page.link)}
 								>
 									<Typography textAlign="center">
-										{page}
+										{page.label}
 									</Typography>
 								</MenuItem>
 							))}
@@ -123,24 +178,6 @@ function ResponsiveAppBar() {
 					<AdbIcon
 						sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
 					/>
-					<Typography
-						variant="h5"
-						noWrap
-						component="a"
-						href="#app-bar-with-responsive-menu"
-						sx={{
-							mr: 2,
-							display: { xs: "flex", md: "none" },
-							flexGrow: 1,
-							fontFamily: "monospace",
-							fontWeight: 700,
-							letterSpacing: ".3rem",
-							color: "inherit",
-							textDecoration: "none",
-						}}
-					>
-						LOGO
-					</Typography>
 					<Box
 						sx={{
 							flexGrow: 1,
@@ -149,32 +186,88 @@ function ResponsiveAppBar() {
 					>
 						{pages.map((page) => (
 							<Button
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: "white", display: "block" }}
+								key={page.label}
+								onClick={() => navigate(page.link)}
+								color="inherit"
 							>
-								{page}
+								{page.label}
 							</Button>
 						))}
 					</Box>
 
-					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
-							<Chip
-								onClick={handleOpenUserMenu}
-								avatar={
-									<Avatar
-										alt="Natacha"
-										src="/static/images/avatar/1.jpg"
+					<Box sx={{ display: "flex", alignItems: "center" }}>
+						<Tooltip title="Toggle Dark Mode">
+							<Box
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									borderRadius: "5px",
+									marginRight: "5px",
+								}}
+							>
+								<Box
+									sx={{
+										paddingLeft: "3px",
+										paddingRight: "3px",
+										display: "flex",
+										alignItems: "center",
+									}}
+								>
+									<LightMode />
+									<Switch
+										checked={darkMode}
+										onChange={handleDarkModeToggle}
+										color="default"
 									/>
-								}
-								label="Avatar"
-								variant="outlined"
-							/>
+									<DarkMode />
+								</Box>
+							</Box>
 						</Tooltip>
+						<Tooltip title={null} sx={{ marginRight: "5px" }}>
+							<TextField
+								select
+								value={language}
+								onChange={handleLanguageChange}
+								size="small"
+								variant="outlined"
+								InputProps={{
+									startAdornment: (
+										<IconButton
+											color="inherit"
+											size="small"
+										>
+											<LanguageIcon />
+										</IconButton>
+									),
+								}}
+							>
+								<MenuItem value="en">English</MenuItem>
+								<MenuItem value="uz">Uzbek</MenuItem>
+								{/* Add more languages as needed */}
+							</TextField>
+						</Tooltip>
+						{user ? (
+							<Tooltip title="Open settings">
+								<Chip
+									onClick={handleOpenUserMenu}
+									avatar={
+										<Avatar
+											alt={user.name}
+											src="/static/images/avatar/1.jpg"
+										/>
+									}
+									label={user.name}
+									variant="outlined"
+								/>
+							</Tooltip>
+						) : (
+							<Button variant="outlined" color="success">
+								{ t("login") }
+							</Button>
+						)}
 						<Menu
 							sx={{ mt: "45px" }}
-							id="menu-appbar"
+							id="menu-appbar-user"
 							anchorEl={anchorElUser}
 							anchorOrigin={{
 								vertical: "top",
@@ -205,4 +298,5 @@ function ResponsiveAppBar() {
 		</AppBar>
 	);
 }
+
 export default ResponsiveAppBar;

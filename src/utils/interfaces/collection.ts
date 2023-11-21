@@ -1,12 +1,22 @@
 import { ICustomField } from "./custom-fields";
-import { IItem } from "./item";
+import { IItem, IRowItem } from "./item";
+import { IUser } from "./user";
 
 export interface ICollection {
-    id?: number;
-    name: string;
-    topic: string;
-    tags: string[];
-    description: string;
-    items: IItem[];
-    custom_fields: ICustomField[];
+	name: string;
+	topic: string;
+	photo: string;
+	description: string;
+}
+
+export interface IRowCollection {
+	id: number;
+	name: string;
+	topic: string;
+	photo: string;
+	description: string;
+	created_at: string;
+	owner: IUser;
+	items: IRowItem[];
+	custom_fields: ICustomField[];
 }

@@ -6,13 +6,15 @@ import React, {
 	ReactElement,
 	useEffect,
 } from "react";
-import * as api from "../utils/api";
+import * as api from "../utils/api/api";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { CircularProgress } from "@mui/material";
+import { IUser } from "../utils/interfaces/user";
+import { usersApi } from "../utils/api/users";
 
 interface AuthContextProps {
-	user: any | null;
+	user: any;
 	isAuthenticated: boolean;
 	login: (credentials: any) => Promise<void>;
 	register: (userData: any) => Promise<void>;
@@ -29,23 +31,25 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({
 	children,
 }: AuthProviderProps): ReactElement => {
-	const [user, setUser] = useState<any | null>(null);
+	const [user, setUser] = useState<IUser | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
-
-	const isAuthenticated = !!user;
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+	// const isAuthenticated = !!user;
 
 	useEffect(() => {
 		const checkAuth = async () => {
+			console.log("Auth checking")
 			const accessToken = Cookies.get("accessToken");
 			const refreshToken = Cookies.get("refreshToken");
 			if (accessToken && refreshToken) {
 				try {
-					const userData = jwtDecode(accessToken);
-					setUser(userData);
+					const tokenPayload: any = jwtDecode(accessToken);
+					const user = await usersApi.getUser(tokenPayload.userId)
+					setIsAuthenticated(true);
+					setUser(user.data);
 				} catch (error) {
 					console.error("Invalid access token:", error);
-					// Perform logout or redirect to login page
 					Cookies.remove("accessToken");
 					Cookies.remove("refreshToken");
 
@@ -60,13 +64,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 	const login = async (credentials: any): Promise<void> => {
 		try {
 			const response = await api.login(credentials);
-			console.log("Response: ",response);
 			const { accessToken, refreshToken, user } = response.data;
 
 			Cookies.set("accessToken", accessToken);
 			Cookies.set("refreshToken", refreshToken);
-			const userData = jwtDecode(accessToken);
-			setUser(userData);
+			setUser(user);
+			setIsAuthenticated(true);
 			setError(null);
 		} catch (error) {
 			setError("Invalid credentials. Please try again.");
