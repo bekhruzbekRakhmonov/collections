@@ -10,16 +10,16 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../../utils/api/api";
 import CollectionCardHeader from "./CollectionCardHeader";
 
-const CollectionCard = ({ data }: { data: IRowCollection }) => {
+interface CollectionCardProps {
+	data: IRowCollection;
+	handleOpenDeleteDialog: () => void;
+	handleCloseDeleteDialog: () => void;
+	handleDelete: () => void;
+}
+
+const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
 	const navigate = useNavigate();
 	const theme = useTheme();
-
-	const [expanded, setExpanded] = React.useState(false);
-
-	const handleExpandClick = () => {
-		setExpanded(!expanded);
-	};
-	
 
 	return (
 		<Card
@@ -29,6 +29,9 @@ const CollectionCard = ({ data }: { data: IRowCollection }) => {
 				owner={data.owner}
 				created_at={data.created_at}
 				collectionId={data.id}
+				handleCloseDeleteDialog={handleCloseDeleteDialog}
+				handleOpenDeleteDialog={handleOpenDeleteDialog}
+				handleDelete={handleDelete}
 			/>
 			<CardActionArea
 				onClick={() => navigate(`/show-collection/${data.id}`)}
@@ -57,7 +60,7 @@ const CollectionCard = ({ data }: { data: IRowCollection }) => {
 					<Typography variant="body1" color="text.primary">
 						{data.topic}
 					</Typography>
-					<br/>
+					<br />
 					<Typography variant="body2" color="text.secondary">
 						Description:{" "}
 					</Typography>

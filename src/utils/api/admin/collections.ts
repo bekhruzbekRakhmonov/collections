@@ -1,5 +1,5 @@
 import api from "../api";
-import { ICollection } from "../../interfaces/collection";
+import { ICollection, IRowCollection } from "../../interfaces/collection";
 
 
 export const getCollections = async (
@@ -7,7 +7,7 @@ export const getCollections = async (
 	limit: number = 5,
 	order?: string,
 	orderBy?: string
-): Promise<{ data: ICollection[]; total: number; }> => {
+): Promise<{ data: IRowCollection[]; total: number; }> => {
 	try {
 		const response = await api.get("/collections/admin", {
 			params: {

@@ -1,4 +1,33 @@
+import { ICustomField, IRowCustomField } from "../../interfaces/custom-fields";
 import api from "../api";
+
+export const createCustomField = async (itemId: string, newCustomFieldData: ICustomField): Promise<IRowCustomField> => {
+	try {
+		const response = await api.post(`/custom-fields/${itemId}`, newCustomFieldData);
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to create custom field"
+		);
+	}
+};
+
+export const createCustomFields = async (
+	itemsIds: number[],
+	newCustomFieldsData: ICustomField[][]
+): Promise<IRowCustomField> => {
+	try {
+		const response = await api.post(
+			`/custom-fields/many`,
+			{itemsIds, customFields: newCustomFieldsData}
+		);
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to create custom fields"
+		);
+	}
+};
 
 export const getCustomFields = async (page: number) => {
 	try {
@@ -14,7 +43,7 @@ export const getCustomFields = async (page: number) => {
 export const getCustomField = async (customFieldId: string) => {
 	try {
 		const response = await api.get(`/custom-fields/${customFieldId}`);
-		return response.data.data.customField;
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message ||
@@ -23,20 +52,20 @@ export const getCustomField = async (customFieldId: string) => {
 	}
 };
 
-export const updateCustomField = async (
-	customFieldId: string,
-	updatedData: any
-) => {
+export const updateCustomFields = async (
+	itemsIds: number[],
+	updatedCustomFieldsData: ICustomField[][]
+): Promise<IRowCustomField> => {
 	try {
-		const response = await api.put(
-			`/custom-fields/${customFieldId}`,
-			updatedData
-		);
-		return response.data.data.customField;
+		const response = await api.put("/custom-fields/many", {
+			itemsIds,
+			customFields: updatedCustomFieldsData,
+		});
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message ||
-				`Failed to update custom field with ID ${customFieldId}`
+				"Failed to update custom fields"
 		);
 	}
 };

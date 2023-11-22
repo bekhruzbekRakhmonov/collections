@@ -1,5 +1,6 @@
 import React, { CSSProperties } from "react";
 import { Avatar, Typography, Box, Link } from "@mui/material";
+import { IRowUser } from "../../../utils/interfaces/user";
 
 const profileStyles = {
 	root: {
@@ -30,32 +31,22 @@ const profileStyles = {
 };
 
 interface ProfileProps {
-	name: string;
-	email: string;
-	avatarUrl: string;
-	bio: string;
-	location: string;
-	website: string;
+	user: IRowUser;
 }
 
 const ProfileCard: React.FC<ProfileProps> = ({
-	name,
-	email,
-	avatarUrl,
-	bio,
-	location,
-	website,
+	user
 }) => {
 	return (
 		<Box style={profileStyles.root}>
-			<Avatar src={avatarUrl} alt={name} style={profileStyles.avatar} />
+			<Avatar />
 			<div style={profileStyles.infoContainer as CSSProperties}>
-				<Typography variant="h6">{name}</Typography>
+				<Typography variant="h6">{user.name}</Typography>
 				<Typography variant="body2" color="textSecondary">
-					{email}
+					{user.email}
 				</Typography>
-				<Typography variant="body2" style={profileStyles.bio}>
-					{bio}
+				{/* <Typography variant="body2" style={profileStyles.bio}>
+					{user}
 				</Typography>
 				<Typography variant="body2">{location}</Typography>
 				{website && (
@@ -68,7 +59,7 @@ const ProfileCard: React.FC<ProfileProps> = ({
 					>
 						{website}
 					</Link>
-				)}
+				)} */}
 			</div>
 		</Box>
 	);

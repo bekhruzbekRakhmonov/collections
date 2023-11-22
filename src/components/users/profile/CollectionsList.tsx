@@ -1,18 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
 import Typography from "@mui/material/Typography";
 import { Box, List } from "@mui/material";
-import { getCollections } from "../../../../utils/api/users/collections";
-import CollectionCard from "./CollectionCard";
-import { IRowCollection } from "../../../../utils/interfaces/collection";
-import Loading from "../../../loading/Loading";
+import { IRowCollection } from "../../../utils/interfaces/collection";
+import Loading from "../../loading/Loading";
+import CollectionCard from "../collections/show/CollectionCard";
+import { usersApi } from "../../../utils/api/users";
 
-interface CollectionsListProps {
+interface UserCollectionsListProps {
+    userId: number;
 	handleOpenDeleteDialog: () => void;
 	handleCloseDeleteDialog: () => void;
 	handleDelete: () => void;
 }
 
-const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
+const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
+    userId,
+	handleCloseDeleteDialog,
+	handleOpenDeleteDialog,
+	handleDelete,
+}) => {
 	const [collections, setCollections] = useState<IRowCollection[]>([]);
 	const [error, setError] = useState<string>();
 	const [page, setPage] = useState(1);
@@ -24,9 +30,11 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDial
 	const fetchCollections = async (pageNumber: number) => {
 		try {
 			setLoading(true);
-			const data = await getCollections(pageNumber);
-			setCollections((prevCollections) => [...prevCollections, ...data]);
-			setPage((prevPage) => prevPage + 1);
+			const data = await usersApi.getCollectionsByUserId(userId, pageNumber);
+            if (data.length > 0) {
+                setCollections((prevCollections) => [...prevCollections, ...data]);
+                setPage((prevPage) => prevPage + 1);
+            }
 		} catch (error: any) {
 			setError(error.message);
 		} finally {
@@ -62,7 +70,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDial
 
 	useEffect(() => {
 		fetchCollections(page);
-	}, []); // Initial fetch
+	}, []);
 
 	return (
 		<div>
@@ -94,6 +102,6 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDial
 			)}
 		</div>
 	);
-}
+};
 
-export default CollectionsList;
+export default UserCollectionsList;

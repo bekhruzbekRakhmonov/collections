@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IUser } from "../../../../utils/interfaces/user";
-import { MenuProps, Menu, alpha, styled, Avatar, CardHeader, Divider, IconButton, MenuItem, Dialog, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, useTheme } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
+import { MenuProps, Menu, alpha, styled, Avatar, CardHeader, Divider, IconButton, MenuItem, Snackbar } from "@mui/material";
+import { Delete, MoreVert } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
 import EditIcon from "@mui/icons-material/Edit";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -14,7 +14,10 @@ import { useCopyToClipboard } from "@uidotdev/usehooks";
 interface CollectionCardHeaderProps {
 	owner: IUser;
 	created_at: string;
-	collectionId: number,
+	collectionId: number;
+	handleOpenDeleteDialog: () => void;
+	handleCloseDeleteDialog: () => void;
+	handleDelete: () => void;
 }
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -60,10 +63,9 @@ const StyledMenu = styled((props: MenuProps) => (
 	},
 }));
 
-const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId }) => {
+const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId, handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
 	const [copiedText, copyToClipboard] = useCopyToClipboard();
-	const [snackbarOpen, setSnackbarOpen] = useState<boolean>(true);
-	const theme = useTheme();
+	const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const navigate = useNavigate();
@@ -78,7 +80,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 
 	const handleSnackbarClose = () => {
 		setSnackbarOpen(false)
-		copyToClipboard("");
+		// copyToClipboard("");
 	}
 
 	const {user} = useAuth();
@@ -113,23 +115,34 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 							onClose={handleClose}
 						>
 							{user && owner.id === user.id && (
-								<MenuItem
-									onClick={() =>
-										navigate(
-											`/edit-collection/${collectionId}`
-										)
-									}
-									disableRipple
-								>
-									<EditIcon />
-									Edit
-								</MenuItem>
+								<>
+									<MenuItem
+										onClick={() =>
+											navigate(
+												`/edit-collection/${collectionId}`
+											)
+										}
+										disableRipple
+									>
+										<EditIcon />
+										Edit
+									</MenuItem>
+									<MenuItem
+										onClick={() =>
+											handleOpenDeleteDialog()
+										}
+										disableRipple
+									>
+										<Delete />
+										Delete
+									</MenuItem>
+								</>
 							)}
 							<MenuItem
 								onClick={() => {
 									copyToClipboard(
-										window.location +
-											`show-collection/${collectionId}`
+										window.location.host +
+											`/show-collection/${collectionId}`
 									);
 									handleClose();
 								}}

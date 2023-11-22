@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Container } from "@mui/material";
 import CreateCollectionComponent from "../../../components/users/collections/create/CreateCollectionComponent";
 import { ICollection } from "../../../utils/interfaces/collection";
 import { ICustomField } from "../../../utils/interfaces/custom-fields";
@@ -29,23 +28,19 @@ const CreateCollection = () => {
 	]);
 
     const [itemCustomFields, setItemCustomFields] = React.useState<
-		ICustomField[]
-	>([
-		{
-			name: "",
-			type: "",
-            value: "",
-		},
-	]);
+		ICustomField[][]
+	>([[{
+		name: "",
+		type: "",
+		value: ""
+	}]]);
 
     const handleSubmit = async () => {
-        console.log("Submitted")
-        console.log(collection);
-        console.log(customFields);
-        console.log(items);
-        console.log(itemCustomFields);
         try {
-            const newCollection = await usersApi.createCollection({collection, customFields, itemCustomFields, items})
+            const newCollection = await usersApi.createCollection({collection, customFields})
+			const newItems = await usersApi.createItems(newCollection.id, items);
+			const newItemsIds = newItems.map(({ id }) => id);
+			await usersApi.createCustomFields(newItemsIds, itemCustomFields)
             navigate(`/show-collection/${newCollection.id}`);
         } catch (error: any) {
             console.error(error.message)

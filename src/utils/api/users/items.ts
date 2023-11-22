@@ -1,10 +1,46 @@
-import { IItem } from "../../interfaces/item";
+import { IItem, IRowItem } from "../../interfaces/item";
 import api from "../api";
+
+export const createItem = async (collection_id: number, {name, tags}: IItem): Promise<IRowItem> => {
+	try {
+		const response = await api.post(`/items`, { collection_id, name, tags });
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to create item"
+		);
+	}
+};
+
+export const createItems = async (
+	collection_id: number,
+	newItemsData: IItem[]
+): Promise<IRowItem[]> => {
+	try {
+		const response = await api.post(`/items/many`, {collection_id, items: newItemsData});
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to create items"
+		);
+	}
+};
 
 export const getItems = async (page: number) => {
 	try {
-		const response = await api.get("/items");
+		const response = await api.get("/items", {params: {page}});
 		return response.data.data.result;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to fetch items"
+		);
+	}
+};
+
+export const getItemsByCollectionId = async (collection_id: number) => {
+	try {
+		const response = await api.get(`/items/${collection_id}/collections`);
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message || "Failed to fetch items"
@@ -26,12 +62,27 @@ export const getItem = async (itemId: string) => {
 
 export const updateItem = async (itemId: string, updatedData: IItem) => {
 	try {
-		const response = await api.put(`/items/${itemId}`, updatedData);
+		const response = await api.patch(`/items/${itemId}`, updatedData);
 		return response.data.data.item;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message ||
 				`Failed to update item with ID ${itemId}`
+		);
+	}
+};
+
+export const updateItems = async (collection_id: number, updatedItemsData: IItem[]): Promise<IItem[]> => {
+	try {
+		const response = await api.put("/items/many", {
+			collection_id,
+			items: updatedItemsData,
+		});
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message ||
+				"Failed to update items"
 		);
 	}
 };

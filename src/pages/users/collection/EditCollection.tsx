@@ -29,8 +29,14 @@ const EditCollection = () => {
 	]);
 
 	const [itemCustomFields, setItemCustomFields] = React.useState<
-		ICustomField[]
-	>([]);
+		ICustomField[][]
+	>([
+		[{
+			name: "",
+			type: "",
+			value: "",
+		},]
+	]);
 
 	useEffect(() => {
 		(async () => {
@@ -43,20 +49,16 @@ const EditCollection = () => {
 					photo: data.photo,
 				}
 
-				const items = data.items as IItem[];
 				const customFields = data.custom_fields;
 
-				let accumulatedItemCustomFields: ICustomField[] = [];
+				let accumulatedItemCustomFields: ICustomField[][] = [];
 				
-				items.forEach((item) => {
-					item.custom_fields?.forEach((field) => {
-						console.log(1);
-						accumulatedItemCustomFields.push(field);
-					});
+				data.items.forEach((item, index) => {
+					accumulatedItemCustomFields.push(item.custom_fields as ICustomField[]);
 				});
 
 				setCollection(collection);
-				setItems(items);
+				setItems(data.items as any);
 				setCustomFields(customFields);
 				setItemCustomFields(accumulatedItemCustomFields);
 			} catch (error: any) {
@@ -65,12 +67,20 @@ const EditCollection = () => {
 		})()
 	}, [id])
 
-	const handleSubmit = () => {
-		console.log("Submitted");
-		console.log(collection);
-		console.log(customFields);
-		console.log(items);
-		console.log(itemCustomFields);
+	const handleSubmit = async () => {
+		const updatedCollection = await usersApi.updateCollection(Number(id), {
+			collection,
+			customFields,
+		});
+		const updatedItems = await usersApi.updateItems(
+			updatedCollection.id,
+			items
+		);
+		const updatedItemsIds = updatedItems.map(({ id }) => Number(id));
+		await usersApi.updateCustomFields(
+			updatedItemsIds,
+			itemCustomFields
+		);
 	};
 
 	return (
@@ -78,7 +88,7 @@ const EditCollection = () => {
 			collection={collection}
 			customFields={customFields}
 			itemCustomFields={itemCustomFields}
-			items={items}
+			items={items as IItem[]}
 			setCollection={setCollection}
 			setCustomFields={setCustomFields}
 			setItems={setItems}

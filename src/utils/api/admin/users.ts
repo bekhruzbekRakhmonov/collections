@@ -1,5 +1,5 @@
 import api from "../api"
-import { IUser } from "../../interfaces/user";
+import { IRowUser, IUser } from "../../interfaces/user";
 
 // Get a list of users
 export const getUsers = async (
@@ -7,7 +7,7 @@ export const getUsers = async (
 	limit: number = 5,
 	order?: string,
 	orderBy?: string
-): Promise<{ data: IUser[]; total: number; }> => {
+): Promise<{ data: IRowUser[]; total: number; }> => {
 	try {
 		const response = await api.get("/users", {
 			params: {
@@ -17,10 +17,9 @@ export const getUsers = async (
         orderBy,
 			},
 		});
-		console.log(response.data, response.data.total);
     return {
-      data: response.data.result,
-      total: response.data.total,
+      data: response.data.data.result,
+      total: response.data.data.total,
     };
 	} catch (error: any) {
 		throw new Error(
@@ -31,7 +30,7 @@ export const getUsers = async (
 
 
 // Get a single user by ID
-export const getUser = async (userId: number): Promise<IUser> => {
+export const getUser = async (userId: number): Promise<IRowUser> => {
   try {
     const response = await api.get(`/users/${userId}`);
     return response.data.data;
@@ -59,7 +58,7 @@ export const updateUser = async (
   updatedUserData: Partial<IUser>
 ): Promise<IUser> => {
   try {
-    const response = await api.put(`/users/${userId}`, updatedUserData);
+    const response = await api.patch(`/users/${userId}`, updatedUserData);
     return response.data.data;
   } catch (error: any) {
     throw new Error(

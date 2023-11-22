@@ -15,6 +15,9 @@ import ResponsiveAppBar from "./components/users/appbar/AppBar";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { SupportedLanguages } from "./utils/i18/enums";
 import init18n from "./utils/i18";
+import UserSettings from "./pages/users/profile/UserSettings";
+import { Admin } from "./pages/admin";
+import SearchResult from "./pages/users/search/SearchResult";
 init18n()
 
 const App: React.FC = () => {
@@ -65,7 +68,7 @@ const App: React.FC = () => {
 						setLanguage={setLanguage}
 					/>
 				)}
-				
+
 				<ErrorBoundary>
 					<Routes>
 						<Route path="/login" element={<Login />} />
@@ -76,6 +79,10 @@ const App: React.FC = () => {
 							path="/show-collection/:id"
 							element={<ShowCollection />}
 						/>
+						<Route
+							path="/search"
+							element={<SearchResult />}
+						/>
 						<Route element={<PrivateRoutes />}>
 							<Route
 								path="/create-collection"
@@ -85,10 +92,34 @@ const App: React.FC = () => {
 								path="/edit-collection/:id"
 								element={<EditCollection />}
 							/>
-							<Route path="/profile" element={<ProfilePage />} />
+							<Route path="/user/:id" element={<ProfilePage />} />
+							<Route
+								path="/settings"
+								element={<UserSettings />}
+							/>
 						</Route>
 						<Route element={<PrivateRoutes />}>
 							<Route path="/admin" element={<SideBar />} />
+							<Route
+								path="/admin/edit-collection/:id"
+								element={<Admin.EditCollection />}
+							/>
+							<Route
+								path="/admin/edit-item/:id"
+								element={<Admin.EditItem />}
+							/>
+							<Route
+								path="/admin/edit-user/:id"
+								element={<Admin.EditUser />}
+							/>
+							<Route
+								path="/admin/edit-comment/:id"
+								element={<Admin.EditComment />}
+							/>
+							<Route
+								path="/admin/edit-custom-fields/:id"
+								element={<Admin.EditCustomField />}
+							/>
 						</Route>
 					</Routes>
 				</ErrorBoundary>

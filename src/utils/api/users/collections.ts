@@ -1,15 +1,29 @@
 import api from "../api";
 import { ICollection, IRowCollection } from "../../interfaces/collection";
 import { ICustomField } from "../../interfaces/custom-fields";
-import { IItem } from "../../interfaces/item";
 
-export const getCollections = async (page: number) => {
+export const getCollections = async (page: number = 1) => {
 	try {
 		const response = await api.get("/collections");
-		console.log(response.data.data.result);
 		return response.data.data.result;
 	} catch (error: any) {
 		throw new Error(error.response?.data.message || "Failed to fetch collections");
+	}
+};
+
+export const getCollectionsByUserId = async (userId: number, page: number = 1, limit: number = 10) => {
+	try {
+		const response = await api.get(`/collections/${userId}/list`, {
+			params: {
+				page,
+				limit
+			}
+		});
+		return response.data.data.result;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to fetch collections"
+		);
 	}
 };
 
@@ -23,18 +37,14 @@ export const getCollection = async (id: number | string): Promise<IRowCollection
 	}
 };
 
-export const createCollection = async ({collection, customFields, itemCustomFields, items}: {
+export const createCollection = async ({collection, customFields}: {
 	collection: ICollection;
 	customFields: ICustomField[];
-	itemCustomFields: ICustomField[];
-	items: IItem[];
-}) => {
+}): Promise<IRowCollection> => {
 	try {
 		const response = await api.post("/collections", {
 			...collection,
 			customFields,
-			itemCustomFields,
-			items,
 		});
 		return response.data.data;
 	} catch (error: any) {
@@ -44,12 +54,23 @@ export const createCollection = async ({collection, customFields, itemCustomFiel
 	}
 };
 
-export const updateCollection = async (id: number, data: ICollection) => {
+export const updateCollection = async (
+	id: number,
+	{
+		collection,
+		customFields,
+	}: {
+		collection: ICollection;
+		customFields: ICustomField[];
+	}
+) => {
 	try {
-		const response = await api.patch(`/collections/${id}`, data);
+		const response = await api.patch(`/collections/${id}`, {...collection, customFields});
 		return response.data.data;
 	} catch (error: any) {
-		throw new Error(error.response?.data.message || "Failed to update collection");
+		throw new Error(
+			error.response?.data.message || "Failed to update collection"
+		);
 	}
 };
 

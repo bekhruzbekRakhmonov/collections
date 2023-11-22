@@ -21,7 +21,9 @@ export interface IItem {
 export interface IRowItem {
 	id: number;
 	name: string;
-	custom_fields: ICustomField[];
-	likes: ILike[];
+	custom_fields?: ICustomField[];
+	likes?: ILike[];
 	tags: string;
+	created_at: string;
+	updated_at: string;
 }

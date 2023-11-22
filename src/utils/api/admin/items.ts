@@ -1,12 +1,12 @@
 import api from "../api";
-import { IItem } from "../../interfaces/item";
+import { IItem, IRowItem } from "../../interfaces/item";
 
 export const getItems = async (
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
 	orderBy?: string
-): Promise<{ data: IItem[]; total: number; }> => {
+): Promise<{ data: IRowItem[]; total: number; }> => {
 	try {
 		const response = await api.get("/items", {
 			params: {

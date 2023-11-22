@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { Container, Tabs, Tab } from "@mui/material";
-import Collection from "../../../components/users/collections/show/CollectionsList";
 import ProfileCard from "../../../components/users/profile/ProfileCard";
+import CollectionsList from "../../../components/users/collections/show/CollectionsList";
+import { useAuth } from "../../../auth/AuthContext";
+import UserCollectionsList from "../../../components/users/profile/CollectionsList";
+import { useParams } from "react-router-dom";
 
 const ProfilePage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<number>(0);
+	const { user } = useAuth();
+	const {id: userId} = useParams();
 
 	const handleTabChange = (
 		event: React.ChangeEvent<{}>,
@@ -13,27 +18,30 @@ const ProfilePage: React.FC = () => {
 		setActiveTab(newValue);
 	};
 
-	const userData = {
-		name: "John Doe",
-		email: "john@example.com",
-		avatarUrl: "https://example.com/avatar.jpg",
-		bio: "Passionate developer exploring new technologies.",
-		location: "New York, USA",
-		website: "https://johndoe.com",
+	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+	const handleDelete = () => {
+		// Implement your delete logic here
+		console.log("Item deleted!");
+		setDeleteDialogOpen(false);
+	};
+
+	const handleOpenDeleteDialog = () => {
+		setDeleteDialogOpen(true);
+	};
+
+	const handleCloseDeleteDialog = () => {
+		setDeleteDialogOpen(false);
 	};
 
 	return (
 		<Container maxWidth="sm">
 			<br/>
-			<ProfileCard {...userData} />
+			<ProfileCard user={user} />
 			<Tabs value={activeTab} onChange={handleTabChange} centered>
-				<Tab label="Posts" />
-				<Tab label="Photos" />
-				{/* Add more tabs as needed */}
+				<Tab label="Collections" />
 			</Tabs>
-			{activeTab === 0 && <Collection />}
-			{activeTab === 1 && <h2>Photos content goes here</h2>}
-			{/* Add more tab content components for other tabs */}
+			{activeTab === 0 && <UserCollectionsList userId={Number(userId)} handleCloseDeleteDialog={handleCloseDeleteDialog} handleOpenDeleteDialog={handleOpenDeleteDialog} handleDelete={handleDelete}/>}
 		</Container>
 	);
 };

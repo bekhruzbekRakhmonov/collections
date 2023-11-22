@@ -3,14 +3,18 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, TextField, Typography, Container, Box } from "@mui/material";
 import { admin } from "../../../utils/api/admin";
-import { IItem } from "../../../utils/interfaces/item";
 
-interface EditItemProps {
-}
-interface FormData extends IItem {
+interface EditCollectionProps {
 }
 
-export const EditItem: React.FC<EditItemProps> = () => {
+interface FormData {
+	name: string;
+	description: string;
+	topic: string;
+	photo: string;
+}
+
+export const EditCollection: React.FC<EditCollectionProps> = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const {
@@ -21,34 +25,37 @@ export const EditItem: React.FC<EditItemProps> = () => {
 	} = useForm<FormData>();
 
 	useEffect(() => {
-		const fetchItemData = async () => {
+		const fetchCollectionData = async () => {
 			try {
-				const data = await admin.getItem(Number(id));
+				const data = await admin.getCollection(Number(id));
 
+				// Set form values based on the fetched data
 				setValue("name", data.name);
-				setValue("tags", data.tags);
+				setValue("description", data.description);
+				setValue("topic", data.topic);
+				setValue("photo", data.photo);
 			} catch (error) {
-				console.error("Error fetching item data:", error);
+				console.error("Error fetching collection data:", error);
 			}
 		};
 
-		fetchItemData();
+		fetchCollectionData();
 	}, [id, setValue]);
 
 	const onSubmit: SubmitHandler<FormData> = async (data) => {
 		try {
-			await admin.updateItem(Number(id), data)
+			await admin.updateCollection(Number(id), data);
 
-			navigate(`/items/${id}`);
+			navigate(`/collections/${id}`);
 		} catch (error) {
-			console.error("Error updating item data:", error);
+			console.error("Error updating collection data:", error);
 		}
 	};
 
 	return (
 		<Container>
 			<Typography variant="h4" gutterBottom>
-				Edit Item
+				Edit Collection
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box marginBottom={2}>
@@ -61,7 +68,29 @@ export const EditItem: React.FC<EditItemProps> = () => {
 					/>
 				</Box>
 				<Box marginBottom={2}>
-					<TextField label="Tags" fullWidth {...register("tags")} />
+					<TextField
+						label="Description"
+						fullWidth
+						{...register("description")}
+					/>
+				</Box>
+				<Box marginBottom={2}>
+					<TextField
+						label="Topic"
+						fullWidth
+						{...register("topic", {
+							required: "Topic is required",
+						})}
+						error={!!errors.topic}
+						helperText={errors.topic?.message}
+					/>
+				</Box>
+				<Box marginBottom={2}>
+					<TextField
+						label="Photo URL"
+						fullWidth
+						{...register("photo")}
+					/>
 				</Box>
 				<Button type="submit" variant="contained" color="primary">
 					Save Changes
@@ -70,3 +99,4 @@ export const EditItem: React.FC<EditItemProps> = () => {
 		</Container>
 	);
 };
+

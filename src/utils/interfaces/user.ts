@@ -10,6 +10,7 @@ export interface IRowUser {
 	id: number;
 	name: string;
 	email: string;
-	role: string;
-	status: string;
+	role: 'admin' | 'user';
+	status: 'active' | 'blocked';
+    password: string;
 }

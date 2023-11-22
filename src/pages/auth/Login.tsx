@@ -17,14 +17,14 @@ const Login = () => {
 
   useEffect(() => {
 	if (isAuthenticated) {
-		navigate(-1);
+		navigate('/');
 	}
   }, [])
 
   const handleLogin = async () => {
 		try {
 			await login(credentials);
-			navigate(-1);
+			navigate('/');
 		} catch (err) {
 			if (err instanceof AxiosError) {
 				error = "Internal Server Error"

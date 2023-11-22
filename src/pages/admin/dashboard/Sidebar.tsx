@@ -25,10 +25,12 @@ import {
 	Mail,
 } from "@mui/icons-material";
 import SimpleTable from "../../../components/admin/table/Table";
-import { IUser } from "../../../utils/interfaces/user";
+import { IRowUser, IUser } from "../../../utils/interfaces/user";
 import { admin } from "../../../utils/api/admin";
-import { ICollection } from "../../../utils/interfaces/collection";
-import { IItem } from "../../../utils/interfaces/item";
+import { ICollection, IRowCollection } from "../../../utils/interfaces/collection";
+import { IItem, IRowItem } from "../../../utils/interfaces/item";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IRowComment } from "../../../utils/interfaces/comment";
 
 const drawerWidth = 240;
 
@@ -103,36 +105,15 @@ interface CommentData {
 	content: string;
 }
 
-// Sample Data
-const users: UserData[] = [
-	{ id: 1, name: "John Doe", email: "john@example.com" },
-	{ id: 2, name: "Jane Doe", email: "jane@example.com" },
-];
-
-const collections: CollectionData[] = [
-	{
-		id: 1,
-		name: "Nature Collection",
-		description: "Beautiful nature photos",
-	},
-	{ id: 2, name: "Cityscape Collection", description: "City skyline images" },
-];
-
-const items: ItemData[] = [
-	{ id: 1, name: "Camera", price: 500 },
-	{ id: 2, name: "Laptop", price: 1200 },
-];
-
-const comments: CommentData[] = [
-	{ id: 1, author: "User1", content: "Great collection!" },
-	{ id: 2, author: "User2", content: "Love the items in this collection." },
-];
 
 // Columns for the tables
-const userColumns: Column[] = [
+const userColumns = [
 	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name" },
 	{ id: "email", label: "Email" },
+	{ id: "role", label: "Role" },
+	{ id: "status", label: "Status" },
+	{ id: "created_at", label: "Joined" },
 ];
 
 const collectionColumns: Column[] = [
@@ -144,35 +125,38 @@ const collectionColumns: Column[] = [
 const itemColumns: Column[] = [
 	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name" },
-	{ id: "price", label: "Price" },
+	{ id: "tags", label: "Tags" },
 ];
 
 const commentColumns: Column[] = [
 	{ id: "id", label: "ID" },
-	{ id: "author", label: "Author" },
+	{ id: "owner", label: "Author" },
 	{ id: "content", label: "Content" },
 ];
 
 export default function SideBar() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(true);
-	const [selectedOption, setSelectedOption] = React.useState("Users"); // Initial selected option
-	
+	const [selectedOption, setSelectedOption] = React.useState(window.location.href.split("#")[1]); // Initial selected option
+	const navigate = useNavigate();
+	const location = useLocation();
+	console.log(location.hash);
+
 	// Data stores
 	const [usersData, setUsersData] = React.useState<{
-		data: Record<string, any>[];
+		data: IRowUser[];
 		total: number;
 	}>({data: [], total: 0});
 	const [collectionsData, setCollectionsData] = React.useState<{
-		data: Record<string, any>[];
+		data: IRowCollection[];
 		total: number;
 	}>({ data: [], total: 0 });
 	const [itemsData, setItemsData] = React.useState<{
-		data: Record<string, any>[];
+		data: IRowItem[];
 		total: number;
 	}>({ data: [], total: 0 });
 	const [commentsData, setCommentsData] = React.useState<{
-		data: Record<string, any>[];
+		data: IRowComment[];
 		total: number;
 	}>({ data: [], total: 0 });
 
@@ -189,7 +173,6 @@ export default function SideBar() {
 		order?: string,
 		orderBy?: string
 	) => {
-		console.log(page, limit);
 		(async () => {
 			const result = await admin.getCollections(page, limit, order, orderBy);
 			setCollectionsData(result);
@@ -214,10 +197,23 @@ export default function SideBar() {
 		})();
 	};
 
+	const getComments = (
+		page?: number,
+		limit?: number,
+		order?: string,
+		orderBy?: string
+	) => {
+		(async () => {
+			const result = await admin.getComments(page, limit, order, orderBy);
+			setCommentsData(result);
+		})();
+	};
+
 	React.useEffect(() => {
 		getUsers();
 		getCollections();
 		getItems();
+		getComments();
 	}, [])
 
 	const handleDrawerOpen = () => {
@@ -230,26 +226,19 @@ export default function SideBar() {
 
 	const handleSidebarItemClick = (option: string) => {
 		setSelectedOption(option);
+		window.location.hash = option;
 	};
 
 	const renderMainContent = () => {
 		switch (selectedOption) {
 			case "Users":
-				const userColumns = [
-					{ id: "id", label: "ID" },
-					{ id: "name", label: "Name" },
-					{ id: "email", label: "Email" },
-					{ id: "role", label: "Role" },
-					{ id: "status", label: "Status" },
-					{ id: "created_at", label: "Joined" },
-				];
 				return (
 					<SimpleTable
-					key="users"
+						key="users"
 						result={usersData}
 						columns={userColumns}
 						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => console.log(id)}
+						onEdit={(id) => navigate(`/admin/edit-user/${id}`)}
 						onDelete={(id) => console.log(id)}
 						onDeleteSelected={() => console.log("selected")}
 						refreshData={getUsers}
@@ -263,7 +252,7 @@ export default function SideBar() {
 						result={collectionsData}
 						columns={collectionColumns}
 						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => console.log(id)}
+						onEdit={(id) => navigate(`/admin/edit-collection/${id}`)}
 						onDelete={(id) => console.log(id)}
 						onBlock={(id) => console.log(id)}
 						refreshData={getCollections}
@@ -276,7 +265,7 @@ export default function SideBar() {
 						result={itemsData}
 						columns={itemColumns}
 						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => console.log(id)}
+						onEdit={(id) => navigate(`/admin/edit-item/${id}`)}
 						onDelete={(id) => console.log(id)}
 						refreshData={getItems}
 					/>
@@ -285,12 +274,12 @@ export default function SideBar() {
 				return (
 					<SimpleTable
 						key="comments"
-						result={collectionsData}
+						result={commentsData}
 						columns={commentColumns}
 						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => console.log(id)}
+						onEdit={(id) => navigate(`/admin/edit-comment/${id}`)}
 						onDelete={(id) => console.log(id)}
-						refreshData={getUsers}
+						refreshData={getComments}
 					/>
 				);
 			default:
@@ -351,25 +340,37 @@ export default function SideBar() {
 						icon={<Group />}
 						text="Users"
 						onClick={() => handleSidebarItemClick("Users")}
-						selected={selectedOption === "Users"}
+						selected={
+							selectedOption === "Users" ||
+							window.location.hash === "#Users"
+						}
 					/>
 					<SidebarItem
 						icon={<Collections />}
 						text="Collections"
 						onClick={() => handleSidebarItemClick("Collections")}
-						selected={selectedOption === "Collections"}
+						selected={
+							selectedOption === "Collections" ||
+							window.location.hash === "#Collections"
+						}
 					/>
 					<SidebarItem
 						icon={<CollectionsBookmark />}
 						text="Items"
 						onClick={() => handleSidebarItemClick("Items")}
-						selected={selectedOption === "Items"}
+						selected={
+							selectedOption === "Items" ||
+							window.location.hash === "#Items"
+						}
 					/>
 					<SidebarItem
 						icon={<Comment />}
 						text="Comments"
 						onClick={() => handleSidebarItemClick("Comments")}
-						selected={selectedOption === "Comments"}
+						selected={
+							selectedOption === "Comments" ||
+							window.location.hash === "#Comments"
+						}
 					/>
 				</List>
 				<Divider />
@@ -378,11 +379,7 @@ export default function SideBar() {
 						<ListItem key={text} disablePadding>
 							<ListItemButton>
 								<ListItemIcon>
-									{index % 2 === 0 ? (
-										<Inbox />
-									) : (
-										<Mail />
-									)}
+									{index % 2 === 0 ? <Inbox /> : <Mail />}
 								</ListItemIcon>
 								<ListItemText primary={text} />
 							</ListItemButton>

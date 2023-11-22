@@ -11,20 +11,17 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import Switch from "@mui/material/Switch";
-import SearchIcon from "@mui/icons-material/Search";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import LanguageIcon from "@mui/icons-material/Language";
 import TextField from "@mui/material/TextField";
-import { Chip, colors, useTheme } from "@mui/material";
+import { Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/AuthContext";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { SupportedLanguages } from "../../../utils/i18/enums";
 import { useTranslation } from "react-i18next";
+import SearchInput from "./SearchInput";
 
 interface ResponsiveAppBarProps {
 	handleDarkModeToggle: () => void;
@@ -33,19 +30,23 @@ interface ResponsiveAppBarProps {
 	setLanguage: (language: SupportedLanguages) => void;
 }
 
-const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggle, darkMode, language, setLanguage }) => {
+const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
+	handleDarkModeToggle,
+	darkMode,
+	language,
+	setLanguage,
+}) => {
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	const { t } = useTranslation();
-	const theme = useTheme();
 
 	const pages = [
 		{ label: "Feed", link: "/" },
-		{ label: "Profile", link: "/profile" },
+		{ label: "Profile", link: `/user/${user?.id || ''}` },
 	];
 	const settings = [
-		{ label: "Profile", link: "/profile" },
-		{ label: "Account", link: "/account" },
+		{ label: "Profile", link: `/user/${user?.id || ''}` },
+		{ label: "Settings", link: "/settings" },
 		{ label: t("logout"), link: "/logout" },
 	];
 
@@ -85,117 +86,124 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 	};
 
 	return (
-		<AppBar
-			position="static"
-			color="inherit"
-		>
-			<TextField
-				placeholder="Search"
-				value={searchQuery}
-				onChange={handleSearchInputChange}
-				InputProps={{
-					startAdornment: (
-						<IconButton color="inherit" size="small">
-							<SearchIcon />
-						</IconButton>
-					),
-				}}
-				sx={{
-					marginLeft: "auto",
-					display: { xs: "block", md: "none" },
-				}}
-			/>
-
+		<AppBar position="static" color="inherit">
 			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					<CollectionsIcon
-						sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-					/>
-					<Typography
-						variant="h6"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-							display: { xs: "none", md: "flex" },
-							fontFamily: "monospace",
-							fontWeight: 700,
-							letterSpacing: ".3rem",
-							color: "inherit",
-							textDecoration: "none",
-						}}
-					>
-						Collections
-					</Typography>
-
-					<Box
-						sx={{
-							flexGrow: 1,
-							display: { xs: "flex", md: "none" },
-						}}
-					>
-						<IconButton
-							size="large"
-							aria-label="account of current user"
-							aria-controls="menu-appbar"
-							aria-haspopup="true"
-							onClick={handleOpenNavMenu}
-							color="inherit"
-						>
-							<MenuIcon />
-						</IconButton>
-						<Menu
-							id="menu-appbar-nav"
-							anchorEl={anchorElNav}
-							anchorOrigin={{
-								vertical: "bottom",
-								horizontal: "left",
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: "top",
-								horizontal: "left",
-							}}
-							open={Boolean(anchorElNav)}
-							onClose={handleCloseNavMenu}
+				<Toolbar
+					disableGutters
+					sx={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+					}}
+				>
+					<div style={{ display: "flex" }}>
+						<CollectionsIcon
+							sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+						/>
+						<Typography
+							variant="h6"
+							noWrap
+							component="a"
+							href="/"
 							sx={{
-								display: { xs: "block", md: "none" },
+								mr: 2,
+								display: { xs: "none", md: "flex" },
+								fontFamily: "monospace",
+								fontWeight: 700,
+								letterSpacing: ".3rem",
+								color: "inherit",
+								textDecoration: "none",
+							}}
+						>
+							Collections
+						</Typography>
+
+						<Box
+							sx={{
+								flexGrow: 1,
+								display: { xs: "flex", md: "none" },
+							}}
+						>
+							<IconButton
+								size="large"
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleOpenNavMenu}
+								color="inherit"
+							>
+								<MenuIcon />
+							</IconButton>
+							<Menu
+								id="menu-appbar-nav"
+								anchorEl={anchorElNav}
+								anchorOrigin={{
+									vertical: "bottom",
+									horizontal: "left",
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "left",
+								}}
+								open={Boolean(anchorElNav)}
+								onClose={handleCloseNavMenu}
+								sx={{
+									display: { xs: "block", md: "none" },
+								}}
+							>
+								{pages.map((page) => (
+									<MenuItem
+										key={page.label}
+										onClick={() => navigate(page.link)}
+									>
+										<Typography textAlign="center">
+											{page.label}
+										</Typography>
+									</MenuItem>
+								))}
+							</Menu>
+						</Box>
+
+						<Box
+							sx={{
+								flexGrow: 1,
+								display: { xs: "none", md: "flex" },
 							}}
 						>
 							{pages.map((page) => (
-								<MenuItem
+								<Button
 									key={page.label}
 									onClick={() => navigate(page.link)}
+									color="inherit"
 								>
-									<Typography textAlign="center">
-										{page.label}
-									</Typography>
-								</MenuItem>
+									{page.label}
+								</Button>
 							))}
-						</Menu>
-					</Box>
-					<AdbIcon
-						sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-					/>
+						</Box>
+					</div>
+
 					<Box
 						sx={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
 							flexGrow: 1,
-							display: { xs: "none", md: "flex" },
+							marginLeft: { xs: "auto", md: 0 },
 						}}
 					>
-						{pages.map((page) => (
-							<Button
-								key={page.label}
-								onClick={() => navigate(page.link)}
-								color="inherit"
-							>
-								{page.label}
-							</Button>
-						))}
+						<SearchInput
+							searchQuery={searchQuery}
+							onChange={handleSearchInputChange}
+						/>
 					</Box>
 
-					<Box sx={{ display: "flex", alignItems: "center" }}>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+						}}
+					>
 						<Tooltip title="Toggle Dark Mode">
 							<Box
 								sx={{
@@ -209,8 +217,9 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 									sx={{
 										paddingLeft: "3px",
 										paddingRight: "3px",
-										display: "flex",
 										alignItems: "center",
+										flexGrow: 1,
+										display: { xs: "none", md: "flex" },
 									}}
 								>
 									<LightMode />
@@ -223,7 +232,14 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 								</Box>
 							</Box>
 						</Tooltip>
-						<Tooltip title={null} sx={{ marginRight: "5px" }}>
+						<Tooltip
+							title={null}
+							sx={{
+								flexGrow: 1,
+								display: { xs: "none", md: "flex" },
+								marginRight: "5px",
+							}}
+						>
 							<TextField
 								select
 								value={language}
@@ -243,11 +259,16 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 							>
 								<MenuItem value="en">English</MenuItem>
 								<MenuItem value="uz">Uzbek</MenuItem>
-								{/* Add more languages as needed */}
 							</TextField>
 						</Tooltip>
 						{user ? (
-							<Tooltip title="Open settings">
+							<Tooltip
+								title="Open settings"
+								sx={{
+									flexGrow: 1,
+									display: { xs: "none", md: "flex" },
+								}}
+							>
 								<Chip
 									onClick={handleOpenUserMenu}
 									avatar={
@@ -261,8 +282,12 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 								/>
 							</Tooltip>
 						) : (
-							<Button variant="outlined" color="success">
-								{ t("login") }
+							<Button
+								variant="outlined"
+								color="success"
+								onClick={() => navigate("/login")}
+							>
+								{t("login")}
 							</Button>
 						)}
 						<Menu
@@ -297,6 +322,6 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ handleDarkModeToggl
 			</Container>
 		</AppBar>
 	);
-}
+};
 
 export default ResponsiveAppBar;

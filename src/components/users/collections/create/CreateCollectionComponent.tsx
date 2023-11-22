@@ -19,11 +19,11 @@ const steps = [
 interface CreateCollectionProps {
 	collection: ICollection;
 	customFields: ICustomField[];
-	itemCustomFields: ICustomField[];
+	itemCustomFields: ICustomField[][];
 	items: IItem[];
 	setCollection: (data: React.SetStateAction<ICollection>) => void;
 	setCustomFields: (data: React.SetStateAction<ICustomField[]>) => void;
-	setItemCustomFields: (data: React.SetStateAction<ICustomField[]>) => void;
+	setItemCustomFields: (data: React.SetStateAction<ICustomField[][]>) => void;
 	setItems: (data: React.SetStateAction<IItem[]>) => void;
 	handleSubmit: () => void;
 }
@@ -102,6 +102,7 @@ const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({ collection
 						<CreateCustomFieldStep
 							customFields={customFields}
 							setCustomFields={setCustomFields}
+							setItemCustomFields={setItemCustomFields}
 						/>
 						<CreateItemStep
 							items={items}

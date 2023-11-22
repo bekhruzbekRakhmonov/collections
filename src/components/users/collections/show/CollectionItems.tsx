@@ -3,11 +3,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Avatar, Box, CardActions, Chip, IconButton, useTheme } from "@mui/material";
+import { Box, CardActions, Chip, IconButton, useTheme } from "@mui/material";
 import MDEditor from "@uiw/react-md-editor";
 import { IRowCollection } from "../../../../utils/interfaces/collection";
-import { IRowItem } from "../../../../utils/interfaces/item";
-import { ICustomField } from "../../../../utils/interfaces/custom-fields";
 import { Favorite } from "@mui/icons-material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { usersApi } from "../../../../utils/api/users";
@@ -18,25 +16,20 @@ import ExpandMore from "../../utils/ExpandMore";
 import CommentsList from "../../comments/CommentsList";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const CollectionItemsCard = ({
-	data,
-	onEditCollection,
-	onEditItem,
-	onDeleteCollection,
-	onDeleteItem,
-}: {
+interface CollectionItemsCardProps {
 	data: IRowCollection;
-	onEditCollection: (collection: IRowCollection) => void;
-	onEditItem: (item: IRowItem) => void;
-	onDeleteCollection: (collectionId: number) => void;
-	onDeleteItem: (itemId: number) => void;
+	updateData: (data: React.SetStateAction<IRowCollection | null>) => void;
+	handleOpenDeleteDialog: () => void;
+	handleCloseDeleteDialog: () => void;
+	handleDelete: () => void;
+}
+const CollectionItemsCard: React.FC<CollectionItemsCardProps> = ({
+	data,
+	updateData,
+	handleCloseDeleteDialog,
+	handleOpenDeleteDialog,
+	handleDelete,
 }) => {
-	const [isItemsCollapsed, setItemsCollapsed] = useState(true);
-	const [isEditModalOpen, setEditModalOpen] = useState(false);
-	const [editedCollection, setEditedCollection] = useState({
-		...data,
-	});
-	const [editedItem, setEditedItem] = useState<IRowItem | null>(null);
 	const { user, isAuthenticated } = useAuth();
 	const theme = useTheme();
 
@@ -45,63 +38,35 @@ const CollectionItemsCard = ({
 	const handleExpandClick = (itemId: number) => {
 		setExpandedItems((prevExpandedItems) => {
 			if (prevExpandedItems.includes(itemId)) {
-				// If the item is already expanded, collapse it
 				return prevExpandedItems.filter((id) => id !== itemId);
 			} else {
-				// If the item is not expanded, expand it
 				return [...prevExpandedItems, itemId];
 			}
 		});
 	};
 
 
-	const handleLike = async (id: number) => {
+	const handleToggleLike = async (id: number) => {
 		try {
-			// Assuming this function returns the updated item data
-			const updatedItem = await usersApi.likeItem(id);
-			// Find the index of the updated item in the data.items array
+			const updatedItem = await usersApi.likeOrUnlikeItem(id);
 			const itemIndex = data.items.findIndex(
 				(item) => item.id === updatedItem.id
 			);
-			// Update the item in the state
-			const updatedItems = [...data.items];
-			updatedItems[itemIndex] = updatedItem;
-			setEditedCollection((prevCollection) => ({
-				...prevCollection,
-				items: updatedItems,
-			}));
-		} catch (error) {
-			console.error("Error liking item:", error);
-		}
-	};
 
-	const handleUnlike = async (id: number) => {
-		try {
-			// Assuming this function returns the updated item data
-			const updatedItem = await usersApi.unlikeItem(id);
-			// Find the index of the updated item in the data.items array
-			const itemIndex = data.items.findIndex(
-				(item) => item.id === updatedItem.id
-			);
-			// Update the item in the state
 			const updatedItems = [...data.items];
 			updatedItems[itemIndex] = updatedItem;
-			setEditedCollection((prevCollection) => ({
-				...prevCollection,
+			updateData((data) => ({
+				...data as IRowCollection,
 				items: updatedItems,
 			}));
 		} catch (error) {
-			console.error("Error unliking item:", error);
+			console.error("Error toggling like:", error);
 		}
 	};
 
 	const isUserLikedItem = (index: number) => {
-		console.log(
-			"liked",
-			data.items[index].likes?.map((like) => like.owner.id === user.id)
-		);
 		return (
-			data.items[index].likes.map((like) => like.owner.id === user.id)
+			data.items[index].likes!.map((like) => like.owner.id === user.id)
 				.length > 0
 		);
 	};
@@ -115,6 +80,9 @@ const CollectionItemsCard = ({
 					owner={data.owner}
 					created_at={data.created_at}
 					collectionId={data.id}
+					handleCloseDeleteDialog={handleCloseDeleteDialog}
+					handleOpenDeleteDialog={handleOpenDeleteDialog}
+					handleDelete={handleDelete}
 				/>
 				<CardMedia
 					sx={{
@@ -206,17 +174,18 @@ const CollectionItemsCard = ({
 											window.alert(
 												"Please login to like item"
 											);
+										} else {
+											handleToggleLike(item.id);
 										}
 									}}
 								>
-									{isAuthenticated &&
-									isUserLikedItem(index) ? (
+									{isAuthenticated && isUserLikedItem(index) ? (
 										<Favorite color="error" />
 									) : (
 										<FavoriteBorderIcon />
 									)}
 								</IconButton>
-								<Typography>5</Typography>
+								<Typography>{item.likes?.length}</Typography>
 							</Box>
 							<Box
 								sx={{

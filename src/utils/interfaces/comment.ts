@@ -2,7 +2,7 @@ import { IRowUser, IUser } from "./user";
 
 export interface IComment {
     owner: string;
-    text: string;
+    content: string;
 }
 
 export interface IRowComment {

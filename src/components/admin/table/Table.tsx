@@ -165,9 +165,7 @@ const SimpleTable: React.FC<Props> = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{result.data
-							// .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-							.map((row, rowIndex) => {
+						{result.data?.map((row, rowIndex) => {
 								const isItemSelected = isSelected(row.id);
 								return (
 									<TableRow
