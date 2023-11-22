@@ -2,7 +2,13 @@ import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 
-const API_BASE_URL = "http://localhost:4000/api";
+let API_BASE_URL: string;
+
+if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+	API_BASE_URL = "http://localhost:4000/api";
+} else {
+	API_BASE_URL = "https://bekhruzbek.uz/api";
+}
 
 const api = axios.create({
 	baseURL: API_BASE_URL,
