@@ -9,36 +9,49 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-	let accessToken = Cookies.get("accessToken");
+	try {
+		let accessToken = Cookies.get("accessToken");
 
-	if (accessToken) {
-		const expirationTime = new Date(
-			jwtDecode<{ exp: number }>(accessToken).exp * 1000
-		);
-		if (expirationTime <= new Date()) {
-			const refreshToken = Cookies.get("refreshToken");
-			try {
-				console.log("refreshing....")
-				const response = await api.post("/auth/refresh", {
-					refreshToken,
-				});
-				accessToken = response.data.accessToken;
+		if (accessToken) {
+			const expirationTime = new Date(
+				jwtDecode<{ exp: number }>(accessToken).exp * 1000
+			);
 
-				Cookies.set("accessToken", accessToken as string, {
-					httpOnly: true,
-					secure: true,
-				});
-			} catch (error) {
-				// Handle refresh token error (e.g., redirect to login page)
-				console.error("Error refreshing access token:", error);
-				// Redirect to the login page or handle the error appropriately
+			if (expirationTime <= new Date()) {
+				const refreshToken = Cookies.get("refreshToken");
+
+				try {
+					console.log("Refreshing...");
+					const response = await api.post("/auth/refresh", {
+						refreshToken,
+					});
+
+					accessToken = response.data.accessToken;
+
+					Cookies.set("accessToken", accessToken as string);
+					// , {
+					// 	httpOnly: true,
+					// 	secure: true,
+					// }
+				} catch (refreshError) {
+					console.error(
+						"Error refreshing access token:",
+						refreshError
+					);
+					throw refreshError;
+				}
 			}
+
+			config.headers.Authorization = `Bearer ${accessToken}`;
 		}
-		// Add the new access token to the authorization header
-		config.headers.Authorization = `Bearer ${accessToken}`;
+
+		return config;
+	} catch (error) {
+		console.error("Interceptor error:", error);
+		throw error; 
 	}
-	return config;
 });
+
 
 export const register = async (userData: any): Promise<AxiosResponse> => {
 	const response = await axios.post(

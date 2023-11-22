@@ -31,7 +31,7 @@ export const getItems = async (
 export const getItem = async (itemId: number): Promise<IItem> => {
 	try {
 		const response = await api.get(`/items/${itemId}`);
-		return response.data.result;
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message || "Failed to fetch the item"
@@ -54,7 +54,7 @@ export const updateItem = async (
 	updatedItemData: Partial<IItem>
 ): Promise<IItem> => {
 	try {
-		const response = await api.put(`/items/${itemId}`, updatedItemData);
+		const response = await api.patch(`/items/${itemId}`, updatedItemData);
 		return response.data.result;
 	} catch (error: any) {
 		throw new Error(

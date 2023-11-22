@@ -10,20 +10,9 @@ const Feed: React.FC = () => {
 	const { isAuthenticated } = useAuth();
 	const navigate = useNavigate();
 
-	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-	const handleDelete = () => {
-		console.log("Item deleted!");
-		setDeleteDialogOpen(false);
-	};
-
-	const handleOpenDeleteDialog = () => {
-		setDeleteDialogOpen(true);
-	};
-
-	const handleCloseDeleteDialog = () => {
-		setDeleteDialogOpen(false);
-	};
+	const handleDelete = (id: number) => {
+		console.log("Collection with id: ", id)
+	}
 
 	return (
 		<div
@@ -34,18 +23,9 @@ const Feed: React.FC = () => {
 				position: "relative",
 			}}
 		>
-			<CollectionsList
-				handleCloseDeleteDialog={handleCloseDeleteDialog}
-				handleOpenDeleteDialog={handleOpenDeleteDialog}
-				handleDelete={handleDelete}
-			/>
+			<CollectionsList handleDelete={handleDelete}/>
 			{isAuthenticated && (
 				<>
-					<DeleteDialog
-						open={isDeleteDialogOpen}
-						onClose={handleCloseDeleteDialog}
-						onDelete={handleDelete}
-					/>
 					<Fab
 						color="primary"
 						aria-label="add"

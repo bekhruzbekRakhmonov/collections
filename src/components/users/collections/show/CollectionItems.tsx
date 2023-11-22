@@ -21,7 +21,7 @@ interface CollectionItemsCardProps {
 	updateData: (data: React.SetStateAction<IRowCollection | null>) => void;
 	handleOpenDeleteDialog: () => void;
 	handleCloseDeleteDialog: () => void;
-	handleDelete: () => void;
+	handleDelete: (id: number) => void;
 }
 const CollectionItemsCard: React.FC<CollectionItemsCardProps> = ({
 	data,
@@ -82,7 +82,6 @@ const CollectionItemsCard: React.FC<CollectionItemsCardProps> = ({
 					collectionId={data.id}
 					handleCloseDeleteDialog={handleCloseDeleteDialog}
 					handleOpenDeleteDialog={handleOpenDeleteDialog}
-					handleDelete={handleDelete}
 				/>
 				<CardMedia
 					sx={{

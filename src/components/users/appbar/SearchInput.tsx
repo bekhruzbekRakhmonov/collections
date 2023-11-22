@@ -10,11 +10,12 @@ import SearchIcon from "@mui/icons-material/Search";
 
 interface SearchInputProps {
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     searchQuery: string;
 	style?: CSSProperties;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ onChange, searchQuery, style }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ onChange, onKeyDown, searchQuery, style }) => {
 	return (
 		<div>
 			<div
@@ -25,7 +26,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onChange, searchQuery, style 
 					borderRadius: "25px",
 					minWidth: "200px",
 					maxWidth: "600px",
-                    border: '.5px solid black',
+                    border: '.5px solid grey',
 					...style
 				}}
 			>
@@ -43,6 +44,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onChange, searchQuery, style 
 						sx={{ height: "25px", marginTop: "3px" }}
                         value={searchQuery}
 						onChange={onChange}
+						onKeyDown={onKeyDown}
 						endAdornment={
 							<InputAdornment position="end">
 								<IconButton

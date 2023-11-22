@@ -134,7 +134,7 @@ const commentColumns: Column[] = [
 	{ id: "content", label: "Content" },
 ];
 
-export default function SideBar() {
+export default function Dashboard() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(true);
 	const [selectedOption, setSelectedOption] = React.useState(window.location.href.split("#")[1]); // Initial selected option

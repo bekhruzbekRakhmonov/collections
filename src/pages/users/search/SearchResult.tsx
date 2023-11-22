@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import SearchInput from "../../../components/users/appbar/SearchInput";
-import { Box, Button, List, colors, useTheme } from "@mui/material";
-
-const categories = ["Collections", "Items", "Comments"];
+import { List, Box, Typography, ListItem, ListItemText, useTheme } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { usersApi } from "../../../utils/api/users";
 
 const SearchResult: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [selectedButton, setSelectedButton] = useState<number | null>(null);
+	const [searchResults, setSearchResults] = useState<any>();
+	const theme = useTheme();
+	const navigate = useNavigate();
 
-    const theme = useTheme();
+	const { search } = useLocation();
+	console.log(search);
 
 	const handleButtonClick = (index: number) => {
 		setSelectedButton((prev) => (prev === index ? null : index));
@@ -18,83 +21,84 @@ const SearchResult: React.FC = () => {
 		setSearchQuery(e.target.value);
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === "Enter") {
+			// Navigate to the search results page with the current search query
+			navigate(`/search/?q=${searchQuery}`);
+		}
+	};
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				console.log("working")
+				const {
+					itemResults,
+					userResults,
+					collectionResults,
+					commentResults,
+				} = await usersApi.search(searchQuery);
+				console.log(itemResults, userResults)
+				// Set the search results in the state
+				setSearchResults({
+					items: itemResults,
+					users: userResults,
+					collections: collectionResults,
+					comments: commentResults,
+				});
+			} catch (error: any) {
+				console.error(error.message);
+			}
+		};
+
+		// Only fetch data when the search query changes
+		if (searchQuery) {
+			fetchData();
+		}
+	}, [searchQuery]);
+
 	return (
-        <>
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				border: ".5px solid grey",
-				margin: "15px 5px 5px 5px",
-				borderRadius: "10px",
-			}}
-		>
-			<Box
+		<>
+			{/* Your existing code for the search input and category buttons */}
+
+			{/* Display search results */}
+			<List
 				sx={{
-					flexGrow: 1,
-					display: "flex",
-					flexDirection: "column",
-					margin: "6px",
-					maxWidth: { xs: 350, sm: 480 },
-					bgcolor: "background.paper",
-				}}
-			>
-				<SearchInput
-					onChange={handleChange}
-					searchQuery={searchQuery}
-					style={{ minWidth: "350px" }}
-				/>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "space-between",
-						marginTop: "8px",
-						overflowX: "auto",
-						minWidth: "350px",
-						"& > *": {
-							flex: "0 0 auto",
-						},
-					}}
-				>
-					{categories.map((category, index) => (
-						<Button
-							key={index}
-							style={{
-								borderRadius: "50px",
-								padding: "10px 20px",
-								fontWeight: "600",
-								height: "35px",
-								textTransform: "none",
-								marginRight: "5px",
-								border: ".5px solid black",
-								color:
-									selectedButton === index
-										? colors.common.white
-										: colors.common.black,
-								backgroundColor:
-									selectedButton === index
-										? colors.common.black
-										: "transparent",
-							}}
-							onClick={() => handleButtonClick(index)}
-						>
-							{category}
-						</Button>
-					))}
-				</Box>
-			</Box>
-		</div>
-        <List
-				sx={{
-					border: ".5px solid grey",
+					border: `.5px solid ${theme.palette.divider}`,
 					margin: "15px 5px 5px 5px",
 					borderRadius: "10px",
+					backgroundColor: theme.palette.background.paper,
 				}}
-			></List>
-        </>
+			>
+				{searchResults &&
+					Object.entries(searchResults).map(([category, results]) => (
+						<div key={category}>
+							<Box
+								sx={{
+									borderBottom: `1px solid ${theme.palette.divider}`,
+								}}
+							>
+								<Typography
+									variant="h6"
+									component="div"
+									sx={{ padding: "10px" }}
+								>
+									{category}
+								</Typography>
+							</Box>
+							<List>
+								{(results as []).map((result: any) => (
+									<>{result}</>
+									// <ListItem key={result.id}>
+									// 	<ListItemText primary={result.name} />
+									// 	{/* Add more fields as needed */}
+									// </ListItem>
+								))}
+							</List>
+						</div>
+					))}
+			</List>
+		</>
 	);
 };
 

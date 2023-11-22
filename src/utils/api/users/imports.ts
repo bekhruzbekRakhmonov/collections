@@ -4,3 +4,4 @@ export * from "./users";
 export * from "./comments";
 export * from "./items";
 export * from "./custom_fields";
+export * from "./search";

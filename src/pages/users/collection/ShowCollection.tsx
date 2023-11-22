@@ -3,15 +3,16 @@ import { useParams } from "react-router-dom";
 import { getCollection } from "../../../utils/api/users/collections";
 import { IRowCollection } from "../../../utils/interfaces/collection";
 import CollectionItemsCard from "../../../components/users/collections/show/CollectionItems";
+import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
 
 const ShowCollection = () => {
 	const { id } = useParams();
 	const [data, setData] = useState<IRowCollection | null>(null);
 	const [error, setError] = useState<string | null>(null);
-	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
-	const handleDelete = () => {
-		console.log("Item deleted!");
+	const handleDelete = (id: number) => {
+		console.log("Item deleted!", id);
 		setDeleteDialogOpen(false);
 	};
 
@@ -39,7 +40,22 @@ const ShowCollection = () => {
 	}, [id]);
 
 	return (
-		<>{data && <CollectionItemsCard data={data} updateData={setData} handleCloseDeleteDialog={handleCloseDeleteDialog} handleOpenDeleteDialog={handleOpenDeleteDialog} handleDelete={handleDelete} />}</>
+		<>
+			<DeleteDialog
+				open={isDeleteDialogOpen}
+				onClose={handleCloseDeleteDialog}
+				onDelete={() => handleDelete(data?.id as number)}
+			/>
+			{data && (
+				<CollectionItemsCard
+					data={data}
+					updateData={setData}
+					handleCloseDeleteDialog={handleCloseDeleteDialog}
+					handleOpenDeleteDialog={handleOpenDeleteDialog}
+					handleDelete={handleDelete}
+				/>
+			)}
+		</>
 	);
 };
 

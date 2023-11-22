@@ -9,7 +9,6 @@ import PrivateRoutes from "./auth/PrivateRoutes";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import ShowCollection from "./pages/users/collection/ShowCollection";
 import ProfilePage from "./pages/users/profile/Profile";
-import SideBar from "./pages/admin/dashboard/Sidebar";
 import EditCollection from "./pages/users/collection/EditCollection";
 import ResponsiveAppBar from "./components/users/appbar/AppBar";
 import { useLocalStorage } from "@uidotdev/usehooks";
@@ -18,6 +17,7 @@ import init18n from "./utils/i18";
 import UserSettings from "./pages/users/profile/UserSettings";
 import { Admin } from "./pages/admin";
 import SearchResult from "./pages/users/search/SearchResult";
+import Dashboard from "./pages/admin/dashboard/Dashboard";
 init18n()
 
 const App: React.FC = () => {
@@ -92,14 +92,14 @@ const App: React.FC = () => {
 								path="/edit-collection/:id"
 								element={<EditCollection />}
 							/>
-							<Route path="/user/:id" element={<ProfilePage />} />
+							<Route path="/users/:id" element={<ProfilePage />} />
 							<Route
 								path="/settings"
 								element={<UserSettings />}
 							/>
 						</Route>
 						<Route element={<PrivateRoutes />}>
-							<Route path="/admin" element={<SideBar />} />
+							<Route path="/admin" element={<Dashboard />} />
 							<Route
 								path="/admin/edit-collection/:id"
 								element={<Admin.EditCollection />}

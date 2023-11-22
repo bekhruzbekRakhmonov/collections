@@ -10,6 +10,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../auth/AuthContext";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
+import DeleteDialog from "../delete/DeleteDialog";
 
 interface CollectionCardHeaderProps {
 	owner: IUser;
@@ -17,7 +18,6 @@ interface CollectionCardHeaderProps {
 	collectionId: number;
 	handleOpenDeleteDialog: () => void;
 	handleCloseDeleteDialog: () => void;
-	handleDelete: () => void;
 }
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -63,9 +63,10 @@ const StyledMenu = styled((props: MenuProps) => (
 	},
 }));
 
-const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId, handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
+const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId, handleCloseDeleteDialog, handleOpenDeleteDialog }) => {
 	const [copiedText, copyToClipboard] = useCopyToClipboard();
 	const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const navigate = useNavigate();
@@ -80,7 +81,6 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 
 	const handleSnackbarClose = () => {
 		setSnackbarOpen(false)
-		// copyToClipboard("");
 	}
 
 	const {user} = useAuth();
@@ -128,9 +128,10 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 										Edit
 									</MenuItem>
 									<MenuItem
-										onClick={() =>
-											handleOpenDeleteDialog()
-										}
+										onClick={() => {
+											handleOpenDeleteDialog();
+											setAnchorEl(null);
+										}}
 										disableRipple
 									>
 										<Delete />

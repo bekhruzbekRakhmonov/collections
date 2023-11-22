@@ -5,6 +5,7 @@ import CollectionsList from "../../../components/users/collections/show/Collecti
 import { useAuth } from "../../../auth/AuthContext";
 import UserCollectionsList from "../../../components/users/profile/CollectionsList";
 import { useParams } from "react-router-dom";
+import { usersApi } from "../../../utils/api/users";
 
 const ProfilePage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<number>(0);
@@ -18,21 +19,6 @@ const ProfilePage: React.FC = () => {
 		setActiveTab(newValue);
 	};
 
-	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-	const handleDelete = () => {
-		// Implement your delete logic here
-		console.log("Item deleted!");
-		setDeleteDialogOpen(false);
-	};
-
-	const handleOpenDeleteDialog = () => {
-		setDeleteDialogOpen(true);
-	};
-
-	const handleCloseDeleteDialog = () => {
-		setDeleteDialogOpen(false);
-	};
 
 	return (
 		<Container maxWidth="sm">
@@ -41,7 +27,7 @@ const ProfilePage: React.FC = () => {
 			<Tabs value={activeTab} onChange={handleTabChange} centered>
 				<Tab label="Collections" />
 			</Tabs>
-			{activeTab === 0 && <UserCollectionsList userId={Number(userId)} handleCloseDeleteDialog={handleCloseDeleteDialog} handleOpenDeleteDialog={handleOpenDeleteDialog} handleDelete={handleDelete}/>}
+			{activeTab === 0 && <UserCollectionsList userId={Number(userId)} />}
 		</Container>
 	);
 };

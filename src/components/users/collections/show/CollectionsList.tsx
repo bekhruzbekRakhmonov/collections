@@ -7,12 +7,10 @@ import { IRowCollection } from "../../../../utils/interfaces/collection";
 import Loading from "../../../loading/Loading";
 
 interface CollectionsListProps {
-	handleOpenDeleteDialog: () => void;
-	handleCloseDeleteDialog: () => void;
-	handleDelete: () => void;
+	handleDelete: (id: number) => void;
 }
 
-const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
+const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete }) => {
 	const [collections, setCollections] = useState<IRowCollection[]>([]);
 	const [error, setError] = useState<string>();
 	const [page, setPage] = useState(1);
@@ -83,8 +81,6 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleCloseDeleteDial
 						<CollectionCard
 							key={index}
 							data={collection}
-							handleCloseDeleteDialog={handleCloseDeleteDialog}
-							handleOpenDeleteDialog={handleOpenDeleteDialog}
 							handleDelete={handleDelete}
 						/>
 					))}

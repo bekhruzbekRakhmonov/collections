@@ -85,6 +85,8 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 		setSearchQuery(event.target.value);
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {};
+
 	return (
 		<AppBar position="static" color="inherit">
 			<Container maxWidth="xl">
@@ -195,6 +197,7 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 						<SearchInput
 							searchQuery={searchQuery}
 							onChange={handleSearchInputChange}
+							onKeyDown={handleKeyDown}
 						/>
 					</Box>
 

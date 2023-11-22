@@ -9,73 +9,89 @@ import MDEditor from "@uiw/react-md-editor";
 import { useNavigate } from "react-router-dom";
 import api from "../../../../utils/api/api";
 import CollectionCardHeader from "./CollectionCardHeader";
+import DeleteDialog from "../delete/DeleteDialog";
 
 interface CollectionCardProps {
 	data: IRowCollection;
-	handleOpenDeleteDialog: () => void;
-	handleCloseDeleteDialog: () => void;
-	handleDelete: () => void;
+	handleDelete: (id: number) => void;
 }
 
-const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleCloseDeleteDialog, handleOpenDeleteDialog, handleDelete }) => {
+const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleDelete }) => {
 	const navigate = useNavigate();
 	const theme = useTheme();
+	const [isDeleteDialogOpen, setDeleteDialogOpen] = React.useState<boolean>(false);
 
 	return (
-		<Card
-			sx={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)", marginTop: "15px" }}
-		>
-			<CollectionCardHeader
-				owner={data.owner}
-				created_at={data.created_at}
-				collectionId={data.id}
-				handleCloseDeleteDialog={handleCloseDeleteDialog}
-				handleOpenDeleteDialog={handleOpenDeleteDialog}
-				handleDelete={handleDelete}
+		<>
+			<DeleteDialog
+				open={isDeleteDialogOpen}
+				onClose={() => setDeleteDialogOpen(false)}
+				onDelete={() => {
+					handleDelete(Number(data.id));
+					setDeleteDialogOpen(false);
+				}}
 			/>
-			<CardActionArea
-				onClick={() => navigate(`/show-collection/${data.id}`)}
+			<Card
+				sx={{
+					boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+					marginTop: "15px",
+				}}
 			>
-				{data.photo && (
-					<CardMedia
-						sx={{ objectFit: "contain" }}
-						component="img"
-						height="140"
-						src={api.getUri() + data.photo}
-						alt="Collection Photo"
-					/>
-				)}
-				<CardContent>
-					<Typography
-						gutterBottom
-						variant="h5"
-						component="div"
-						sx={{ fontWeight: "bold" }}
-					>
-						{data.name}
-					</Typography>
-					<Typography variant="body2" color="text.secondary">
-						Topic:{" "}
-					</Typography>
-					<Typography variant="body1" color="text.primary">
-						{data.topic}
-					</Typography>
-					<br />
-					<Typography variant="body2" color="text.secondary">
-						Description:{" "}
-					</Typography>
-					<div
-						data-color-mode={theme.palette.mode}
-						style={{ marginTop: "8px" }}
-					>
-						<MDEditor.Markdown
-							source={data.description}
-							style={{ whiteSpace: "pre-wrap" }}
+				<CollectionCardHeader
+					owner={data.owner}
+					created_at={data.created_at}
+					collectionId={data.id}
+					handleCloseDeleteDialog={() => {
+						setDeleteDialogOpen(false);
+					}}
+					handleOpenDeleteDialog={() => {
+						setDeleteDialogOpen(true);
+					}}
+				/>
+				<CardActionArea
+					onClick={() => navigate(`/show-collection/${data.id}`)}
+				>
+					{data.photo && (
+						<CardMedia
+							sx={{ objectFit: "contain" }}
+							component="img"
+							height="140"
+							src={api.getUri() + data.photo}
+							alt="Collection Photo"
 						/>
-					</div>
-				</CardContent>
-			</CardActionArea>
-		</Card>
+					)}
+					<CardContent>
+						<Typography
+							gutterBottom
+							variant="h5"
+							component="div"
+							sx={{ fontWeight: "bold" }}
+						>
+							{data.name}
+						</Typography>
+						<Typography variant="body2" color="text.secondary">
+							Topic:{" "}
+						</Typography>
+						<Typography variant="body1" color="text.primary">
+							{data.topic}
+						</Typography>
+						<br />
+						<Typography variant="body2" color="text.secondary">
+							Description:{" "}
+						</Typography>
+						<div
+							data-color-mode={theme.palette.mode}
+							style={{ marginTop: "8px" }}
+						>
+							<MDEditor.Markdown
+								source={data.description}
+								style={{ whiteSpace: "pre-wrap" }}
+							/>
+						</div>
+					</CardContent>
+				</CardActionArea>
+			</Card>
+		</>
 	);
 };
 

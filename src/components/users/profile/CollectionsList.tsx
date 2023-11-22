@@ -8,16 +8,10 @@ import { usersApi } from "../../../utils/api/users";
 
 interface UserCollectionsListProps {
     userId: number;
-	handleOpenDeleteDialog: () => void;
-	handleCloseDeleteDialog: () => void;
-	handleDelete: () => void;
 }
 
 const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
     userId,
-	handleCloseDeleteDialog,
-	handleOpenDeleteDialog,
-	handleDelete,
 }) => {
 	const [collections, setCollections] = useState<IRowCollection[]>([]);
 	const [error, setError] = useState<string>();
@@ -41,6 +35,20 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 			setLoading(false);
 		}
 	};
+
+	const handleDelete = async (id: number) => {
+		try {
+
+			await usersApi.deleteCollection(id);
+			setCollections((prevCollections) =>
+				prevCollections.filter((collection) => collection.id !== id)
+			);
+		} catch (error: any) {
+			console.error(error.message);
+			// Handle error and possibly revert the optimistic update
+		}
+	};
+
 
 	useEffect(() => {
 		const options = {
@@ -91,8 +99,6 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 						<CollectionCard
 							key={index}
 							data={collection}
-							handleCloseDeleteDialog={handleCloseDeleteDialog}
-							handleOpenDeleteDialog={handleOpenDeleteDialog}
 							handleDelete={handleDelete}
 						/>
 					))}
