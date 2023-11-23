@@ -1,66 +1,90 @@
-import { useEffect, useState } from "react";
-import { usersApi } from "../../../utils/api/users";
-import { IRowCollection } from "../../../utils/interfaces/collection";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, Typography, Avatar, Chip, Box, CardHeader, IconButton, Container } from "@mui/material";// Adjust the import path based on your actual item model
 import { IRowItem } from "../../../utils/interfaces/item";
-import CollectionItem from "../../../components/users/collections/show/CollectionItem";
 import { useParams } from "react-router-dom";
+import { usersApi } from "../../../utils/api/users";
+import { red } from "@mui/material/colors";
+import { MoreVert } from "@mui/icons-material";
+import ItemCardHeader from "./ItemCardHeader";
 
-const ShowItem = () => {
-    const { itemId } = useParams();
-	const [item, setItem] = useState(null);
-	const [expanded, setExpanded] = useState(false);
-	const [isLiked, setIsLiked] = useState(false);
+interface ItemCardProps {
 
-	useEffect(() => {
-		const fetchItem = async () => {
-			try {
-				const fetchedItem = await usersApi.getItem(String(itemId));
-				setItem(fetchedItem);
-				setIsLiked(checkIfUserLikedItem(fetchedItem));
-			} catch (error) {
-				console.error("Error fetching item:", error);
-			}
-		};
-
-		fetchItem();
-	}, [itemId]);
-
-	const checkIfUserLikedItem = (item: IRowItem) => {
-		// Implement the logic to check if the user liked the item
-		// You may need to access the user's information from your authentication context
-		// Return true if the user liked the item, otherwise return false
-		return false;
-	};
-
-	const handleToggleLike = async () => {
-		try {
-			// Implement the logic to toggle the like status of the item
-			// You may need to send a request to your API to update the like status
-			// Update the state accordingly
-			setIsLiked(!isLiked);
-		} catch (error) {
-			console.error("Error toggling like:", error);
-		}
-	};
-
-	const handleExpandClick = () => {
-		setExpanded(!expanded);
-	};
-
-	return (
-		<div>
-			{item && (
-				<CollectionItem
-					item={item}
-                    itemIndex={0}
-                    expandedItems={[]}
-					isUserLikedItem={(index) => isLiked}
-					handleToggleLike={handleToggleLike}
-					handleExpandClick={handleExpandClick}
-				/>
-			)}
-		</div>
-	);
 }
+
+const ShowItem: React.FC<ItemCardProps> = () => {
+    const {id} = useParams();
+
+    const [item, setItem] = useState<IRowItem | null>(null)
+
+    useEffect(() => {
+        (async () => {
+            const data = await usersApi.getItem(String(id));
+            setItem(data);
+        })()
+    }, [id])
+	return (
+		<Container sx={{ display: "flex" }}>
+			{item !== null && (
+				<Card>
+					{/* You can customize the card header based on your item data */}
+					<ItemCardHeader owner={item.owner} itemId={item.id} created_at={item.created_at} handleCloseDeleteDialog={() => {}} handleOpenDeleteDialog={() => {}}/>
+
+					{/* Custom Fields */}
+					<CardContent>
+						<Typography variant="h5">{item.name}</Typography>
+						{item.custom_fields?.map((field) => (
+							<Box
+								sx={{
+									display: "flex",
+									alignItems: "center",
+								}}
+							>
+								<Typography
+									variant="body1"
+									sx={{ marginRight: "5px" }}
+								>
+									{field.name}:
+								</Typography>
+								<Typography
+									variant="body2"
+									sx={{ fontWeight: 700 }}
+								>
+									{field.value}
+								</Typography>
+							</Box>
+						))}
+						{(item.tags && item.tags.length > 0
+							? item.tags.split(",")
+							: []
+						).map((tag) => (
+							<Chip
+								label={`#${tag}`}
+								clickable
+								sx={{
+									borderRadius: "5px",
+									border: ".5px solid black",
+									margin: "2px",
+								}}
+							/>
+						))}
+					</CardContent>
+
+					{/* Likes */}
+					<CardContent>
+						<Typography variant="h6">Likes:</Typography>
+						{item.likes?.map((like: any, index: any) => (
+							<Chip
+								key={index}
+								avatar={<Avatar>{like.owner.name[0]}</Avatar>}
+								label={like.owner.name}
+								style={{ margin: "4px" }}
+							/>
+						))}
+					</CardContent>
+				</Card>
+			)}
+		</Container>
+	);
+};
 
 export default ShowItem;

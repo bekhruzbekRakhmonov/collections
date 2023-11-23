@@ -51,7 +51,7 @@ export const getItemsByCollectionId = async (collection_id: number) => {
 export const getItem = async (itemId: string) => {
 	try {
 		const response = await api.get(`/items/${itemId}`);
-		return response.data.data.item;
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message ||

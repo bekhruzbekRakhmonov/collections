@@ -1,5 +1,6 @@
 import { ICustomField, IRowCustomField } from "./custom-fields";
 import { ILike } from "./like";
+import { IRowUser } from "./user";
 
 export interface IItem {
 	id?: number;
@@ -21,6 +22,7 @@ export interface IItem {
 export interface IRowItem {
 	id: number;
 	name: string;
+	owner: IRowUser;
 	custom_fields?: IRowCustomField[];
 	likes?: ILike[];
 	tags: string;

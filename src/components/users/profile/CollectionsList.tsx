@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import Typography from "@mui/material/Typography";
-import { Box, List } from "@mui/material";
+import { List } from "@mui/material";
 import { IRowCollection } from "../../../utils/interfaces/collection";
 import Loading from "../../loading/Loading";
 import CollectionCard from "../collections/show/CollectionCard";
 import { usersApi } from "../../../utils/api/users";
+import ErrorComponent from "../../error/Error";
 
 interface UserCollectionsListProps {
     userId: number;
@@ -14,7 +14,7 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
     userId,
 }) => {
 	const [collections, setCollections] = useState<IRowCollection[]>([]);
-	const [error, setError] = useState<string>();
+	const [error, setError] = useState<string | null>(null);
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(false);
 
@@ -23,9 +23,11 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 
 	const fetchCollections = async (pageNumber: number) => {
 		try {
+			console.log(collections)
 			setLoading(true);
 			const data = await usersApi.getCollectionsByUserId(userId, pageNumber);
             if (data.length > 0) {
+				console.log("yes", data)
                 setCollections((prevCollections) => [...prevCollections, ...data]);
                 setPage((prevPage) => prevPage + 1);
             }
@@ -75,36 +77,23 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 		};
 	}, [page]);
 
-	useEffect(() => {
-		fetchCollections(page);
-	}, []);
-
 	return (
 		<div>
-			{error ? (
-				<Box
-					textAlign="center"
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-				>
-					<Typography variant="h4" color="red">
-						{error}
-					</Typography>
-				</Box>
-			) : (
-				<List>
-					{collections.map((collection: IRowCollection, index) => (
-						<CollectionCard
-							key={index}
-							data={collection}
-							handleDelete={handleDelete}
-						/>
-					))}
-					<div ref={sentinelRef} style={{ height: "10px" }} />
-					{loading && <Loading />}
-				</List>
-			)}
+			<List>
+				{collections.map((collection: IRowCollection, index) => (
+					<CollectionCard
+						key={index}
+						data={collection}
+						handleDelete={handleDelete}
+					/>
+				))}
+				<div ref={sentinelRef} style={{ height: "10px" }} />
+				{loading && <Loading />}
+			</List>
+			<ErrorComponent
+				show={error !== null}
+				errorMessage={String(error)}
+			/>
 		</div>
 	);
 };

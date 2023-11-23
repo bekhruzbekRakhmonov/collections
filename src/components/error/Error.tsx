@@ -11,17 +11,31 @@ const errorContainerStyle: CSSProperties = {
 const errorContentStyle: CSSProperties = {
 	textAlign: "center",
 	padding: "20px",
-	border: "1px solid #ff0000", // Red border for emphasis
-	backgroundColor: "#ffebee", // Light red background
-	color: "#ff0000", // Red text color
+	border: "1px solid #d32f2f", // Dark red border for emphasis
+	backgroundColor: "#ffcdd2", // Light red background
+	color: "#d32f2f", // Dark red text color
 	borderRadius: "8px",
+	maxWidth: "400px", // Limiting the width for better readability
 };
 
-const ErrorComponent: React.FC<{ errorMessage: string }> = ({ errorMessage }) => {
+interface ErrorComponentProps {
+	show: boolean;
+	errorMessage: string;
+}
+
+const ErrorComponent: React.FC<ErrorComponentProps> = ({
+	errorMessage,
+	show,
+}) => {
 	return (
-		<Container style={errorContainerStyle}>
+		<Container style={{ ...errorContainerStyle, display: show ? "flex" : "none" }}>
 			<Paper elevation={3} style={errorContentStyle}>
-				<Typography variant="h6">Error</Typography>
+				<Typography
+					variant="h6"
+					style={{ color: "#d32f2f", marginBottom: "10px" }}
+				>
+					Oops! Something went wrong.
+				</Typography>
 				<Typography variant="body1">{errorMessage}</Typography>
 			</Paper>
 		</Container>

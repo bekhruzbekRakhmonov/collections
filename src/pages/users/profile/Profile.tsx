@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Tabs, Tab } from "@mui/material";
 import ProfileCard from "../../../components/users/profile/ProfileCard";
-import CollectionsList from "../../../components/users/collections/show/CollectionsList";
-import { useAuth } from "../../../auth/AuthContext";
 import UserCollectionsList from "../../../components/users/profile/CollectionsList";
 import { useParams } from "react-router-dom";
 import { IRowUser } from "../../../utils/interfaces/user";

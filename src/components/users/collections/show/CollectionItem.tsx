@@ -50,19 +50,20 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
 						</Typography>
 					</Box>
 				))}
-				{(item.tags.length > 0 ? item.tags.split(",") : []).map(
-					(tag) => (
-						<Chip
-							label={`#${tag}`}
-							clickable
-							sx={{
-								borderRadius: "5px",
-								border: ".5px solid black",
-								margin: "2px",
-							}}
-						/>
-					)
-				)}
+				{(item.tags && item.tags.length > 0
+					? item.tags.split(",")
+					: []
+				).map((tag) => (
+					<Chip
+						label={`#${tag}`}
+						clickable
+						sx={{
+							borderRadius: "5px",
+							border: ".5px solid black",
+							margin: "2px",
+						}}
+					/>
+				))}
 			</CardContent>
 			<CardActions
 				disableSpacing

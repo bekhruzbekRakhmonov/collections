@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { IUser } from "../../../../utils/interfaces/user";
 import { MenuProps, Menu, alpha, styled, Avatar, CardHeader, IconButton, MenuItem, Snackbar } from "@mui/material";
 import { Delete, MoreVert } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
 import EditIcon from "@mui/icons-material/Edit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../../auth/AuthContext";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../../auth/AuthContext";
+import { IUser } from "../../../utils/interfaces/user";
 
-interface CollectionCardHeaderProps {
+interface ItemCardHeaderProps {
 	owner: IUser;
 	created_at: string;
-	collectionId: number;
+	itemId: number;
 	handleOpenDeleteDialog: () => void;
 	handleCloseDeleteDialog: () => void;
 }
@@ -61,7 +61,7 @@ const StyledMenu = styled((props: MenuProps) => (
 	},
 }));
 
-const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId, handleCloseDeleteDialog, handleOpenDeleteDialog }) => {
+const ItemCardHeader: React.FC<ItemCardHeaderProps> = ({ owner, created_at, itemId, handleCloseDeleteDialog, handleOpenDeleteDialog }) => {
 	const [copiedText, copyToClipboard] = useCopyToClipboard();
 	const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 	const { t } = useTranslation();
@@ -121,12 +121,13 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 							open={open}
 							onClose={handleClose}
 						>
-							{user && owner.id === user.id && (
+							{user && owner?.id === user.id && (
+
 								<>
 									<MenuItem
 										onClick={() =>
 											navigate(
-												`/edit-collection/${collectionId}`
+												`/edit-item/${itemId}`
 											)
 										}
 										disableRipple
@@ -150,7 +151,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 								onClick={() => {
 									copyToClipboard(
 										window.location.host +
-											`/show-collection/${collectionId}`
+											`/show-item/${itemId}`
 									);
 									handleClose();
 								}}
@@ -179,4 +180,4 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 	);
 }
 
-export default CollectionCardHeader
+export default ItemCardHeader
