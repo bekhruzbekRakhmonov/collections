@@ -72,6 +72,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 
 					<div ref={sentinelRef} style={{ height: "10px" }} />
 					{loading && <Loading />}
+					{!loading && collections.length === 0 && <Typography>No collections yet</Typography>}
 				</List>
 			)}
 		</div>
