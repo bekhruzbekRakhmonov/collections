@@ -4,7 +4,11 @@ import { ICustomField } from "../../interfaces/custom-fields";
 
 export const getCollections = async (page: number = 1) => {
 	try {
-		const response = await api.get("/collections");
+		const response = await api.get("/collections", {
+			params: {
+				page
+			}
+		});
 		return response.data.data.result;
 	} catch (error: any) {
 		throw new Error(error.response?.data.message || "Failed to fetch collections");
