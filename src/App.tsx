@@ -29,7 +29,6 @@ const App: React.FC = () => {
 	const [language, setLanguage] = useLocalStorage<SupportedLanguages>("language", SupportedLanguages.EN);
 
 	const location = window.location;
-	console.log(location.pathname)
 
 	const handleDarkModeToggle = () => {
 		setDarkMode((prevDarkMode) => !prevDarkMode);
