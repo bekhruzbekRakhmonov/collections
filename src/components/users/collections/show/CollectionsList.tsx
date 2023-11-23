@@ -48,7 +48,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 
 	useEffect(() => {
 		fetchCollections(page);
-	}, []); // Initial fetch
+	}, [page]);
 
 	return (
 		<div>
