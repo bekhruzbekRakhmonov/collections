@@ -23,11 +23,9 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 
 	const fetchCollections = async (pageNumber: number) => {
 		try {
-			console.log(collections)
 			setLoading(true);
 			const data = await usersApi.getCollectionsByUserId(userId, pageNumber);
             if (data.length > 0) {
-				console.log("yes", data)
                 setCollections((prevCollections) => [...prevCollections, ...data]);
                 setPage((prevPage) => prevPage + 1);
             }
