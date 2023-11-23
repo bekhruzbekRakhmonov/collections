@@ -8,6 +8,7 @@ import { usersApi } from "../../../utils/api/users";
 import { IRowComment } from "../../../utils/interfaces/comment";
 import Loading from "../../loading/Loading";
 import LoginDialog from "../../auth/login/LoginDialog";
+import api from "../../../utils/api/api";
 
 interface CommentsProp {
 	expanded: boolean;
@@ -25,8 +26,10 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	const socket = io("http://localhost:4000", {
+	const parsedUrl = new URL(api.getUri());
+	const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+	
+	const socket = io(baseUrl, {
 		transports: ["websocket"],
 	});
 
