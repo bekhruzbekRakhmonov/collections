@@ -29,7 +29,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 
 		observer.current = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
+				if (!loading && collections.length > 0) {
 					fetchCollections(page);
 				}
 			});
@@ -44,7 +44,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 				observer.current.disconnect();
 			}
 		};
-	}, [page]);
+	}, [page, loading, collections]);
 
 
 	return (
