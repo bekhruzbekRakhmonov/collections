@@ -21,6 +21,7 @@ import Dashboard from "./pages/admin/dashboard/Dashboard";
 import NotFoundPage from "./components/error/NotFound";
 import ShowItem from "./pages/users/item/ShowItem";
 import PrivateAdminRoutes from "./auth/PrivateAdminRoutes";
+import Logout from "./pages/auth/Logout";
 init18n()
 
 const App: React.FC = () => {
@@ -84,6 +85,10 @@ const App: React.FC = () => {
 						/>
 						<Route path="/search" element={<SearchResult />} />
 						<Route element={<PrivateRoutes />}>
+							<Route
+								path="/logout"
+								element={<Logout />}
+							/>
 							<Route
 								path="/create-collection"
 								element={<CreateCollection />}
