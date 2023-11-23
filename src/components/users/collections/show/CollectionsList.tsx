@@ -46,6 +46,9 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 		};
 	}, [page]);
 
+	useEffect(() => {
+		fetchCollections(page);
+	}, []); // Initial fetch
 
 	return (
 		<div>
@@ -62,14 +65,13 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 				</Box>
 			) : (
 				<List>
-					{collections.map((collection: IRowCollection) => (
+					{collections.map((collection: IRowCollection, index) => (
 						<CollectionCard
-							key={collection.id}
+							key={index}
 							data={collection}
 							handleDelete={handleDelete}
 						/>
 					))}
-
 					<div ref={sentinelRef} style={{ height: "10px" }} />
 					{loading && <Loading />}
 				</List>

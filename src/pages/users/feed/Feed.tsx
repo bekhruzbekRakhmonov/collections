@@ -19,8 +19,12 @@ const Feed: React.FC = () => {
 		try {
 			setLoading(true);
 			const data = await usersApi.getCollections(pageNumber);
-			setCollections((prevCollections) => [...prevCollections, ...data]);
-			setPage((prevPage) => prevPage + 1);
+			if (data.length > 0) {
+				setCollections((prevCollections) => [...prevCollections, ...data]);
+				setPage((prevPage) => prevPage + 1);
+			} else {
+				setError("No collections yet")
+			}
 		} catch (error: any) {
 			setError(error.message);
 		} finally {
