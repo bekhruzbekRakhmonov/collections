@@ -28,11 +28,10 @@ api.interceptors.request.use(async (config) => {
 
 					accessToken = response.data.accessToken;
 
-					Cookies.set("accessToken", accessToken as string);
-					// , {
-					// 	httpOnly: true,
-					// 	secure: true,
-					// }
+					Cookies.set("accessToken", accessToken as string, {
+						httpOnly: true,
+						secure: true,
+					});
 				} catch (refreshError) {
 					console.error(
 						"Error refreshing access token:",

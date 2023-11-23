@@ -53,6 +53,10 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 			socket.emit("joinRoom", itemId);
 		});
 
+		socket.on("error", (error) => {
+			console.error(error);
+		});
+
 		socket.on("newComment", (data) => {
 			const { item, ...rest } = data;
 			setComments((prevComments) => [rest, ...prevComments]);
