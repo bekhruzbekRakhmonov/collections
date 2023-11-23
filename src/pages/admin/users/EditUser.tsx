@@ -64,7 +64,6 @@ export const EditUser: React.FC<EditUserProps> = () => {
 			console.error("Error updating user data:", error);
 		}
 	};
-	console.log(register("role").name, watch());
 
 	return (
 		<Container sx={{ p: "20px" }}>

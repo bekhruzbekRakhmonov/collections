@@ -12,8 +12,6 @@ const UserSettings: React.FC = () => {
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 
-		console.log("Updated Data:", { name, email, password });
-
 	};
 
 	return (

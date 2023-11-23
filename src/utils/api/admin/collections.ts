@@ -17,7 +17,6 @@ export const getCollections = async (
 				orderBy,
 			},
 		});
-		console.log(response);
 		return {
 			data: response.data.data.result,
 			total: response.data.data.total,

@@ -56,11 +56,6 @@ const SimpleTable: React.FC<Props> = ({
 	const [order, setOrder] = React.useState<"asc" | "desc">("asc");
 	const [orderBy, setOrderBy] = React.useState<string>("");
 
-	React.useEffect(() => {
-		console.log("Data changed");
-		console.log(result.data);
-	}, [result]);
-
 	const handleRequestSort = (property: string) => {
 		const isAsc = orderBy === property && order === "asc";
 		setOrder(isAsc ? "desc" : "asc");
@@ -252,7 +247,6 @@ const SimpleTable: React.FC<Props> = ({
 				page={page}
 				onPageChange={(event, newPage) => {
 					setPage(newPage);
-					console.log(page, rowsPerPage);
 					refreshData(newPage + 1, rowsPerPage, order, orderBy);
 				}}
 				onRowsPerPageChange={(event) => {

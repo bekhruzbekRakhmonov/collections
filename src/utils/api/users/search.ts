@@ -19,7 +19,6 @@ export const search = async (
 		});
 		return response.data.data;
 	} catch (error: any) {
-		console.log(error)
 		throw new Error(
 			error.response?.data.message || "Failed to fetch search results"
 		);

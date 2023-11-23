@@ -16,14 +16,11 @@ import SearchInput from "../../../components/users/appbar/SearchInput";
 const categories = ["Collections", "Items", "People", "Comments"];
 
 const SearchResult: React.FC = () => {
-	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [selectedButton, setSelectedButton] = useState<number>(0);
 	const [searchResults, setSearchResults] = useState<any>();
 	const theme = useTheme();
-	const navigate = useNavigate();
 
 	const { search } = useLocation();
-	console.log(search);
 
 	const handleButtonClick = (index: number) => {
 		setSelectedButton((prev) => (prev === index ? 0 : index));

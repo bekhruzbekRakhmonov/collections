@@ -176,7 +176,6 @@ export default function Dashboard() {
 		(async () => {
 			const result = await admin.getCollections(page, limit, order, orderBy);
 			setCollectionsData(result);
-			console.log(result)
 		})();
 	};
 
