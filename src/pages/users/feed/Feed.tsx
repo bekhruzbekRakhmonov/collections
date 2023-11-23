@@ -22,7 +22,8 @@ const Feed: React.FC = () => {
 			if (data.length > 0) {
 				setCollections((prevCollections) => [...prevCollections, ...data]);
 				setPage((prevPage) => prevPage + 1);
-			} else {
+			} 
+			if (data.length === 0) {
 				setError("No collections yet")
 			}
 		} catch (error: any) {
