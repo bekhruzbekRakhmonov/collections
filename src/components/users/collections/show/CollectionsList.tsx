@@ -5,11 +5,12 @@ import { getCollections } from "../../../../utils/api/users/collections";
 import CollectionCard from "./CollectionCard";
 import { IRowCollection } from "../../../../utils/interfaces/collection";
 import Loading from "../../../loading/Loading";
+import ErrorComponent from "../../../error/Error";
 
 interface CollectionsListProps {
 	handleDelete: (id: number) => void;
 	fetchCollections: (pageNumber: number) => void;
-	error: string | undefined;
+	error: string | null;
 	collections: IRowCollection[];
 	loading: boolean;
 	page: number
@@ -46,36 +47,23 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 		};
 	}, [page]);
 
-	useEffect(() => {
-		fetchCollections(page);
-	}, []); // Initial fetch
-
 	return (
 		<div>
-			{error ? (
-				<Box
-					textAlign="center"
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-				>
-					<Typography variant="h4" color="red">
-						{error}
-					</Typography>
-				</Box>
-			) : (
-				<List>
-					{collections.map((collection: IRowCollection, index) => (
-						<CollectionCard
-							key={index}
-							data={collection}
-							handleDelete={handleDelete}
-						/>
-					))}
-					<div ref={sentinelRef} style={{ height: "10px" }} />
-					{loading && <Loading />}
-				</List>
-			)}
+			<List>
+				{collections.map((collection: IRowCollection, index) => (
+					<CollectionCard
+						key={index}
+						data={collection}
+						handleDelete={handleDelete}
+					/>
+				))}
+				<div ref={sentinelRef} style={{ height: "10px" }} />
+				{loading && <Loading />}
+			</List>
+			<ErrorComponent
+				show={error !== null}
+				errorMessage={String(error)}
+			/>
 		</div>
 	);
 }

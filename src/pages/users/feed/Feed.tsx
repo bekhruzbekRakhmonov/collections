@@ -11,7 +11,7 @@ const Feed: React.FC = () => {
 	const { isAuthenticated } = useAuth();
 	const navigate = useNavigate();
 	const [collections, setCollections] = useState<IRowCollection[]>([]);
-	const [error, setError] = useState<string>();
+	const [error, setError] = useState<string | null>(null);
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(false);
 
