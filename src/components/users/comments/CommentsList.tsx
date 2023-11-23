@@ -26,10 +26,8 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-	const parsedUrl = new URL(api.getUri());
-	const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
-	
-	const socket = io(baseUrl, {
+
+	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
 		transports: ["websocket"],
 	});
 
