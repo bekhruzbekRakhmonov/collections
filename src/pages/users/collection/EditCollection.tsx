@@ -4,10 +4,11 @@ import { ICustomField } from "../../../utils/interfaces/custom-fields";
 import { IItem } from "../../../utils/interfaces/item";
 import EditCollectionComponent from "../../../components/users/collections/edit/EditCollectionsComponent";
 import { usersApi } from "../../../utils/api/users";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditCollection = () => {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const [collection, setCollection] = React.useState<ICollection>({
 		name: "",
 		description: "",
@@ -81,6 +82,8 @@ const EditCollection = () => {
 			updatedItemsIds,
 			itemCustomFields
 		);
+
+		navigate(`/show-collection/${updatedCollection.id}`);
 	};
 
 	return (
