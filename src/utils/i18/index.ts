@@ -26,6 +26,8 @@ const resources = {
 			"Not registered yet": "Not registered yet",
 			"Already registered": "Already registered",
 			"Login here": "Login here",
+			search: "Search",
+			copyLink: "Copy link"
 		},
 	},
 	uz: {
@@ -47,6 +49,8 @@ const resources = {
 			"Not registered yet": "Hali ro'yxatdan o'tmaganmisiz",
 			"Already registered": "Allaqchon ro'yxatdan o'tganmisiz",
 			"Login here": "Bu yerdan kiring",
+			search: "Qidirish",
+			copyLink: "Linkni nusxalash"
 		},
 	},
 };

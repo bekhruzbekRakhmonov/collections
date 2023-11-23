@@ -18,6 +18,7 @@ import UserSettings from "./pages/users/profile/UserSettings";
 import { Admin } from "./pages/admin";
 import SearchResult from "./pages/users/search/SearchResult";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
+import NotFoundPage from "./components/error/NotFound";
 init18n()
 
 const App: React.FC = () => {
@@ -79,10 +80,7 @@ const App: React.FC = () => {
 							path="/show-collection/:id"
 							element={<ShowCollection />}
 						/>
-						<Route
-							path="/search"
-							element={<SearchResult />}
-						/>
+						<Route path="/search" element={<SearchResult />} />
 						<Route element={<PrivateRoutes />}>
 							<Route
 								path="/create-collection"
@@ -92,7 +90,10 @@ const App: React.FC = () => {
 								path="/edit-collection/:id"
 								element={<EditCollection />}
 							/>
-							<Route path="/users/:id" element={<ProfilePage />} />
+							<Route
+								path="/users/:id"
+								element={<ProfilePage />}
+							/>
 							<Route
 								path="/settings"
 								element={<UserSettings />}
@@ -121,6 +122,10 @@ const App: React.FC = () => {
 								element={<Admin.EditCustomField />}
 							/>
 						</Route>
+						<Route
+							path="/*"
+							element={<NotFoundPage />}
+						/>
 					</Routes>
 				</ErrorBoundary>
 			</Router>

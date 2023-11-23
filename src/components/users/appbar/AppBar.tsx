@@ -15,7 +15,7 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 import Switch from "@mui/material/Switch";
 import LanguageIcon from "@mui/icons-material/Language";
 import TextField from "@mui/material/TextField";
-import { Chip } from "@mui/material";
+import { Chip, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/AuthContext";
 import { DarkMode, LightMode } from "@mui/icons-material";
@@ -37,15 +37,15 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 	setLanguage,
 }) => {
 	const navigate = useNavigate();
-	const { user } = useAuth();
+	const { user, isAuthenticated } = useAuth();
 	const { t } = useTranslation();
 
 	const pages = [
 		{ label: "Feed", link: "/" },
-		{ label: "Profile", link: `/user/${user?.id || ''}` },
+		{ label: "Profile", link: `/users/${user?.id || ''}` },
 	];
 	const settings = [
-		{ label: "Profile", link: `/user/${user?.id || ''}` },
+		{ label: "Profile", link: `/users/${user?.id || ''}` },
 		{ label: "Settings", link: "/settings" },
 		{ label: t("logout"), link: "/logout" },
 	];
@@ -85,7 +85,11 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 		setSearchQuery(event.target.value);
 	};
 
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {};
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === "Enter") {
+			navigate(`/search/?q=${searchQuery}`)
+		}
+	};
 
 	return (
 		<AppBar position="static" color="inherit">
@@ -164,6 +168,48 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 										</Typography>
 									</MenuItem>
 								))}
+								<Divider />
+								<MenuItem>
+									<TextField
+										select
+										value={language}
+										onChange={handleLanguageChange}
+										size="small"
+										variant="outlined"
+										InputProps={{
+											startAdornment: (
+												<IconButton
+													color="inherit"
+													size="small"
+												>
+													<LanguageIcon />
+												</IconButton>
+											),
+										}}
+									>
+										<MenuItem value="en">English</MenuItem>
+										<MenuItem value="uz">Uzbek</MenuItem>
+									</TextField>
+								</MenuItem>
+								<Divider />
+								<MenuItem>
+									<Box
+										sx={{
+											paddingLeft: "3px",
+											paddingRight: "3px",
+											alignItems: "center",
+											display: "flex",
+										}}
+									>
+										<LightMode />
+										<Switch
+											checked={darkMode}
+											onChange={handleDarkModeToggle}
+											color="default"
+										/>
+										<DarkMode />
+									</Box>
+								</MenuItem>
 							</Menu>
 						</Box>
 
@@ -195,6 +241,7 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 						}}
 					>
 						<SearchInput
+							style={{ minWidth: "450px" }}
 							searchQuery={searchQuery}
 							onChange={handleSearchInputChange}
 							onKeyDown={handleKeyDown}
@@ -264,26 +311,43 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 								<MenuItem value="uz">Uzbek</MenuItem>
 							</TextField>
 						</Tooltip>
-						{user ? (
-							<Tooltip
-								title="Open settings"
-								sx={{
-									flexGrow: 1,
-									display: { xs: "none", md: "flex" },
-								}}
-							>
-								<Chip
-									onClick={handleOpenUserMenu}
-									avatar={
-										<Avatar
-											alt={user.name}
-											src="/static/images/avatar/1.jpg"
-										/>
-									}
-									label={user.name}
-									variant="outlined"
-								/>
-							</Tooltip>
+
+						{user && isAuthenticated ? (
+							<>
+								<Tooltip
+									title="Open settings"
+									sx={{
+										flexGrow: 1,
+										display: { xs: "none", md: "flex" },
+									}}
+								>
+									<Chip
+										onClick={handleOpenUserMenu}
+										avatar={
+											<Avatar
+												alt={user.name}
+												src="/static/images/avatar/1.jpg"
+											/>
+										}
+										label={user.name}
+										variant="outlined"
+									/>
+								</Tooltip>
+								<Tooltip
+									title="Open settings"
+									sx={{
+										flexGrow: 1,
+										display: { xs: "flex", md: "none" },
+										border: "1px solid black"
+									}}
+								>
+									<Avatar
+										onClick={handleOpenUserMenu}
+										alt="b"
+										src="/static/images/avatar/1.jpg"
+									/>
+								</Tooltip>
+							</>
 						) : (
 							<Button
 								variant="outlined"

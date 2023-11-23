@@ -45,7 +45,6 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 			);
 		} catch (error: any) {
 			console.error(error.message);
-			// Handle error and possibly revert the optimistic update
 		}
 	};
 

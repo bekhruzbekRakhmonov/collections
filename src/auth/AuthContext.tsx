@@ -9,9 +9,9 @@ import React, {
 import * as api from "../utils/api/api";
 import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
-import { CircularProgress } from "@mui/material";
 import { IUser } from "../utils/interfaces/user";
 import { usersApi } from "../utils/api/users";
+import Loading from "../components/loading/Loading";
 
 interface AuthContextProps {
 	user: any;
@@ -42,12 +42,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 			console.log("Auth checking")
 			const accessToken = Cookies.get("accessToken");
 			const refreshToken = Cookies.get("refreshToken");
+			console.log(accessToken, refreshToken)
 			if (accessToken && refreshToken) {
 				try {
 					const tokenPayload: any = jwtDecode(accessToken);
 					const user = await usersApi.getUser(tokenPayload.userId)
 					setIsAuthenticated(true);
-					setUser(user.data);
+					setUser(user);
 				} catch (error) {
 					console.error("Invalid access token:", error);
 					Cookies.remove("accessToken");
@@ -101,10 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 	};
 
 	if (loading) {
-		// Loading spinner
-		return <div>
-			<CircularProgress/>
-		</div>;
+		return <Loading />;
 	}
 
 	return (

@@ -4,6 +4,7 @@ import { getCollection } from "../../../utils/api/users/collections";
 import { IRowCollection } from "../../../utils/interfaces/collection";
 import CollectionItemsCard from "../../../components/users/collections/show/CollectionItems";
 import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
+import { usersApi } from "../../../utils/api/users";
 
 const ShowCollection = () => {
 	const { id } = useParams();
@@ -11,8 +12,13 @@ const ShowCollection = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
-	const handleDelete = (id: number) => {
-		console.log("Item deleted!", id);
+	const handleDelete = async (id: number) => {
+		try {
+			await usersApi.deleteCollection(id);
+			setData(null);
+		} catch (error: any) {
+			console.error(error.message);
+		}
 		setDeleteDialogOpen(false);
 	};
 
@@ -50,8 +56,6 @@ const ShowCollection = () => {
 				<CollectionItemsCard
 					data={data}
 					updateData={setData}
-					handleCloseDeleteDialog={handleCloseDeleteDialog}
-					handleOpenDeleteDialog={handleOpenDeleteDialog}
 					handleDelete={handleDelete}
 				/>
 			)}

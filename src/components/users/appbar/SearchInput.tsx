@@ -7,6 +7,7 @@ import {
 	colors,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { useTranslation } from "react-i18next";
 
 interface SearchInputProps {
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -16,6 +17,7 @@ interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({ onChange, onKeyDown, searchQuery, style }) => {
+	const { t } = useTranslation();
 	return (
 		<div>
 			<div
@@ -40,7 +42,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onChange, onKeyDown, searchQu
 					<Input
 						fullWidth
 						disableUnderline
-						placeholder="Search"
+						placeholder={t("search")}
 						sx={{ height: "25px", marginTop: "3px" }}
                         value={searchQuery}
 						onChange={onChange}

@@ -8,29 +8,17 @@ import Loading from "../../../loading/Loading";
 
 interface CollectionsListProps {
 	handleDelete: (id: number) => void;
+	fetchCollections: (pageNumber: number) => void;
+	error: string | undefined;
+	collections: IRowCollection[];
+	loading: boolean;
+	page: number
 }
 
-const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete }) => {
-	const [collections, setCollections] = useState<IRowCollection[]>([]);
-	const [error, setError] = useState<string>();
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(false);
+const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCollections, error, collections, loading, page }) => {
 
 	const observer = useRef<IntersectionObserver | null>(null);
 	const sentinelRef = useRef<HTMLDivElement>(null);
-
-	const fetchCollections = async (pageNumber: number) => {
-		try {
-			setLoading(true);
-			const data = await getCollections(pageNumber);
-			setCollections((prevCollections) => [...prevCollections, ...data]);
-			setPage((prevPage) => prevPage + 1);
-		} catch (error: any) {
-			setError(error.message);
-		} finally {
-			setLoading(false);
-		}
-	};
 
 	useEffect(() => {
 		const options = {

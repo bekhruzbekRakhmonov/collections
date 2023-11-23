@@ -4,13 +4,11 @@ import { MenuProps, Menu, alpha, styled, Avatar, CardHeader, Divider, IconButton
 import { Delete, MoreVert } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
 import EditIcon from "@mui/icons-material/Edit";
-import ArchiveIcon from "@mui/icons-material/Archive";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../auth/AuthContext";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
-import DeleteDialog from "../delete/DeleteDialog";
+import { useTranslation } from "react-i18next";
 
 interface CollectionCardHeaderProps {
 	owner: IUser;
@@ -66,6 +64,7 @@ const StyledMenu = styled((props: MenuProps) => (
 const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, created_at, collectionId, handleCloseDeleteDialog, handleOpenDeleteDialog }) => {
 	const [copiedText, copyToClipboard] = useCopyToClipboard();
 	const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+	const { t } = useTranslation();
 
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -89,7 +88,15 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 		<>
 			<CardHeader
 				avatar={
-					<Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+					<Avatar
+						onClick={() =>
+							owner && owner.id
+								? navigate(`/users/${owner.id}`)
+								: {}
+						}
+						sx={{ bgcolor: red[500] }}
+						aria-label="recipe"
+					>
 						{/* {owner && owner.name[0]} */}
 					</Avatar>
 				}
@@ -125,7 +132,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 										disableRipple
 									>
 										<EditIcon />
-										Edit
+										{t("edit")}
 									</MenuItem>
 									<MenuItem
 										onClick={() => {
@@ -135,7 +142,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 										disableRipple
 									>
 										<Delete />
-										Delete
+										{t("delete")}
 									</MenuItem>
 								</>
 							)}
@@ -150,9 +157,9 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 								disableRipple
 							>
 								<FileCopyIcon />
-								Copy Link
+								{t("copyLink")}
 							</MenuItem>
-							<Divider sx={{ my: 0.5 }} />
+							{/* <Divider sx={{ my: 0.5 }} />
 							<MenuItem onClick={handleClose} disableRipple>
 								<ArchiveIcon />
 								Archive
@@ -160,7 +167,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 							<MenuItem onClick={handleClose} disableRipple>
 								<MoreHorizIcon />
 								More
-							</MenuItem>
+							</MenuItem> */}
 						</StyledMenu>
 					</div>
 				}

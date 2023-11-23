@@ -1,4 +1,4 @@
-import { ICustomField } from "./custom-fields";
+import { ICustomField, IRowCustomField } from "./custom-fields";
 import { ILike } from "./like";
 
 export interface IItem {
@@ -21,7 +21,7 @@ export interface IItem {
 export interface IRowItem {
 	id: number;
 	name: string;
-	custom_fields?: ICustomField[];
+	custom_fields?: IRowCustomField[];
 	likes?: ILike[];
 	tags: string;
 	created_at: string;

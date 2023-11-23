@@ -4,14 +4,39 @@ import { Fab } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import CollectionsList from "../../../components/users/collections/show/CollectionsList";
-import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
+import { usersApi } from "../../../utils/api/users";
+import { IRowCollection } from "../../../utils/interfaces/collection";
 
 const Feed: React.FC = () => {
 	const { isAuthenticated } = useAuth();
 	const navigate = useNavigate();
+	const [collections, setCollections] = useState<IRowCollection[]>([]);
+	const [error, setError] = useState<string>();
+	const [page, setPage] = useState(1);
+	const [loading, setLoading] = useState(false);
 
-	const handleDelete = (id: number) => {
-		console.log("Collection with id: ", id)
+	const fetchCollections = async (pageNumber: number) => {
+		try {
+			setLoading(true);
+			const data = await usersApi.getCollections(pageNumber);
+			setCollections((prevCollections) => [...prevCollections, ...data]);
+			setPage((prevPage) => prevPage + 1);
+		} catch (error: any) {
+			setError(error.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id: number) => {
+		try {
+			await usersApi.deleteCollection(id);
+			setCollections((prevCollections) =>
+				prevCollections.filter((collection) => collection.id !== id)
+			);
+		} catch (error: any) {
+			console.error(error.message);
+		}
 	}
 
 	return (
@@ -23,7 +48,7 @@ const Feed: React.FC = () => {
 				position: "relative",
 			}}
 		>
-			<CollectionsList handleDelete={handleDelete}/>
+			<CollectionsList handleDelete={handleDelete} fetchCollections={fetchCollections} collections={collections} error={error} page={page} loading={loading}/>
 			{isAuthenticated && (
 				<>
 					<Fab
