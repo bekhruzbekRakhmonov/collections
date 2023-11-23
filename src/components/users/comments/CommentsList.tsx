@@ -80,7 +80,6 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 			item_id: itemId,
 		});
 
-		setComments((prevComments) => [{owner: user, content: newComment}, ...prevComments]);
 		setNewComment("");
 	};
 
