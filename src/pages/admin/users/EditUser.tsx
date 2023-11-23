@@ -102,20 +102,19 @@ export const EditUser: React.FC<EditUserProps> = () => {
 						<FormLabel>Status</FormLabel>
 						<Select
 							{...register("status")}
+							value={watch().status}
 						>
-							<MenuItem value="active">Active</MenuItem>
-							<MenuItem value="blocked">Blocked</MenuItem>
+							<MenuItem value="active">active</MenuItem>
+							<MenuItem value="blocked">blocked</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>
 				<Box marginBottom={2}>
 					<FormControl fullWidth>
 						<FormLabel>Role</FormLabel>
-						<Select
-							{...register("role")}
-						>
-							<MenuItem value="user">User</MenuItem>
-							<MenuItem value="admin">Admin</MenuItem>
+						<Select {...register("role") }>
+							<MenuItem value="user">user</MenuItem>
+							<MenuItem value="admin">admin</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>

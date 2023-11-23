@@ -22,6 +22,7 @@ import {
 	Comment,
 	Group,
 	Inbox,
+	Logout,
 	Mail,
 } from "@mui/icons-material";
 import SimpleTable from "../../../components/admin/table/Table";
@@ -307,7 +308,7 @@ export default function Dashboard() {
 						<MenuIcon />
 					</IconButton>
 					<Typography variant="h6" noWrap component="div">
-						Persistent drawer
+						Admin Dashboard
 					</Typography>
 				</Toolbar>
 			</AppBar>
@@ -374,16 +375,14 @@ export default function Dashboard() {
 				</List>
 				<Divider />
 				<List>
-					{["All mail", "Trash", "Spam"].map((text, index) => (
-						<ListItem key={text} disablePadding>
-							<ListItemButton>
-								<ListItemIcon>
-									{index % 2 === 0 ? <Inbox /> : <Mail />}
-								</ListItemIcon>
-								<ListItemText primary={text} />
-							</ListItemButton>
-						</ListItem>
-					))}
+					<ListItem disablePadding>
+						<ListItemButton onClick={() => navigate('/logout')}>
+							<ListItemIcon>
+								<Logout />
+							</ListItemIcon>
+							<ListItemText primary="Log out" />
+						</ListItemButton>
+					</ListItem>
 				</List>
 			</Drawer>
 			<Main open={open}>{renderMainContent()}</Main>

@@ -5,7 +5,7 @@ const PrivateAdminRoutes = () => {
 	const { isAuthenticated, user } = useAuth();
 
 	if (!isAuthenticated || user.role !== "admin") {
-		return <Navigate to="/login" />;
+		return <Navigate to="/not-found" />;
 	}
 
 	return <Outlet />;

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, TextField, Typography, Container, Box } from "@mui/material";
+import { Button, TextField, Typography, Container, Box, FormLabel } from "@mui/material";
 import { admin } from "../../../utils/api/admin";
 
 interface EditCollectionProps {
@@ -22,13 +22,14 @@ export const EditCollection: React.FC<EditCollectionProps> = () => {
 		handleSubmit,
 		setValue,
 		formState: { errors },
+		watch
 	} = useForm<FormData>();
 
 	useEffect(() => {
 		const fetchCollectionData = async () => {
 			try {
 				const data = await admin.getCollection(Number(id));
-
+				console.log(data)
 				// Set form values based on the fetched data
 				setValue("name", data.name);
 				setValue("description", data.description);
@@ -59,8 +60,8 @@ export const EditCollection: React.FC<EditCollectionProps> = () => {
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box marginBottom={2}>
+					<FormLabel>Name</FormLabel>
 					<TextField
-						label="Name"
 						fullWidth
 						{...register("name", { required: "Name is required" })}
 						error={!!errors.name}
@@ -68,15 +69,12 @@ export const EditCollection: React.FC<EditCollectionProps> = () => {
 					/>
 				</Box>
 				<Box marginBottom={2}>
-					<TextField
-						label="Description"
-						fullWidth
-						{...register("description")}
-					/>
+					<FormLabel>Description</FormLabel>
+					<TextField fullWidth {...register("description")} />
 				</Box>
 				<Box marginBottom={2}>
+					<FormLabel>Topic</FormLabel>
 					<TextField
-						label="Topic"
 						fullWidth
 						{...register("topic", {
 							required: "Topic is required",
@@ -86,11 +84,8 @@ export const EditCollection: React.FC<EditCollectionProps> = () => {
 					/>
 				</Box>
 				<Box marginBottom={2}>
-					<TextField
-						label="Photo URL"
-						fullWidth
-						{...register("photo")}
-					/>
+					<FormLabel>Photo</FormLabel>
+					<TextField fullWidth {...register("photo")} />
 				</Box>
 				<Button type="submit" variant="contained" color="primary">
 					Save Changes

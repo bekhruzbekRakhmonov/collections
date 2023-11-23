@@ -55,7 +55,6 @@ const App: React.FC = () => {
 	const theme = createTheme({
 		palette: {
 			mode: darkMode ? "dark" : "light",
-			// Add your custom theme colors here
 		},
 	});
 
@@ -109,7 +108,7 @@ const App: React.FC = () => {
 								element={<UserSettings />}
 							/>
 						</Route>
-						<Route element={<PrivateAdminRoutes />}>
+						<Route element={<PrivateRoutes />}>
 							<Route path="/admin" element={<Dashboard />} />
 							<Route
 								path="/admin/edit-collection/:id"

@@ -34,7 +34,7 @@ export const getCollection = async (
 ): Promise<ICollection> => {
 	try {
 		const response = await api.get(`/collections/${collectionId}`);
-		return response.data.result;
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message || "Failed to fetch the collection"
@@ -61,7 +61,7 @@ export const updateCollection = async (
 			`/collections/${collectionId}`,
 			updatedCollectionData
 		);
-		return response.data.result;
+		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message || "Failed to update the collection"
