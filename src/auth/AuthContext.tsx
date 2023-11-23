@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 			console.log("Auth checking")
 			const accessToken = Cookies.get("accessToken");
 			const refreshToken = Cookies.get("refreshToken");
-			console.log(accessToken, refreshToken)
+
 			if (accessToken && refreshToken) {
 				try {
 					const tokenPayload: any = jwtDecode(accessToken);

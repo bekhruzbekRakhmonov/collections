@@ -29,7 +29,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 
 		observer.current = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
-				if (!loading && collections.length > 0) {
+				if (entry.isIntersecting) {
 					fetchCollections(page);
 				}
 			});
@@ -44,7 +44,7 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 				observer.current.disconnect();
 			}
 		};
-	}, [page, loading, collections]);
+	}, [page]);
 
 
 	return (
@@ -72,7 +72,6 @@ const CollectionsList: React.FC<CollectionsListProps> = ({ handleDelete, fetchCo
 
 					<div ref={sentinelRef} style={{ height: "10px" }} />
 					{loading && <Loading />}
-					{!loading && collections.length === 0 && <Typography>No collections yet</Typography>}
 				</List>
 			)}
 		</div>

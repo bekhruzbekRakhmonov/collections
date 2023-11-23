@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
 	Box,
 	Button,
+	Card,
 	List,
 	ListItem,
 	ListItemText,
@@ -74,66 +75,69 @@ const SearchResult: React.FC = () => {
 						bgcolor: theme.palette.background.paper,
 					}}
 				>
-					<Box
-						sx={{
-							display: "flex",
-							flexDirection: "row",
-							alignItems: "center",
-							justifyContent: "space-between",
-							marginTop: "8px",
-							overflowX: "auto",
-							minWidth: "350px",
-							"& > *": {
-								flex: "0 0 auto",
-							},
-						}}
-					>
-						{categories.map((category, index) => (
-							<Button
-								key={index}
-								style={{
-									borderRadius: "50px",
-									padding: "10px 20px",
-									fontWeight: "600",
-									height: "35px",
-									textTransform: "none",
-									marginRight: "5px",
-									border: `1px solid ${theme.palette.text.primary}`,
-									color:
-										selectedButton === index
-											? theme.palette.common.white
-											: theme.palette.text.primary,
-									backgroundColor:
-										selectedButton === index
-											? theme.palette.primary.main
-											: theme.palette.background.default,
-								}}
-								onClick={() => handleButtonClick(index)}
-							>
-								{category}
-							</Button>
-						))}
-					</Box>
-					<List
-						sx={{
-							margin: "15px 5px 5px 5px",
-							borderRadius: "10px",
-							backgroundColor: theme.palette.background.paper,
-						}}
-					>
-						{searchResults &&
-							searchResults[
-								categories[selectedButton].toLowerCase()
-							].map((data: any, index: number) => {
-								const uniqueId = data.id;
+					<Card sx={{ padding: "15px" }}>
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "row",
+								alignItems: "center",
+								justifyContent: "space-between",
+								marginTop: "8px",
+								overflowX: "auto",
+								minWidth: "350px",
+								"& > *": {
+									flex: "0 0 auto",
+								},
+							}}
+						>
+							{categories.map((category, index) => (
+								<Button
+									key={index}
+									style={{
+										borderRadius: "50px",
+										padding: "10px 20px",
+										fontWeight: "600",
+										height: "35px",
+										textTransform: "none",
+										marginRight: "5px",
+										border: `1px solid ${theme.palette.text.primary}`,
+										color:
+											selectedButton === index
+												? theme.palette.common.white
+												: theme.palette.text.primary,
+										backgroundColor:
+											selectedButton === index
+												? theme.palette.primary.main
+												: theme.palette.background
+														.default,
+									}}
+									onClick={() => handleButtonClick(index)}
+								>
+									{category}
+								</Button>
+							))}
+						</Box>
+						<List
+							sx={{
+								margin: "15px 5px 5px 5px",
+								borderRadius: "10px",
+								backgroundColor: theme.palette.background.paper,
+							}}
+						>
+							{searchResults &&
+								searchResults[
+									categories[selectedButton].toLowerCase()
+								].map((data: any, index: number) => {
+									const uniqueId = data.id;
 
-								return (
-									<ListItem key={uniqueId}>
-										<ListItemText primary={data.name} />
-									</ListItem>
-								);
-							})}
-					</List>
+									return (
+										<ListItem key={uniqueId}>
+											<ListItemText primary={data.name} />
+										</ListItem>
+									);
+								})}
+						</List>
+					</Card>
 				</Box>
 			</div>
 		</>

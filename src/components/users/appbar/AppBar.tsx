@@ -233,11 +233,26 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 
 					<Box
 						sx={{
-							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							flexGrow: 1,
-							marginLeft: { xs: "auto", md: 0 },
+							display: { xs: "flex", md: "none" },
+						}}
+					>
+						<SearchInput
+							style={{ minWidth: "200px" }}
+							searchQuery={searchQuery}
+							onChange={handleSearchInputChange}
+							onKeyDown={handleKeyDown}
+						/>
+					</Box>
+
+					<Box
+						sx={{
+							alignItems: "center",
+							justifyContent: "center",
+							flexGrow: 1,
+							display: { xs: "none", md: "flex" },
 						}}
 					>
 						<SearchInput
@@ -338,7 +353,7 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 									sx={{
 										flexGrow: 1,
 										display: { xs: "flex", md: "none" },
-										border: "1px solid black"
+										border: "1px solid black",
 									}}
 								>
 									<Avatar
