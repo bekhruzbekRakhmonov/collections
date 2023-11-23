@@ -39,7 +39,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
 	useEffect(() => {
 		const checkAuth = async () => {
-			console.log("Auth checking")
 			const accessToken = Cookies.get("accessToken");
 			const refreshToken = Cookies.get("refreshToken");
 
@@ -80,8 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
 	const register = async (userData: any): Promise<void> => {
 		try {
-			const newUser = await api.register(userData);
-			setUser(newUser.data);
+			await api.register(userData);
 			setError(null);
 		} catch (error) {
 			setError("Registration failed. Please try again.");
@@ -93,6 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 		try {
 			setUser(null);
 			setError(null);
+			setIsAuthenticated(false);
 			Cookies.remove("accessToken");
 			Cookies.remove("refreshToken");
 		} catch (error) {
