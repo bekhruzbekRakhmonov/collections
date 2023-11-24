@@ -63,12 +63,15 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 		});
 
 		socket.on("unauthenticated", async (data) => {
-			await api.get('/auth')
-			socket.connect();
+			try {
+				await api.get("/auth");
+				socket.connect();
+			} catch (error: any) {
+				console.error(error.message)	
+			}
 		});
 
 		socket.on("unauthenticated-retry", async (data) => {
-			await api.get('/auth')
 			console.log(data)
 		});
 

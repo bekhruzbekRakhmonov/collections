@@ -5,6 +5,7 @@ import { IRowCollection } from "../../../utils/interfaces/collection";
 import CollectionItemsCard from "../../../components/users/collections/show/CollectionItems";
 import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
 import { usersApi } from "../../../utils/api/users";
+import ErrorComponent from "../../../components/error/Error";
 
 const ShowCollection = () => {
 	const { id } = useParams();
@@ -20,10 +21,6 @@ const ShowCollection = () => {
 			console.error(error.message);
 		}
 		setDeleteDialogOpen(false);
-	};
-
-	const handleOpenDeleteDialog = () => {
-		setDeleteDialogOpen(true);
 	};
 
 	const handleCloseDeleteDialog = () => {
@@ -47,6 +44,7 @@ const ShowCollection = () => {
 
 	return (
 		<>
+		<ErrorComponent show={error ? true : false} errorMessage={error}/>
 			<DeleteDialog
 				open={isDeleteDialogOpen}
 				onClose={handleCloseDeleteDialog}

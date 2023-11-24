@@ -20,7 +20,7 @@ const errorContentStyle: CSSProperties = {
 
 interface ErrorComponentProps {
 	show: boolean;
-	errorMessage: string;
+	errorMessage: string | null;
 }
 
 const ErrorComponent: React.FC<ErrorComponentProps> = ({
