@@ -35,6 +35,8 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleDelete }) =
 				sx={{
 					boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
 					marginTop: "15px",
+					maxWidth: `${window.innerWidth - 20}px`,
+					minWidth: "330px"
 				}}
 			>
 				<CollectionCardHeader

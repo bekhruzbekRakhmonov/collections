@@ -57,7 +57,7 @@ const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({
 	};
 
 	return (
-		<Container sx={{ width: "100%" }}>
+		<Container sx={{ width: "100%", marginTop: "30px" }}>
 			<Stepper activeStep={activeStep}>
 				{steps.map((label, index) => (
 					<Step key={label}>
