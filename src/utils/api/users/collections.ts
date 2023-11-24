@@ -59,16 +59,16 @@ export const createCollection = async ({collection, customFields}: {
 
 export const updateCollection = async (
 	id: number,
-	{
-		collection,
-		customFields,
-	}: {
-		collection: ICollection;
-		customFields: ICustomField[];
-	}
+		collection: ICollection,
+		customFields: ICustomField[],
+		removedCustomFieldsIds: number[],
 ) => {
 	try {
-		const response = await api.patch(`/collections/${id}`, {...collection, customFields});
+		const response = await api.patch(`/collections/${id}`, {
+			...collection,
+			customFields,
+			removedCustomFieldsIds,
+		});
 		return response.data.data;
 	} catch (error: any) {
 		throw new Error(

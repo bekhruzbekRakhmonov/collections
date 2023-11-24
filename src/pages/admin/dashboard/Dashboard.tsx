@@ -25,13 +25,17 @@ import {
 	Logout,
 	Mail,
 } from "@mui/icons-material";
-import SimpleTable from "../../../components/admin/table/Table";
+import SimpleTable, { Column } from "../../../components/admin/table/Table";
 import { IRowUser, IUser } from "../../../utils/interfaces/user";
 import { admin } from "../../../utils/api/admin";
 import { ICollection, IRowCollection } from "../../../utils/interfaces/collection";
 import { IItem, IRowItem } from "../../../utils/interfaces/item";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IRowComment } from "../../../utils/interfaces/comment";
+import UsersTable from "./tables/UsersTable";
+import CollectionsTable from "./tables/CollectionsTable";
+import ItemsTable from "./tables/ItemsTable";
+import CommentsTable from "./tables/CommentsTable";
 
 const drawerWidth = 240;
 
@@ -77,144 +81,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, onClick, selected
 	</ListItemButton>
 );
 
-interface Column {
-	id: string;
-	label: string;
-}
-
-interface UserData {
-	id: number;
-	name: string;
-	email: string;
-}
-
-interface CollectionData {
-	id: number;
-	name: string;
-	description: string;
-}
-
-interface ItemData {
-	id: number;
-	name: string;
-	price: number;
-}
-
-interface CommentData {
-	id: number;
-	author: string;
-	content: string;
-}
-
-
-// Columns for the tables
-const userColumns = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "email", label: "Email" },
-	{ id: "role", label: "Role" },
-	{ id: "status", label: "Status" },
-	{ id: "created_at", label: "Joined" },
-];
-
-const collectionColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "description", label: "Description" },
-];
-
-const itemColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "tags", label: "Tags" },
-];
-
-const commentColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "owner", label: "Author" },
-	{ id: "content", label: "Content" },
-];
-
 export default function Dashboard() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(true);
 	const [selectedOption, setSelectedOption] = React.useState(window.location.href.split("#")[1]); // Initial selected option
 	const navigate = useNavigate();
-	const location = useLocation();
-	console.log(location.hash);
-
-	// Data stores
-	const [usersData, setUsersData] = React.useState<{
-		data: IRowUser[];
-		total: number;
-	}>({data: [], total: 0});
-	const [collectionsData, setCollectionsData] = React.useState<{
-		data: IRowCollection[];
-		total: number;
-	}>({ data: [], total: 0 });
-	const [itemsData, setItemsData] = React.useState<{
-		data: IRowItem[];
-		total: number;
-	}>({ data: [], total: 0 });
-	const [commentsData, setCommentsData] = React.useState<{
-		data: IRowComment[];
-		total: number;
-	}>({ data: [], total: 0 });
-
-	const getUsers = (page?: number, limit?: number, order?: string, orderBy?: string) => {
-		(async () => {
-			const result = await admin.getUsers(page, limit, order, orderBy);
-			setUsersData(result);
-		})();
-	}
-
-	const getCollections = (
-		page?: number,
-		limit?: number,
-		order?: string,
-		orderBy?: string
-	) => {
-		(async () => {
-			const result = await admin.getCollections(page, limit, order, orderBy);
-			setCollectionsData(result);
-		})();
-	};
-
-	const getItems = (
-		page?: number,
-		limit?: number,
-		order?: string,
-		orderBy?: string
-	) => {
-		(async () => {
-			const result = await admin.getItems(
-				page,
-				limit,
-				order,
-				orderBy
-			);
-			setItemsData(result);
-		})();
-	};
-
-	const getComments = (
-		page?: number,
-		limit?: number,
-		order?: string,
-		orderBy?: string
-	) => {
-		(async () => {
-			const result = await admin.getComments(page, limit, order, orderBy);
-			setCommentsData(result);
-		})();
-	};
-
-	React.useEffect(() => {
-		getUsers();
-		getCollections();
-		getItems();
-		getComments();
-	}, [])
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -233,54 +104,19 @@ export default function Dashboard() {
 		switch (selectedOption) {
 			case "Users":
 				return (
-					<SimpleTable
-						key="users"
-						result={usersData}
-						columns={userColumns}
-						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => navigate(`/admin/edit-user/${id}`)}
-						onDelete={(id) => console.log(id)}
-						onDeleteSelected={() => console.log("selected")}
-						refreshData={getUsers}
-					/>
+					<UsersTable />
 				);
 			case "Collections":
-				// Similar structure for other cases
 				return (
-					<SimpleTable
-						key="collections"
-						result={collectionsData}
-						columns={collectionColumns}
-						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => navigate(`/admin/edit-collection/${id}`)}
-						onDelete={(id) => console.log(id)}
-						onBlock={(id) => console.log(id)}
-						refreshData={getCollections}
-					/>
+					<CollectionsTable />
 				);
 			case "Items":
 				return (
-					<SimpleTable
-						key="items"
-						result={itemsData}
-						columns={itemColumns}
-						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => navigate(`/admin/edit-item/${id}`)}
-						onDelete={(id) => console.log(id)}
-						refreshData={getItems}
-					/>
+					<ItemsTable />
 				);
 			case "Comments":
 				return (
-					<SimpleTable
-						key="comments"
-						result={commentsData}
-						columns={commentColumns}
-						containerStyle={{ marginTop: "60px" }}
-						onEdit={(id) => navigate(`/admin/edit-comment/${id}`)}
-						onDelete={(id) => console.log(id)}
-						refreshData={getComments}
-					/>
+					<CommentsTable />
 				);
 			default:
 				return (

@@ -8,6 +8,7 @@ const api = axios.create({
 	baseURL: API_BASE_URL,
 });
 
+
 api.interceptors.request.use(async (config) => {
 	try {
 		let accessToken = Cookies.get("accessToken");
@@ -21,17 +22,16 @@ api.interceptors.request.use(async (config) => {
 				const refreshToken = Cookies.get("refreshToken");
 
 				try {
-					console.log("Refreshing...");
-					const response = await api.post("/auth/refresh", {
-						refreshToken,
-					});
+					const response = await axios.post(
+						`${api.getUri()}/auth/refresh`,
+						{
+							refreshToken,
+						}
+					);
 
 					accessToken = response.data.accessToken;
 
-					Cookies.set("accessToken", accessToken as string, {
-						httpOnly: true,
-						secure: true,
-					});
+					Cookies.set("accessToken", String(accessToken));
 				} catch (refreshError) {
 					console.error(
 						"Error refreshing access token:",
@@ -47,10 +47,9 @@ api.interceptors.request.use(async (config) => {
 		return config;
 	} catch (error) {
 		console.error("Interceptor error:", error);
-		throw error; 
+		throw error;
 	}
 });
-
 
 export const register = async (userData: any): Promise<AxiosResponse> => {
 	const response = await axios.post(
@@ -70,30 +69,6 @@ export const login = async (credentials: any): Promise<AxiosResponse> => {
 
 export const logout = async (): Promise<AxiosResponse> => {
 	const response = await axios.post(`/auth/logout`);
-	return response;
-};
-
-export const getUsers = async (): Promise<AxiosResponse> => {
-	const response = await api.get("/users");
-	return response;
-};
-
-export const blockUsers = async (userIds: number[]): Promise<AxiosResponse> => {
-	const response = await api.put("/users/block", { userIds });
-	return response;
-};
-
-export const unblockUsers = async (
-	userIds: number[]
-): Promise<AxiosResponse> => {
-	const response = await api.put("/users/unblock", { userIds });
-	return response;
-};
-
-export const deleteUsers = async (
-	userIds: number[]
-): Promise<AxiosResponse> => {
-	const response = await api.post("/users/delete", { userIds });
 	return response;
 };
 

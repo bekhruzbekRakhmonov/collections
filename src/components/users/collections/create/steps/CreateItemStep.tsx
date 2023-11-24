@@ -11,9 +11,10 @@ interface CreateItemStepProps {
 	items: IItem[];
 	setItems: (data: React.SetStateAction<IItem[]>) => void;
 	setItemCustomFields: (data: React.SetStateAction<ICustomField[][]>) => void;
+	setRemovedItemsIds?: (data: React.SetStateAction<number[]>) => void;
 }
 
-const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCustomFields, items, setItems, setItemCustomFields }) => {
+const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCustomFields, items, setItems, setItemCustomFields, setRemovedItemsIds }) => {
 	const handleItemInputChange = (
 		index: number,
 		e:
@@ -27,7 +28,8 @@ const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCusto
 		};
 
 		setItems((prevItems) => {
-			if (name !== "name") {
+			if (id !== "itemName") {
+				console.log(itemCustomFields)
 				setItemCustomFields((prevState) => {
 					const fieldIndex = Number(id);
 					const field = customFields[fieldIndex];
@@ -35,6 +37,7 @@ const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCusto
 						prevState.push([]);
 					}
 					prevState[index][fieldIndex] = {
+						...prevState[index][fieldIndex],
 						type: field.type,
 						name: field.name,
 						value: value,
@@ -55,12 +58,14 @@ const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCusto
 	const addItem = () => {
 		setItems((prevItems) => [
 			...prevItems,
-			{ name: "", tags: "", custom_fields: customFields },
+			{ name: "", tags: "", custom_fields: [] },
 		]);
 	};
 
 	const removeItem = (index: number) => {
 		setItems((prevItems) => prevItems.filter((_, i) => i !== index));
+		setItemCustomFields((prevFields) => prevFields.filter((_, i) => i !== index)) 
+		if(setRemovedItemsIds) setRemovedItemsIds((prevIds) => [...prevIds, Number(items[index].id)]);
 	};
 
 	const handleTagsChange = (newTags: string[], itemIndex: number) => {
@@ -87,6 +92,7 @@ const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCusto
 								label="Item Name"
 								required
 								name="name"
+								id="itemName"
 								value={item.name}
 								onChange={(
 									e: React.ChangeEvent<

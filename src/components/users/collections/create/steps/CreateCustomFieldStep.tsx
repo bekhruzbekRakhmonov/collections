@@ -6,12 +6,21 @@ interface CreateCustomFieldStepProps {
 	customFields: ICustomField[];
 	setCustomFields: (data: React.SetStateAction<ICustomField[]>) => void;
 	setItemCustomFields: (data: React.SetStateAction<ICustomField[][]>) => void;
+	itemCustomFields?: ICustomField[][];
+	setRemovedItemCustomFieldsIds?: (
+		data: React.SetStateAction<number[]>
+	) => void;
+	setRemovedCollectionCustomFieldsIds?: (
+		data: React.SetStateAction<number[]>
+	) => void;
 }
 
 const CreateCustomFieldStep: React.FC<CreateCustomFieldStepProps> = ({
 	customFields,
 	setCustomFields,
-	setItemCustomFields,
+	setRemovedCollectionCustomFieldsIds,
+	setRemovedItemCustomFieldsIds,
+	itemCustomFields,
 }) => {
 	const handleCustomFieldChange = (
 		index: number,
@@ -44,6 +53,35 @@ const CreateCustomFieldStep: React.FC<CreateCustomFieldStepProps> = ({
 		setCustomFields((prevFields) =>
 			prevFields.filter((_, i) => index !== i)
 		);
+		if (
+			setRemovedCollectionCustomFieldsIds &&
+			customFields &&
+			customFields[index] &&
+			customFields[index].id
+		) {
+			setRemovedCollectionCustomFieldsIds((prevIds) => [
+				...prevIds,
+				Number(customFields[index].id),
+			]);
+		}
+
+		if (setRemovedItemCustomFieldsIds)
+			setRemovedItemCustomFieldsIds((prevIds) => {
+				const updatedIds = [...prevIds];
+				itemCustomFields?.forEach((itemFields) => {
+					console.log(itemFields[index]);
+					itemFields.map((field) => {
+						if (
+							field !== undefined &&
+							field.id !== undefined &&
+							field.name === customFields[index].name
+						) {
+							updatedIds.push(field.id);
+						}
+					})
+				});
+				return updatedIds;
+			});
 	};
 	return (
 		<div>

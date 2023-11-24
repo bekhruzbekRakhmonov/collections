@@ -13,39 +13,44 @@ const getAppropriateField = (
 			| SelectChangeEvent<string>
 	) => void
 ): React.ReactNode => {
+	console.log("value", value)
 	switch (type) {
 		case "multiline":
 			return (
-				<TextField
-					required
-					fullWidth
-					multiline
-					id={id}
-					label={name}
-					name={name}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-					value={value}
-				/>
+				<FormControl fullWidth>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						required
+						fullWidth
+						multiline
+						id={id}
+						name={name}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+						value={value}
+					/>
+				</FormControl>
 			);
 		case "string":
 			return (
-				<TextField
-					required
-					fullWidth
-					id={id}
-					label={name}
-					name={name}
-					value={value}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-				/>
+				<FormControl fullWidth>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						required
+						fullWidth
+						id={id}
+						name={name}
+						value={value}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+					/>
+				</FormControl>
 			);
 		case "integer":
 			return (
@@ -66,53 +71,59 @@ const getAppropriateField = (
 			);
 		case "date":
 			return (
-				<TextField
-					required
-					fullWidth
-					type="date"
-					id={id}
-					label={name}
-					name={name}
-					value={value}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-				/>
+				<FormControl>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						required
+						fullWidth
+						type="date"
+						id={id}
+						name={name}
+						value={value}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+					/>
+				</FormControl>
 			);
 		case "boolean":
 			return (
-				<TextField
-					fullWidth
-					required
-					type="checkbox"
-					id={id}
-					label={name}
-					name={name}
-					value={value}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-				/>
+				<FormControl>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						fullWidth
+						type="checkbox"
+						id={id}
+						name={name}
+						value={value == "false" ? true : false}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+					/>
+				</FormControl>
 			);
 		default:
 			return (
-				<TextField
-					required
-					fullWidth
-					id={id}
-					label={name}
-					name={name}
-					value={value}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-				/>
+				<FormControl>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						required
+						fullWidth
+						id={id}
+						label={name}
+						name={name}
+						value={value}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+					/>
+				</FormControl>
 			);
 	}
 };

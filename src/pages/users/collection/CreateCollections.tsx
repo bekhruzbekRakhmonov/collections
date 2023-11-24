@@ -24,6 +24,7 @@ const CreateCollection = () => {
 		{
 			name: "",
 			tags: "",
+			custom_fields: []
 		},
 	]);
 

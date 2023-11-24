@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { ICollection } from "../../../../../utils/interfaces/collection";
-import { FormLabel, FormControl, InputLabel, Select, MenuItem, TextField, SelectChangeEvent, Button, useTheme } from "@mui/material";
+import { FormLabel, FormControl, InputLabel, Select, MenuItem, TextField, SelectChangeEvent, useTheme } from "@mui/material";
 import MDEditor from "@uiw/react-md-editor";
 import ImageDropzone from "../utils/DragDrop";
 

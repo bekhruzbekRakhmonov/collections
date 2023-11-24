@@ -1,5 +1,5 @@
 import { ICustomField, IRowCustomField } from "../../interfaces/custom-fields";
-import api from "../api";
+import { adminApi as api } from "./api";
 
 export const createCustomField = async (
 	itemId: string,

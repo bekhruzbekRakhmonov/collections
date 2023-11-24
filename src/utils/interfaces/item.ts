@@ -5,7 +5,7 @@ import { IRowUser } from "./user";
 export interface IItem {
 	id?: number;
 	name: string;
-	custom_fields?: ICustomField[];
+	custom_fields: ICustomField[];
 	likes?: ILike[];
 	tags: string;
 	[key: string]:

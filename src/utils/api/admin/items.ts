@@ -1,4 +1,4 @@
-import api from "../api";
+import { adminApi as api } from "./api";
 import { IItem, IRowItem } from "../../interfaces/item";
 
 export const getItems = async (
@@ -6,7 +6,7 @@ export const getItems = async (
 	limit: number = 5,
 	order?: string,
 	orderBy?: string
-): Promise<{ data: IRowItem[]; total: number; }> => {
+): Promise<{ data: IRowItem[]; total: number }> => {
 	try {
 		const response = await api.get("/items", {
 			params: {
@@ -26,7 +26,6 @@ export const getItems = async (
 		);
 	}
 };
-
 
 export const getItem = async (itemId: number): Promise<IItem> => {
 	try {

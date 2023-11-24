@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ICollection } from "../../../utils/interfaces/collection";
-import { ICustomField } from "../../../utils/interfaces/custom-fields";
+import { ICustomField, IRowCustomField } from "../../../utils/interfaces/custom-fields";
 import { IItem } from "../../../utils/interfaces/item";
 import EditCollectionComponent from "../../../components/users/collections/edit/EditCollectionsComponent";
 import { usersApi } from "../../../utils/api/users";
@@ -25,18 +25,31 @@ const EditCollection = () => {
 		{
 			name: "",
 			tags: "",
-			custom_fields: []
+			custom_fields: [
+				{
+					name: "",
+					type: "",
+					value: "",
+				},
+			],
 		},
 	]);
 
+	const [removedCollectionCustomFieldsIds, setRemovedCollectionCustomFieldsIds] =
+		React.useState<number[]>([]);
+	const [removedItemsIds, setRemovedItemsIds] = React.useState<number[]>([]);
+	const [removedItemCustomFieldsIds, setRemovedItemCustomFieldsIds] = React.useState<number[]>([]);
+
 	const [itemCustomFields, setItemCustomFields] = React.useState<
-		ICustomField[][]
+		ICustomField[][] | IRowCustomField[][]
 	>([
-		[{
-			name: "",
-			type: "",
-			value: "",
-		},]
+		[
+			{
+				name: "",
+				type: "",
+				value: "",
+			},
+		],
 	]);
 
 	useEffect(() => {
@@ -48,39 +61,52 @@ const EditCollection = () => {
 					description: data.description,
 					topic: data.topic,
 					photo: data.photo,
-				}
+				};
 
 				const customFields = data.custom_fields;
 
-				let accumulatedItemCustomFields: ICustomField[][] = [];
-				
+				let accumulatedItemCustomFields: IRowCustomField[][] = [];
+
 				data.items.forEach((item, index) => {
-					accumulatedItemCustomFields.push(item.custom_fields as ICustomField[]);
+					accumulatedItemCustomFields.push(
+						item.custom_fields as IRowCustomField[]
+					);
 				});
 
 				setCollection(collection);
 				setItems(data.items as any);
 				setCustomFields(customFields);
-				setItemCustomFields(accumulatedItemCustomFields);
+				accumulatedItemCustomFields.map((itemCustomField, index) => {
+					setItemCustomFields((prev) => {
+						prev[index] = itemCustomField;
+						return prev;
+					});
+				});
+
 			} catch (error: any) {
-				console.error(error.message)
+				console.error(error.message);
 			}
-		})()
-	}, [id])
+		})();
+	}, [id]);
+
 
 	const handleSubmit = async () => {
-		const updatedCollection = await usersApi.updateCollection(Number(id), {
+		const updatedCollection = await usersApi.updateCollection(Number(id),
 			collection,
 			customFields,
-		});
+			removedCollectionCustomFieldsIds
+		);
+
 		const updatedItems = await usersApi.updateItems(
 			updatedCollection.id,
-			items
+			items,
+			removedItemsIds
 		);
 		const updatedItemsIds = updatedItems.map(({ id }) => Number(id));
 		await usersApi.updateCustomFields(
 			updatedItemsIds,
-			itemCustomFields
+			itemCustomFields,
+			removedItemCustomFieldsIds
 		);
 
 		navigate(`/show-collection/${updatedCollection.id}`);
@@ -96,6 +122,11 @@ const EditCollection = () => {
 			setCustomFields={setCustomFields}
 			setItems={setItems}
 			setItemCustomFields={setItemCustomFields}
+			setRemovedItemsIds={setRemovedItemsIds}
+			setRemovedItemCustomFieldsIds={setRemovedItemCustomFieldsIds}
+			setRemovedCollectionCustomFieldsIds={
+				setRemovedCollectionCustomFieldsIds
+			}
 			handleSubmit={handleSubmit}
 		/>
 	);

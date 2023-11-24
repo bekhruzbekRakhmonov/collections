@@ -54,18 +54,19 @@ export const getCustomField = async (customFieldId: string) => {
 
 export const updateCustomFields = async (
 	itemsIds: number[],
-	updatedCustomFieldsData: ICustomField[][]
+	updatedCustomFieldsData: ICustomField[][],
+	removedCustomFieldsIds: number[]
 ): Promise<IRowCustomField> => {
 	try {
 		const response = await api.put("/custom-fields/many", {
 			itemsIds,
 			customFields: updatedCustomFieldsData,
+			removedCustomFieldsIds,
 		});
 		return response.data.data;
 	} catch (error: any) {
 		throw new Error(
-			error.response?.data.message ||
-				"Failed to update custom fields"
+			error.response?.data.message || "Failed to update custom fields"
 		);
 	}
 };

@@ -1,5 +1,5 @@
 import { IComment, IRowComment } from "../../interfaces/comment";
-import api from "../api";
+import { adminApi as api } from "./api";
 
 export const createComment = async (
 	newComment: IComment

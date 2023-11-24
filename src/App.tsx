@@ -108,7 +108,7 @@ const App: React.FC = () => {
 								element={<UserSettings />}
 							/>
 						</Route>
-						<Route element={<PrivateRoutes />}>
+						<Route element={<PrivateAdminRoutes />}>
 							<Route path="/admin" element={<Dashboard />} />
 							<Route
 								path="/admin/edit-collection/:id"

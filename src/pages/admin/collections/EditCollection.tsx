@@ -29,8 +29,7 @@ export const EditCollection: React.FC<EditCollectionProps> = () => {
 		const fetchCollectionData = async () => {
 			try {
 				const data = await admin.getCollection(Number(id));
-				console.log(data)
-				// Set form values based on the fetched data
+
 				setValue("name", data.name);
 				setValue("description", data.description);
 				setValue("topic", data.topic);

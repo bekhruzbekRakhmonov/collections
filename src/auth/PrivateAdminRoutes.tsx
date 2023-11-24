@@ -1,11 +1,12 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import NotFoundPage from "../components/error/NotFound";
 
 const PrivateAdminRoutes = () => {
 	const { isAuthenticated, user } = useAuth();
 
 	if (!isAuthenticated || user.role !== "admin") {
-		return <Navigate to="/not-found" />;
+		return <NotFoundPage />;
 	}
 
 	return <Outlet />;

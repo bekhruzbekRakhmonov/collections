@@ -62,6 +62,16 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 			setComments((prevComments) => [rest, ...prevComments]);
 		});
 
+		socket.on("unauthenticated", async (data) => {
+			await api.get('/auth')
+			socket.connect();
+		});
+
+		socket.on("unauthenticated-retry", async (data) => {
+			await api.get('/auth')
+			console.log(data)
+		});
+
 		return () => {
 			socket.emit("leaveRoom", itemId);
 			socket.disconnect();
@@ -80,12 +90,14 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 			return;
 		}
 
-		socket.emit("createComment", {
-			content: newComment,
-			item_id: itemId,
-		});
+		if (newComment !== "") {
+			socket.emit("createComment", {
+				content: newComment,
+				item_id: itemId,
+			});
 
-		setNewComment("");
+			setNewComment("");
+		}
 	};
 
 	return (

@@ -16,7 +16,7 @@ import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import BlockOutlinedIcon from "@mui/icons-material/BlockOutlined";
 import Paper from "@mui/material/Paper";
 
-interface Column {
+export interface Column {
 	id: string;
 	label: string;
 	numeric?: boolean;
@@ -26,9 +26,9 @@ interface Props {
 	result: { data: Record<string, any>[]; total: number };
 	columns: Column[];
 	containerStyle?: React.CSSProperties;
-	onEdit?: (id: number[]) => void;
-	onDelete?: (id: number[]) => void;
-	onBlock?: (id: number[]) => void;
+	onEdit?: (id: number) => void;
+	onDelete?: (id: number) => void;
+	onBlock?: (id: number) => void;
 	onDeleteSelected?: () => void;
 	onBlockSelected?: () => void;
 	refreshData: (
@@ -200,7 +200,7 @@ const SimpleTable: React.FC<Props> = ({
 											{onEdit && (
 												<IconButton
 													onClick={() =>
-														onEdit([row.id])
+														onEdit(row.id)
 													}
 													color="primary"
 												>
@@ -210,7 +210,7 @@ const SimpleTable: React.FC<Props> = ({
 											{onDelete && (
 												<IconButton
 													onClick={() =>
-														onDelete([row.id])
+														onDelete(row.id)
 													}
 													color="secondary"
 												>
@@ -220,7 +220,7 @@ const SimpleTable: React.FC<Props> = ({
 											{onBlock && (
 												<IconButton
 													onClick={() =>
-														onBlock([row.id])
+														onBlock(row.id)
 													}
 													color="default"
 												>

@@ -1,15 +1,14 @@
-import api from "../api";
+import { adminApi as api } from "./api";
 import { ICollection, IRowCollection } from "../../interfaces/collection";
-
 
 export const getCollections = async (
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
 	orderBy?: string
-): Promise<{ data: IRowCollection[]; total: number; }> => {
+): Promise<{ data: IRowCollection[]; total: number }> => {
 	try {
-		const response = await api.get("/collections/admin", {
+		const response = await api.get("/collections", {
 			params: {
 				page,
 				limit,
@@ -27,7 +26,6 @@ export const getCollections = async (
 		);
 	}
 };
-
 
 export const getCollection = async (
 	collectionId: number
@@ -57,7 +55,7 @@ export const updateCollection = async (
 	updatedCollectionData: Partial<ICollection>
 ): Promise<ICollection> => {
 	try {
-		const response = await api.put(
+		const response = await api.patch(
 			`/collections/${collectionId}`,
 			updatedCollectionData
 		);

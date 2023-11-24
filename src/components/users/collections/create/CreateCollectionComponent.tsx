@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Stepper, Typography, Step, StepLabel, Button, Container } from "@mui/material";
+import {
+	Box,
+	Stepper,
+	Typography,
+	Step,
+	StepLabel,
+	Button,
+	Container,
+} from "@mui/material";
 import StepsComponent from "./StepsComponent";
 import CreateCollectionStep from "./steps/CreateCollectionStep";
 import CreateCustomFieldStep from "./steps/CreateCustomFieldStep";
@@ -9,12 +17,7 @@ import { IItem } from "../../../../utils/interfaces/item";
 import { ICustomField } from "../../../../utils/interfaces/custom-fields";
 import BottomStepperButtons from "./utils/BottomStepperButtons";
 
-
-const steps = [
-	"Collection",
-	"Custom Fields",
-	"Items",
-];
+const steps = ["Collection", "Custom Fields", "Items"];
 
 interface CreateCollectionProps {
 	collection: ICollection;
@@ -28,31 +31,25 @@ interface CreateCollectionProps {
 	handleSubmit: () => void;
 }
 
-const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({ collection, customFields, itemCustomFields, items, setCollection, setItems, setCustomFields, setItemCustomFields, handleSubmit }) => {
+const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({
+	collection,
+	customFields,
+	itemCustomFields,
+	items,
+	setCollection,
+	setItems,
+	setCustomFields,
+	setItemCustomFields,
+	handleSubmit,
+}) => {
 	const [activeStep, setActiveStep] = React.useState(0);
-	const [skipped, setSkipped] = React.useState(new Set<number>());
 
 	const handleNext = () => {
-		let newSkipped = skipped;
-		if (isStepSkipped(activeStep)) {
-			newSkipped = new Set(newSkipped.values());
-			newSkipped.delete(activeStep);
-		}
-
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		setSkipped(newSkipped);
 	};
 
 	const handleBack = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-	};
-
-	const isStepOptional = (step: number) => {
-		return step === 1;
-	};
-
-	const isStepSkipped = (step: number) => {
-		return skipped.has(step);
 	};
 
 	const handleReset = () => {
@@ -62,25 +59,11 @@ const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({ collection
 	return (
 		<Container sx={{ width: "100%" }}>
 			<Stepper activeStep={activeStep}>
-				{steps.map((label, index) => {
-					const stepProps: { completed?: boolean } = {};
-					const labelProps: {
-						optional?: React.ReactNode;
-					} = {};
-					if (isStepOptional(index)) {
-						labelProps.optional = (
-							<Typography variant="caption">Optional</Typography>
-						);
-					}
-					if (isStepSkipped(index)) {
-						stepProps.completed = false;
-					}
-					return (
-						<Step key={label} {...stepProps}>
-							<StepLabel {...labelProps}>{label}</StepLabel>
-						</Step>
-					);
-				})}
+				{steps.map((label, index) => (
+					<Step key={label}>
+						<StepLabel>{label}</StepLabel>
+					</Step>
+				))}
 			</Stepper>
 			{activeStep === steps.length ? (
 				<React.Fragment>
@@ -94,7 +77,11 @@ const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({ collection
 				</React.Fragment>
 			) : (
 				<React.Fragment>
-					<StepsComponent activeStep={activeStep} handleNext={handleNext} handleSubmit={handleSubmit}>
+					<StepsComponent
+						activeStep={activeStep}
+						handleNext={handleNext}
+						handleSubmit={handleSubmit}
+					>
 						<CreateCollectionStep
 							collection={collection}
 							setCollection={setCollection}
@@ -114,10 +101,7 @@ const CreateCollectionComponent: React.FC<CreateCollectionProps> = ({ collection
 						<BottomStepperButtons
 							stepsLength={steps.length}
 							activeStep={activeStep}
-							skipped={skipped}
 							setActiveStep={setActiveStep}
-							setSkipped={setSkipped}
-							isStepOptional={isStepOptional}
 							handleBack={handleBack}
 						/>
 					</StepsComponent>

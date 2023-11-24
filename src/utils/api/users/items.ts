@@ -72,11 +72,12 @@ export const updateItem = async (itemId: string, updatedData: IItem) => {
 	}
 };
 
-export const updateItems = async (collection_id: number, updatedItemsData: IItem[]): Promise<IItem[]> => {
+export const updateItems = async (collection_id: number, updatedItemsData: IItem[], removedItemsIds: number[]): Promise<IItem[]> => {
 	try {
 		const response = await api.put("/items/many", {
 			collection_id,
 			items: updatedItemsData,
+			removedItemsIds,
 		});
 		return response.data.data;
 	} catch (error: any) {

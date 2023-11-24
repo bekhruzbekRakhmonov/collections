@@ -50,6 +50,11 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, handleCommentChan
 					sx={{ height: "25px" }}
 					value={newComment}
 					onChange={handleCommentChange}
+					onKeyUp={(e) => {
+						if (e.key === "Enter") {
+							handleAddComment();
+						}
+					}}
 					onClick={(e) => !isAuthenticated ? setOpen(true) : ''}
 					endAdornment={
 						<InputAdornment position="end">
