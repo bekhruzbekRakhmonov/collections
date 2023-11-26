@@ -81,10 +81,10 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 			console.log(data)
 		});
 
-		return () => {
-			socket.emit("leaveRoom", itemId);
-			socket.disconnect();
-		};
+		// return () => {
+		// 	socket.emit("leaveRoom", itemId);
+		// 	socket.disconnect();
+		// };
 	}, [itemId, socket]);
 
 	const handleCommentChange = (
