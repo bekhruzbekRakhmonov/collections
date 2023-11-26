@@ -16,6 +16,7 @@ import Loading from "../components/loading/Loading";
 interface AuthContextProps {
 	user: any;
 	isAuthenticated: boolean;
+	setIsAuthenticated: (data: React.SetStateAction<boolean>) => void;
 	login: (credentials: any) => Promise<void>;
 	register: (userData: any) => Promise<void>;
 	logout: () => Promise<void>;
@@ -106,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
 
 	return (
 		<AuthContext.Provider
-			value={{ user, isAuthenticated, login, register, logout, error }}
+			value={{ user, isAuthenticated, setIsAuthenticated, login, register, logout, error }}
 		>
 			{children}
 		</AuthContext.Provider>

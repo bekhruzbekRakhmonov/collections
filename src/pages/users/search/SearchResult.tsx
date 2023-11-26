@@ -11,9 +11,8 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usersApi } from "../../../utils/api/users";
-import SearchInput from "../../../components/users/appbar/SearchInput";
 
-const categories = ["Collections", "Items", "People", "Comments"];
+const categories = ["Items", "Collections", "People", "Comments"];
 
 const SearchResult: React.FC = () => {
 	const [selectedButton, setSelectedButton] = useState<number>(0);
@@ -21,6 +20,7 @@ const SearchResult: React.FC = () => {
 	const theme = useTheme();
 
 	const { search } = useLocation();
+	const navigate = useNavigate();
 
 	const handleButtonClick = (index: number) => {
 		setSelectedButton((prev) => (prev === index ? 0 : index));
@@ -49,6 +49,7 @@ const SearchResult: React.FC = () => {
 
 		fetchData();
 	}, [search]);
+	
 
 	return (
 		<>
@@ -122,17 +123,21 @@ const SearchResult: React.FC = () => {
 							}}
 						>
 							{searchResults &&
+							searchResults[
+								categories[selectedButton].toLowerCase()
+							].length > 0 ? (
 								searchResults[
 									categories[selectedButton].toLowerCase()
 								].map((data: any, index: number) => {
-									const uniqueId = data.id;
-
 									return (
-										<ListItem key={uniqueId}>
+										<ListItem key={data.id} sx={{ cursor: "pointer" }} onClick={() => navigate(data.link)}>
 											<ListItemText primary={data.name} />
 										</ListItem>
 									);
-								})}
+								})
+							) : (
+								<Typography sx={{ textAlign: "center" }}>Nothing found</Typography>
+							)}
 						</List>
 					</Card>
 				</Box>

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
 	Button,
@@ -9,67 +9,47 @@ import {
 	Box,
 	Select,
 	MenuItem,
-	InputLabel,
 	FormControl,
 	FormLabel,
 } from "@mui/material";
 import { admin } from "../../../utils/api/admin";
-import NewWindow from "react-new-window";
+import { IRowUser, IUser } from "../../../utils/interfaces/user";
+import SnackbarAlert from "../../../components/utils/SnackbarAlert";
 
-interface EditUserProps {
+interface AddUserProps {}
 
-}
-
-interface FormData {
-	email: string;
-	name: string;
-	status: "active" | "blocked";
-	role: "user" | "admin";
-}
-
-export const EditUser: React.FC<EditUserProps> = () => {
-	const { id } = useParams<{ id: string }>();
+export const AddUser: React.FC<AddUserProps> = () => {
 	const navigate = useNavigate();
+    const [openAlert, setOpenAlert] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleClose = () => {
+        setOpenAlert(false);
+    }
+
 	const {
 		register,
 		handleSubmit,
-		setValue,
 		formState: { errors },
-		watch
-	} = useForm<FormData>();
+		watch,
+	} = useForm<Partial<IRowUser>>();
 
-	useEffect(() => {
-		const fetchUserData = async () => {
-			try {
-				const data = await admin.getUser(Number(id))
-
-				// Set form values based on the fetched data
-				setValue("email", data.email);
-				setValue("name", data.name);
-				setValue("status", data.status);
-				setValue("role", data.role);
-			} catch (error) {
-				console.error("Error fetching user data:", error);
-			}
-		};
-
-		fetchUserData();
-	}, [id, setValue]);
-
-	const onSubmit: SubmitHandler<FormData> = async (data) => {
+	const onSubmit: SubmitHandler<Partial<IRowUser>> = async (data) => {
 		try {
-			await admin.updateUser(Number(id), data);
+			await admin.createUser(data);
 
-			navigate(-1);
-		} catch (error) {
-			console.error("Error updating user data:", error);
+			navigate("/admin#Users");
+		} catch (error: any) {
+            setError(error.message)
+            setOpenAlert(true);
+			console.error("Error adding user:", error);
 		}
 	};
 
 	return (
 		<Container sx={{ p: "20px" }}>
 			<Typography variant="h4" gutterBottom>
-				Edit User
+				Add User
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box marginBottom={2}>
@@ -101,10 +81,7 @@ export const EditUser: React.FC<EditUserProps> = () => {
 				<Box marginBottom={2}>
 					<FormControl fullWidth>
 						<FormLabel>Status</FormLabel>
-						<Select
-							{...register("status")}
-							value={`${watch().status}`}
-						>
+						<Select {...register("status")} value={watch().status}>
 							<MenuItem value="active">active</MenuItem>
 							<MenuItem value="blocked">blocked</MenuItem>
 						</Select>
@@ -113,19 +90,31 @@ export const EditUser: React.FC<EditUserProps> = () => {
 				<Box marginBottom={2}>
 					<FormControl fullWidth>
 						<FormLabel>Role</FormLabel>
-						<Select
-							{...register("role")}
-							value={`${watch().role}`}
-						>
+						<Select {...register("role")}>
 							<MenuItem value="user">user</MenuItem>
 							<MenuItem value="admin">admin</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>
+				<Box marginBottom={2}>
+					<FormControl fullWidth>
+						<FormLabel>Password</FormLabel>
+						<TextField
+                            type="password"
+							fullWidth
+							{...register("password", {
+								required: "Password is required",
+							})}
+							error={!!errors.password}
+							helperText={errors.password?.message}
+						/>
+					</FormControl>
+				</Box>
 				<Button type="submit" variant="contained" color="primary">
-					Save Changes
+					Add User
 				</Button>
 			</form>
+            <SnackbarAlert message={error} open={openAlert} handleClose={handleClose} severity="error"/>
 		</Container>
 	);
 };

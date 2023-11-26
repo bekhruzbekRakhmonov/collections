@@ -2,12 +2,11 @@ import { ICustomField, IRowCustomField } from "../../interfaces/custom-fields";
 import { adminApi as api } from "./api";
 
 export const createCustomField = async (
-	itemId: string,
 	newCustomFieldData: ICustomField
 ): Promise<IRowCustomField> => {
 	try {
 		const response = await api.post(
-			`/custom-fields/${itemId}`,
+			"/custom-fields",
 			newCustomFieldData
 		);
 		return response.data.data;
@@ -18,10 +17,26 @@ export const createCustomField = async (
 	}
 };
 
-export const getCustomFields = async (page: number) => {
+export const getCustomFields = async (
+	page: number = 1,
+	limit: number = 5,
+	order?: string,
+	orderBy?: string
+) => {
 	try {
-		const response = await api.get("/custom-fields");
-		return response.data.data.result;
+		const response = await api.get("/custom-fields", {
+			params: {
+				page,
+				limit,
+				order,
+				orderBy,
+			},
+		});
+		console.log(response.data.data.result);
+		return {
+			data: response.data.data.result,
+			total: response.data.data.total,
+		};
 	} catch (error: any) {
 		throw new Error(
 			error.response?.data.message || "Failed to fetch Custom Fields"

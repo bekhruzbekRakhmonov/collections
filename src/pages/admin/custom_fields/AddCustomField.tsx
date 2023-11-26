@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { RefObject, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
 	Button,
@@ -11,12 +11,11 @@ import {
 	MenuItem,
 	InputLabel,
 	FormControl,
-	FormLabel,
 } from "@mui/material";
 import { admin } from "../../../utils/api/admin";
+import NewWindow from "react-new-window";
 
-interface EditCustomFieldProps {
-}
+interface AddCustomFieldProps {}
 
 interface FormData {
 	name: string;
@@ -24,54 +23,48 @@ interface FormData {
 	type: "string" | "integer" | "multiline" | "boolean" | "date";
 }
 
-export const EditCustomField: React.FC<EditCustomFieldProps> = () => {
-	const { id } = useParams<{ id: string }>();
+export const AddCustomField: React.FC<AddCustomFieldProps> = () => {
 	const navigate = useNavigate();
+	const newWindowRef = useRef<NewWindow | null>(null);
 	const {
 		register,
 		handleSubmit,
-		setValue,
 		formState: { errors },
-		watch
 	} = useForm<FormData>();
-
-	useEffect(() => {
-		const fetchCustomFieldData = async () => {
-			try {
-				const data = await admin.getCustomField(Number(id));
-
-				setValue("name", data.name);
-				setValue("value", data.value);
-				setValue("type", data.type);
-			} catch (error) {
-				console.error("Error fetching custom field data:", error);
-			}
-		};
-
-		fetchCustomFieldData();
-	}, [id, setValue]);
 
 	const onSubmit: SubmitHandler<FormData> = async (data) => {
 		try {
-			await admin.updateCustomField(Number(id), data);
+			await admin.createCustomField(data);
 
-			navigate(-1);
+			navigate(`/admin#CustomFields`);
 		} catch (error) {
-			console.error("Error updating custom field data:", error);
+			console.error("Error adding custom field:", error);
 		}
 	};
 
-	console.log(register("type"), watch().type);
+	const windowFeatures = "popup=true,left=100,top=100,width=320,height=320";
 
+	const myWindow = window.open("/admin/add-item", "_blank", windowFeatures);
+	console.log(myWindow)
+	myWindow?.addEventListener('submit', () => {
+		console.log("Submitted")
+	})
+	console.log(myWindow?.document.forms)
+	if (myWindow) {
+		console.log(myWindow.document.forms)
+		myWindow.onformdata = (e) => {
+			console.log(e)
+		}
+	}
 	return (
 		<Container>
 			<Typography variant="h4" gutterBottom>
-				Edit Custom Field
+				Add Custom Field
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box marginBottom={2}>
-					<FormLabel>Name</FormLabel>
 					<TextField
+						label="Name"
 						fullWidth
 						{...register("name", { required: "Name is required" })}
 						error={!!errors.name}
@@ -79,16 +72,12 @@ export const EditCustomField: React.FC<EditCustomFieldProps> = () => {
 					/>
 				</Box>
 				<Box marginBottom={2}>
-					<FormLabel>Value</FormLabel>
-					<TextField fullWidth {...register("value")} />
+					<TextField label="Value" fullWidth {...register("value")} />
 				</Box>
 				<Box marginBottom={2}>
 					<FormControl fullWidth>
-						<FormLabel>Type{watch().type}</FormLabel>
-						<Select
-							{...register("type")}
-							value={`${watch().type}`}
-						>
+						<InputLabel>Type</InputLabel>
+						<Select {...register("type")}>
 							<MenuItem value="string">String</MenuItem>
 							<MenuItem value="integer">Integer</MenuItem>
 							<MenuItem value="multiline">Multiline</MenuItem>
@@ -98,7 +87,7 @@ export const EditCustomField: React.FC<EditCustomFieldProps> = () => {
 					</FormControl>
 				</Box>
 				<Button type="submit" variant="contained" color="primary">
-					Save Changes
+					Add Custom Field
 				</Button>
 			</form>
 		</Container>

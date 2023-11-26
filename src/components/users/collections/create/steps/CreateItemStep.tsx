@@ -29,7 +29,6 @@ const CreateItemStep: React.FC<CreateItemStepProps> = ({ customFields, itemCusto
 
 		setItems((prevItems) => {
 			if (id !== "itemName") {
-				console.log(itemCustomFields)
 				setItemCustomFields((prevState) => {
 					const fieldIndex = Number(id);
 					const field = customFields[fieldIndex];

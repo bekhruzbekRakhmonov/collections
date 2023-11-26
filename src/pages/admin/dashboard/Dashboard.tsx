@@ -17,6 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AppBar from "../../../components/admin/appbar/Appbar";
 import {
+	Ballot,
 	Collections,
 	CollectionsBookmark,
 	Comment,
@@ -36,6 +37,7 @@ import UsersTable from "./tables/UsersTable";
 import CollectionsTable from "./tables/CollectionsTable";
 import ItemsTable from "./tables/ItemsTable";
 import CommentsTable from "./tables/CommentsTable";
+import CustomFieldsTable from "./tables/CustomFieldsTable";
 
 const drawerWidth = 240;
 
@@ -84,7 +86,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, onClick, selected
 export default function Dashboard() {
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(true);
-	const [selectedOption, setSelectedOption] = React.useState(window.location.href.split("#")[1]); // Initial selected option
+	const [selectedOption, setSelectedOption] = React.useState(window.location.href.split("#")[1]);
 	const navigate = useNavigate();
 
 	const handleDrawerOpen = () => {
@@ -97,31 +99,26 @@ export default function Dashboard() {
 
 	const handleSidebarItemClick = (option: string) => {
 		setSelectedOption(option);
-		window.location.hash = option;
+		window.location.hash = option.split(" ").join("");
 	};
+
+	console.log(window.location.hash);
 
 	const renderMainContent = () => {
 		switch (selectedOption) {
 			case "Users":
-				return (
-					<UsersTable />
-				);
+				return <UsersTable />;
 			case "Collections":
-				return (
-					<CollectionsTable />
-				);
+				return <CollectionsTable />;
 			case "Items":
-				return (
-					<ItemsTable />
-				);
+				return <ItemsTable />;
+			case "Custom Fields":
+				return <CustomFieldsTable />;
 			case "Comments":
-				return (
-					<CommentsTable />
-				);
+				return <CommentsTable />;
 			default:
 				return (
 					<Typography paragraph>
-						{/* Default content */}
 						Lorem ipsum dolor sit amet, consectetur adipiscing
 						elit...
 					</Typography>
@@ -200,6 +197,15 @@ export default function Dashboard() {
 						}
 					/>
 					<SidebarItem
+						icon={<Ballot />}
+						text="Custom Fields"
+						onClick={() => handleSidebarItemClick("Custom Fields")}
+						selected={
+							selectedOption === "Custom Fields" ||
+							window.location.hash === "#CustomFields"
+						}
+					/>
+					<SidebarItem
 						icon={<Comment />}
 						text="Comments"
 						onClick={() => handleSidebarItemClick("Comments")}
@@ -212,7 +218,7 @@ export default function Dashboard() {
 				<Divider />
 				<List>
 					<ListItem disablePadding>
-						<ListItemButton onClick={() => navigate('/logout')}>
+						<ListItemButton onClick={() => navigate("/logout")}>
 							<ListItemIcon>
 								<Logout />
 							</ListItemIcon>

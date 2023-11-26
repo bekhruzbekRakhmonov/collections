@@ -1,18 +1,45 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Container } from "@mui/material";
 import { useAuth } from "../../../auth/AuthContext";
+import { usersApi } from "../../../utils/api/users";
+import { useNavigate } from "react-router-dom";
+import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
 
 const UserSettings: React.FC = () => {
-	const { user } = useAuth();
+	const { user, logout } = useAuth();
+	const navigate = useNavigate();
 
 	const [name, setName] = useState<string>(user.name);
 	const [email, setEmail] = useState<string>(user.email);
 	const [password, setPassword] = useState<string>("");
+	const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
-	const handleSubmit = (event: React.FormEvent) => {
-		event.preventDefault();
-
+	const handleSubmit = async (event: React.FormEvent) => {
+		try {
+			event.preventDefault();
+			if (user) {
+				await usersApi.updateUser(user.id, {name, email, password});
+				navigate(0);
+			}
+		} catch (error: any) {
+			console.error(error.message)
+		}
 	};
+
+	const handleDelete = async () => {
+		try {
+			await usersApi.deleteAccount();
+			await logout()
+		} catch (error: any) {
+			console.error(error.message)
+		} finally {
+			handleOpenCloseDeleteDialog();
+		}
+	}
+
+	const handleOpenCloseDeleteDialog = () => {
+		setOpenDeleteDialog(!openDeleteDialog);
+	}
 
 	return (
 		<Container
@@ -25,6 +52,7 @@ const UserSettings: React.FC = () => {
 				border: ".5px solid grey",
 			}}
 		>
+			<DeleteDialog onClose={handleOpenCloseDeleteDialog} open={openDeleteDialog} onDelete={handleDelete}/>
 			<form onSubmit={handleSubmit}>
 				<Typography variant="h4" gutterBottom>
 					Settings
@@ -61,7 +89,7 @@ const UserSettings: React.FC = () => {
 						Update
 					</Button>
 
-					<Button variant="contained" color="error" type="submit">
+					<Button variant="contained" color="error" onClick={handleOpenCloseDeleteDialog}>
 						Delete Account
 					</Button>
 				</Box>

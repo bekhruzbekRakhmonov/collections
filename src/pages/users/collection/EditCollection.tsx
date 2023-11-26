@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ICollection } from "../../../utils/interfaces/collection";
 import { ICustomField, IRowCustomField } from "../../../utils/interfaces/custom-fields";
 import { IItem } from "../../../utils/interfaces/item";
 import EditCollectionComponent from "../../../components/users/collections/edit/EditCollectionsComponent";
 import { usersApi } from "../../../utils/api/users";
 import { useNavigate, useParams } from "react-router-dom";
+import ErrorComponent from "../../../components/error/Error";
 
 const EditCollection = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const [error, setError] = useState<string | null>(null);
 	const [collection, setCollection] = React.useState<ICollection>({
 		name: "",
 		description: "",
@@ -84,6 +86,7 @@ const EditCollection = () => {
 				});
 
 			} catch (error: any) {
+				setError(error.message);
 				console.error(error.message);
 			}
 		})();
@@ -113,22 +116,25 @@ const EditCollection = () => {
 	};
 
 	return (
-		<EditCollectionComponent
-			collection={collection}
-			customFields={customFields}
-			itemCustomFields={itemCustomFields}
-			items={items as IItem[]}
-			setCollection={setCollection}
-			setCustomFields={setCustomFields}
-			setItems={setItems}
-			setItemCustomFields={setItemCustomFields}
-			setRemovedItemsIds={setRemovedItemsIds}
-			setRemovedItemCustomFieldsIds={setRemovedItemCustomFieldsIds}
-			setRemovedCollectionCustomFieldsIds={
-				setRemovedCollectionCustomFieldsIds
-			}
-			handleSubmit={handleSubmit}
-		/>
+		<>
+			<ErrorComponent show={error ? true : false} errorMessage={error} />
+			<EditCollectionComponent
+				collection={collection}
+				customFields={customFields}
+				itemCustomFields={itemCustomFields}
+				items={items as IItem[]}
+				setCollection={setCollection}
+				setCustomFields={setCustomFields}
+				setItems={setItems}
+				setItemCustomFields={setItemCustomFields}
+				setRemovedItemsIds={setRemovedItemsIds}
+				setRemovedItemCustomFieldsIds={setRemovedItemCustomFieldsIds}
+				setRemovedCollectionCustomFieldsIds={
+					setRemovedCollectionCustomFieldsIds
+				}
+				handleSubmit={handleSubmit}
+			/>
+		</>
 	);
 };
 

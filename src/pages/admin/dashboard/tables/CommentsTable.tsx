@@ -4,6 +4,7 @@ import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import { IRowComment } from "../../../../utils/interfaces/comment";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
+import { Button } from "@mui/material";
 
 const commentColumns: Column[] = [
 	{ id: "id", label: "ID" },
@@ -63,7 +64,14 @@ const CommentsTable: React.FC = () => {
 	}, []);
 
 	return (
-		<>
+		<div>
+			<Button
+				variant="contained"
+				sx={{ float: "right", margin: "10px" }}
+				onClick={() => navigate("/admin/add-comment")}
+			>
+				Add Comment
+			</Button>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}
@@ -76,12 +84,12 @@ const CommentsTable: React.FC = () => {
 				containerStyle={{ marginTop: "60px" }}
 				onEdit={(id) => navigate(`/admin/edit-comment/${id}`)}
 				onDelete={(id) => {
-                    handleDeleteDialogOpenClose();
-                    setPreDeletedItemId(id);
-                }}
+					handleDeleteDialogOpenClose();
+					setPreDeletedItemId(id);
+				}}
 				refreshData={getComments}
 			/>
-		</>
+		</div>
 	);
 };
 

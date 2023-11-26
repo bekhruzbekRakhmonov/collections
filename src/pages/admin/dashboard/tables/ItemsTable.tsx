@@ -4,6 +4,7 @@ import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import { IRowItem } from "../../../../utils/interfaces/item";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
+import { Button } from "@mui/material";
 
 const itemColumns: Column[] = [
 	{ id: "id", label: "ID" },
@@ -66,7 +67,14 @@ const ItemsTable: React.FC = () => {
 	}, []);
 
 	return (
-		<>
+		<div>
+			<Button
+				variant="contained"
+				sx={{ float: "right", margin: "10px" }}
+				onClick={() => navigate("/admin/add-item")}
+			>
+				Add Item
+			</Button>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}
@@ -84,7 +92,7 @@ const ItemsTable: React.FC = () => {
 				}}
 				refreshData={getItems}
 			/>
-		</>
+		</div>
 	);
 };
 

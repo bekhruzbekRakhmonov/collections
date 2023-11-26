@@ -1,7 +1,18 @@
 import { adminApi as api } from "./api";
 import { IRowUser, IUser } from "../../interfaces/user";
 
-// Get a list of users
+export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
+  try {
+    const response = await api.post("/users", userData);
+    return response.data.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data.message || "Failed to create a new user"
+    );
+  }
+};
+
+
 export const getUsers = async (
 	page: number = 1,
 	limit: number = 5,
@@ -28,7 +39,6 @@ export const getUsers = async (
 	}
 };
 
-// Get a single user by ID
 export const getUser = async (userId: number): Promise<IRowUser> => {
 	try {
 		const response = await api.get(`/users/${userId}`);
@@ -40,7 +50,6 @@ export const getUser = async (userId: number): Promise<IRowUser> => {
 	}
 };
 
-// Delete a user by ID
 export const deleteUser = async (userId: number): Promise<void> => {
 	try {
 		await api.delete(`/users/${userId}`);
@@ -51,7 +60,6 @@ export const deleteUser = async (userId: number): Promise<void> => {
 	}
 };
 
-// Update user information
 export const updateUser = async (
 	userId: number,
 	updatedUserData: Partial<IUser>

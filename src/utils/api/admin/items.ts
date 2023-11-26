@@ -38,6 +38,17 @@ export const getItem = async (itemId: number): Promise<IItem> => {
 	}
 };
 
+export const createItem = async (itemData: IItem): Promise<IItem> => {
+	try {
+		const response = await api.post("/items", itemData);
+		return response.data.data;
+	} catch (error: any) {
+		throw new Error(
+			error.response?.data.message || "Failed to fetch the item"
+		);
+	}
+};
+
 export const deleteItem = async (itemId: number): Promise<void> => {
 	try {
 		await api.delete(`/items/${itemId}`);

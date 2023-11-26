@@ -39,7 +39,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, handleCommentChan
 			<FormControl
 				fullWidth
 				variant="standard"
-				size="small"
+				size="medium"
 				sx={{ m: 1 }}
 			>
 				<Input

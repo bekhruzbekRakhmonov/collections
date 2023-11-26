@@ -60,7 +60,7 @@ export const getItem = async (itemId: string) => {
 	}
 };
 
-export const updateItem = async (itemId: string, updatedData: IItem) => {
+export const updateItem = async (itemId: string | number, updatedData: IRowItem) => {
 	try {
 		const response = await api.patch(`/items/${itemId}`, updatedData);
 		return response.data.data.item;

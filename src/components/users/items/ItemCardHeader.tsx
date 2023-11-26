@@ -121,32 +121,31 @@ const ItemCardHeader: React.FC<ItemCardHeaderProps> = ({ owner, created_at, item
 							open={open}
 							onClose={handleClose}
 						>
-							{user && owner?.id === user.id && (
-
-								<>
-									<MenuItem
-										onClick={() =>
-											navigate(
-												`/edit-item/${itemId}`
-											)
-										}
-										disableRipple
-									>
-										<EditIcon />
-										{t("edit")}
-									</MenuItem>
-									<MenuItem
-										onClick={() => {
-											handleOpenDeleteDialog();
-											setAnchorEl(null);
-										}}
-										disableRipple
-									>
-										<Delete />
-										{t("delete")}
-									</MenuItem>
-								</>
-							)}
+							{user &&
+								(owner?.id === user.id ||
+									user.role === "admin") && (
+									<>
+										<MenuItem
+											onClick={() =>
+												navigate(`/edit-item/${itemId}`)
+											}
+											disableRipple
+										>
+											<EditIcon />
+											{t("edit")}
+										</MenuItem>
+										<MenuItem
+											onClick={() => {
+												handleOpenDeleteDialog();
+												setAnchorEl(null);
+											}}
+											disableRipple
+										>
+											<Delete />
+											{t("delete")}
+										</MenuItem>
+									</>
+								)}
 							<MenuItem
 								onClick={() => {
 									copyToClipboard(

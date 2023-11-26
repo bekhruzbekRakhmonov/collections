@@ -22,6 +22,7 @@ import NotFoundPage from "./components/error/NotFound";
 import ShowItem from "./pages/users/item/ShowItem";
 import PrivateAdminRoutes from "./auth/PrivateAdminRoutes";
 import Logout from "./pages/auth/Logout";
+import EditItem from "./pages/users/item/EditItem";
 init18n()
 
 const App: React.FC = () => {
@@ -83,10 +84,7 @@ const App: React.FC = () => {
 						/>
 						<Route path="/search" element={<SearchResult />} />
 						<Route element={<PrivateRoutes />}>
-							<Route
-								path="/logout"
-								element={<Logout />}
-							/>
+							<Route path="/logout" element={<Logout />} />
 							<Route
 								path="/create-collection"
 								element={<CreateCollection />}
@@ -104,12 +102,29 @@ const App: React.FC = () => {
 								element={<ShowItem />}
 							/>
 							<Route
+								path="/edit-item/:id"
+								element={<EditItem />}
+							/>
+							<Route
 								path="/settings"
 								element={<UserSettings />}
 							/>
 						</Route>
 						<Route element={<PrivateAdminRoutes />}>
 							<Route path="/admin" element={<Dashboard />} />
+							<Route
+								path="/admin/add-user"
+								element={<Admin.AddUser />}
+							/>
+
+							<Route
+								path="/admin/add-item"
+								element={<Admin.AddItem />}
+							/>
+							<Route
+								path="/admin/add-custom-field"
+								element={<Admin.AddCustomField />}
+							/>
 							<Route
 								path="/admin/edit-collection/:id"
 								element={<Admin.EditCollection />}
@@ -127,7 +142,7 @@ const App: React.FC = () => {
 								element={<Admin.EditComment />}
 							/>
 							<Route
-								path="/admin/edit-custom-fields/:id"
+								path="/admin/edit-custom-field/:id"
 								element={<Admin.EditCustomField />}
 							/>
 						</Route>

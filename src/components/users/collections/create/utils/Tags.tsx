@@ -23,13 +23,18 @@ const Tags: React.FC<TagsProps> = ({ onTagsChange, itemIndex, tags }) => {
 	const [value, setValue] = useState<string>("");
 	const [similarTags, setSimilarTags] = useState<string[]>([]);
 
-	const addTag = () => {
-		if (value.trim() !== "") {
+	const addTag = (option?: string) => {
+		if (option) {
+			const newTags = [...tags, option.trim()];
+			onTagsChange(newTags, itemIndex);
+			setValue("");
+		} else if (value.trim() !== "") {
 			const newTags = [...tags, value.trim()];
 			onTagsChange(newTags, itemIndex);
 			setValue("");
 		}
 	};
+
 
 	const handleDelete = (tagIndex: number) => {
 		const newTags = tags.filter((_, index) => index !== tagIndex);
@@ -96,9 +101,8 @@ const Tags: React.FC<TagsProps> = ({ onTagsChange, itemIndex, tags }) => {
 					options={similarTags}
 					getOptionLabel={(option) => option}
 					renderOption={(props, option) => (
-						<li {...props}>{option}</li>
+						<li {...props} onClick={() => addTag(option)}>{option}</li>
 					)}
-					sx={{ width: 300 }}
 					freeSolo
 					renderInput={(params) => (
 						<TextField

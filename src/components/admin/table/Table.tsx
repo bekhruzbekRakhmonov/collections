@@ -53,6 +53,7 @@ const SimpleTable: React.FC<Props> = ({
 	const [page, setPage] = React.useState(0);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const [selected, setSelected] = React.useState<number[]>([]);
+	const [allSelected, setAllSelected] = React.useState<boolean>(false);
 	const [order, setOrder] = React.useState<"asc" | "desc">("asc");
 	const [orderBy, setOrderBy] = React.useState<string>("");
 
@@ -66,13 +67,16 @@ const SimpleTable: React.FC<Props> = ({
 	const handleSelectAllClick = (
 		event: React.ChangeEvent<HTMLInputElement>
 	) => {
-		if (event.target.checked) {
-			const newSelecteds = result.data.map((n) => n.id);
-			setSelected(newSelecteds);
-			return;
+		const newSelecteds = result.data.map((n) => n.id);
+		if (newSelecteds.length === selected.length) {
+			setSelected([]);
+			event.target.checked = false;
 		}
-		setSelected([]);
+		if (event.target.checked) {
+			setSelected(newSelecteds);
+		}
 	};
+
 
 	const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
 		const selectedIndex = selected.indexOf(id);

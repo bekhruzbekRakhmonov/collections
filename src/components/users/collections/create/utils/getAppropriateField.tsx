@@ -13,7 +13,6 @@ const getAppropriateField = (
 			| SelectChangeEvent<string>
 	) => void
 ): React.ReactNode => {
-	console.log("value", value)
 	switch (type) {
 		case "multiline":
 			return (
@@ -54,20 +53,22 @@ const getAppropriateField = (
 			);
 		case "integer":
 			return (
-				<TextField
-					required
-					fullWidth
-					type="number"
-					id={id}
-					label={name}
-					name={name}
-					value={value}
-					onChange={(
-						e: React.ChangeEvent<
-							HTMLInputElement | HTMLTextAreaElement
-						>
-					) => handleInputChange(index, e)}
-				/>
+				<FormControl fullWidth>
+					<FormLabel>{name}</FormLabel>
+					<TextField
+						required
+						fullWidth
+						type="number"
+						id={id}
+						name={name}
+						value={value}
+						onChange={(
+							e: React.ChangeEvent<
+								HTMLInputElement | HTMLTextAreaElement
+							>
+						) => handleInputChange(index, e)}
+					/>
+				</FormControl>
 			);
 		case "date":
 			return (

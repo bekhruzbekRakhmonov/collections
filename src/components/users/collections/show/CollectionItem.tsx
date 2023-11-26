@@ -6,6 +6,7 @@ import ExpandMore from "../../utils/ExpandMore";
 import { Favorite } from "@mui/icons-material";
 import { IRowItem } from "../../../../utils/interfaces/item";
 import { useAuth } from "../../../../auth/AuthContext";
+import RenderTags from "./utils/RenderTags";
 
 interface CollectionItemProps {
 	item: IRowItem;
@@ -50,20 +51,11 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
 						</Typography>
 					</Box>
 				))}
-				{(item.tags && item.tags.length > 0
-					? item.tags.split(",")
-					: []
-				).map((tag) => (
-					<Chip
-						label={`#${tag}`}
-						clickable
-						sx={{
-							borderRadius: "5px",
-							border: ".5px solid black",
-							margin: "2px",
-						}}
-					/>
-				))}
+				{item.tags && item.tags.length > 0 ? (
+					<RenderTags tags={item.tags.split(",")} />
+				) : (
+					<RenderTags tags={[]} />
+				)}
 			</CardContent>
 			<CardActions
 				disableSpacing

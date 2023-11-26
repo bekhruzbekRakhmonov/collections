@@ -161,7 +161,10 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 								{pages.map((page) => (
 									<MenuItem
 										key={page.label}
-										onClick={() => navigate(page.link)}
+										onClick={() => {
+											handleCloseNavMenu();
+											navigate(page.link);
+										}}
 									>
 										<Typography textAlign="center">
 											{page.label}
@@ -391,7 +394,10 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 							{settings.map(({ label, link }, index) => (
 								<MenuItem
 									key={index}
-									onClick={() => navigate(link)}
+									onClick={() => {
+										handleCloseUserMenu();
+										navigate(link);
+									}}
 								>
 									<Typography textAlign="center">
 										{label}

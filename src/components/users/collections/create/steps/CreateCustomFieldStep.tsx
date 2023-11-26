@@ -69,7 +69,6 @@ const CreateCustomFieldStep: React.FC<CreateCustomFieldStepProps> = ({
 			setRemovedItemCustomFieldsIds((prevIds) => {
 				const updatedIds = [...prevIds];
 				itemCustomFields?.forEach((itemFields) => {
-					console.log(itemFields[index]);
 					itemFields.map((field) => {
 						if (
 							field !== undefined &&

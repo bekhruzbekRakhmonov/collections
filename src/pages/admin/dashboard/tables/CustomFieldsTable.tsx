@@ -2,55 +2,52 @@ import React, { useEffect, useState } from "react";
 import SimpleTable, { Column } from "../../../../components/admin/table/Table";
 import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
-import { IRowCollection } from "../../../../utils/interfaces/collection";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
 import { Button } from "@mui/material";
+import { IRowCustomField } from "../../../../utils/interfaces/custom-fields";
 
-const collectionColumns: Column[] = [
+const customFieldColumns: Column[] = [
 	{ id: "id", label: "ID" },
 	{ id: "name", label: "Name" },
-	{ id: "description", label: "Description" },
+	{ id: "type", label: "Type" },
+	{ id: "value", label: "Value" },
 ];
-interface IResult {
-	data: IRowCollection[];
-	total: number;
-}
 
-const CollectionsTable: React.FC = () => {
+const CustomFieldsTable: React.FC = () => {
 	const navigate = useNavigate();
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
 		null
 	);
-	const [collectionsData, setCollectionsData] = useState<IResult>({
-		data: [],
-		total: 0,
-	});
+	const [customFieldsData, setCustomFieldsData] = React.useState<{
+		data: IRowCustomField[];
+		total: number;
+	}>({ data: [], total: 0 });
 
-	const getCollections = async (
+	const getCustomFields = async (
 		page?: number,
 		limit?: number,
 		order?: string,
 		orderBy?: string
 	) => {
-		const result = await admin.getCollections(page, limit, order, orderBy);
-		setCollectionsData(result);
+		const result = await admin.getCustomFields(page, limit, order, orderBy);
+        console.log("result", result)
+		setCustomFieldsData(result);
 	};
 
 	const handleDelete = async () => {
 		try {
 			if (preDeletedItemId) {
 				await admin.deleteCollection(preDeletedItemId);
-				setCollectionsData((prevResult) => ({
+				setCustomFieldsData((prevResult) => ({
 					data: prevResult.data.filter(
 						(_, i) => prevResult.data[i].id !== preDeletedItemId
 					),
 					total: prevResult.total - 1,
 				}));
-
-				if (collectionsData.data.length === 1) {
-					await getCollections();
+				if (customFieldsData.data.length === 1) {
+					await getCustomFields();
 				}
 			}
 		} catch (error: any) {
@@ -65,7 +62,8 @@ const CollectionsTable: React.FC = () => {
 	};
 
 	useEffect(() => {
-		getCollections();
+		getCustomFields();
+        console.log(customFieldsData)
 	}, []);
 
 	return (
@@ -73,9 +71,9 @@ const CollectionsTable: React.FC = () => {
 			<Button
 				variant="contained"
 				sx={{ float: "right", margin: "10px" }}
-				onClick={() => navigate("/admin/add-collection")}
+				onClick={() => navigate("/admin/add-custom-field")}
 			>
-				Add Collection
+				Add Custom Field
 			</Button>
 			<DeleteDialog
 				open={openDeleteDialog}
@@ -83,19 +81,19 @@ const CollectionsTable: React.FC = () => {
 				onDelete={handleDelete}
 			/>
 			<SimpleTable
-				key="collections"
-				result={collectionsData}
-				columns={collectionColumns}
+				key="customfields"
+				result={customFieldsData}
+				columns={customFieldColumns}
 				containerStyle={{ marginTop: "60px" }}
-				onEdit={(id) => navigate(`/admin/edit-collection/${id}`)}
+				onEdit={(id) => navigate(`/admin/edit-custom-field/${id}`)}
 				onDelete={(id) => {
 					handleDeleteDialogOpenClose();
 					setPreDeletedItemId(id);
 				}}
-				refreshData={getCollections}
+				refreshData={getCustomFields}
 			/>
 		</div>
 	);
 };
 
-export default CollectionsTable;
+export default CustomFieldsTable;

@@ -1,35 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Avatar, Chip, Box, CardHeader, IconButton, Container } from "@mui/material";// Adjust the import path based on your actual item model
+import {
+	Card,
+	CardContent,
+	Typography,
+	Chip,
+	Box,
+	IconButton,
+	CardActions,
+} from "@mui/material";
 import { IRowItem } from "../../../utils/interfaces/item";
 import { useParams } from "react-router-dom";
 import { usersApi } from "../../../utils/api/users";
-import { red } from "@mui/material/colors";
-import { MoreVert } from "@mui/icons-material";
-import ItemCardHeader from "./ItemCardHeader";
+import { Favorite } from "@mui/icons-material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ItemCardHeader from "../../../components/users/items/ItemCardHeader";
+import { useAuth } from "../../../auth/AuthContext";
+import ExpandMore from "../../../components/users/utils/ExpandMore";
+import CommentsList from "../../../components/users/comments/CommentsList";
+import ErrorComponent from "../../../components/error/Error";
+import RenderTags from "../../../components/users/collections/show/utils/RenderTags";
 
-interface ItemCardProps {
-
-}
+interface ItemCardProps {}
 
 const ShowItem: React.FC<ItemCardProps> = () => {
-    const {id} = useParams();
+	const { id } = useParams();
 
-    const [item, setItem] = useState<IRowItem | null>(null)
+	const [item, setItem] = useState<IRowItem | null>(null);
+	const { user, isAuthenticated } = useAuth();
 
-    useEffect(() => {
-        (async () => {
-            const data = await usersApi.getItem(String(id));
-            setItem(data);
-        })()
-    }, [id])
+	const [expanded, setExpanded] = useState<boolean>(false);
+
+	const handleExpandClick = () => {
+		setExpanded(!expanded)
+	};
+
+	useEffect(() => {
+		const fetchItem = async () => {
+			try {
+				const data = await usersApi.getItem(String(id));
+				setItem(data);
+			} catch (error) {
+				console.error("Error fetching item:", error);
+			}
+		};
+
+		fetchItem();
+	}, [id]);
+
+	const handleLike = async () => {
+		try {
+			const updatedItem = await usersApi.likeOrUnlikeItem(item?.id || 0);
+			setItem(updatedItem);
+		} catch (error) {
+			console.error("Error toggling like:", error);
+		}
+	};
+
+	const isUserLikedItem = () => {
+		if (!item) return false;
+		return item.likes?.some((like) => like.owner.id === Number(user.id));
+	};
+
+
 	return (
-		<Container sx={{ display: "flex" }}>
+		<div
+			style={{
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				marginTop: "20px",
+			}}
+		>
 			{item !== null && (
-				<Card>
-					{/* You can customize the card header based on your item data */}
-					<ItemCardHeader owner={item.owner} itemId={item.id} created_at={item.created_at} handleCloseDeleteDialog={() => {}} handleOpenDeleteDialog={() => {}}/>
+				<Card sx={{ minWidth: "320px" }}>
+					<ItemCardHeader
+						owner={item.owner}
+						itemId={item.id}
+						created_at={item.created_at}
+						handleCloseDeleteDialog={() => {}}
+						handleOpenDeleteDialog={() => {}}
+					/>
 
-					{/* Custom Fields */}
 					<CardContent>
 						<Typography variant="h5">{item.name}</Typography>
 						{item.custom_fields?.map((field) => (
@@ -53,37 +105,66 @@ const ShowItem: React.FC<ItemCardProps> = () => {
 								</Typography>
 							</Box>
 						))}
-						{(item.tags && item.tags.length > 0
-							? item.tags.split(",")
-							: []
-						).map((tag) => (
-							<Chip
-								label={`#${tag}`}
-								clickable
-								sx={{
-									borderRadius: "5px",
-									border: ".5px solid black",
-									margin: "2px",
+						{item.tags && item.tags.length > 0 ? (
+							<RenderTags tags={item.tags.split(",")} />
+						) : <RenderTags tags={[]} />}
+					</CardContent>
+					<CardActions
+						disableSpacing
+						sx={{
+							paddingTop: 0,
+							display: "flex",
+							justifyContent: "space-between",
+						}}
+					>
+						<Box
+							sx={{
+								display: "flex",
+								alignItems: "center",
+							}}
+						>
+							<IconButton
+								onClick={(e) => {
+									if (!isAuthenticated) {
+										window.alert(
+											"Please login to like item"
+										);
+									} else {
+										handleLike();
+									}
 								}}
-							/>
-						))}
-					</CardContent>
-
-					{/* Likes */}
-					<CardContent>
-						<Typography variant="h6">Likes:</Typography>
-						{item.likes?.map((like: any, index: any) => (
-							<Chip
-								key={index}
-								avatar={<Avatar>{like.owner.name[0]}</Avatar>}
-								label={like.owner.name}
-								style={{ margin: "4px" }}
-							/>
-						))}
-					</CardContent>
+							>
+								{isAuthenticated && isUserLikedItem() ? (
+									<Favorite color="error" />
+								) : (
+									<FavoriteBorderIcon />
+								)}
+							</IconButton>
+							<Typography>{item.likes?.length}</Typography>
+						</Box>
+						<Box
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								cursor: "pointer",
+							}}
+							onClick={handleExpandClick}
+						>
+							Comments
+							<ExpandMore
+								expand={expanded}
+								onClick={handleExpandClick}
+								aria-expanded={expanded}
+								aria-label="show more"
+							>
+								<ExpandMoreIcon />
+							</ExpandMore>
+						</Box>
+					</CardActions>
+					<CommentsList expanded={expanded} itemId={item.id} />
 				</Card>
 			)}
-		</Container>
+		</div>
 	);
 };
 

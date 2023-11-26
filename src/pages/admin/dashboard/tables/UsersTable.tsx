@@ -4,6 +4,7 @@ import { IRowUser } from "../../../../utils/interfaces/user";
 import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
+import { Button, Container } from "@mui/material";
 
 const userColumns: Column[] = [
 	{ id: "id", label: "ID" },
@@ -65,7 +66,8 @@ const UsersTable: React.FC = () => {
 	};
 
 	return (
-		<>
+		<div>
+			<Button variant="contained" sx={{ float: "right", margin: "10px" }} onClick={() => navigate("/admin/add-user")}>Add User</Button>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}
@@ -78,12 +80,12 @@ const UsersTable: React.FC = () => {
 				containerStyle={{ marginTop: "60px" }}
 				onEdit={(id) => navigate(`/admin/edit-user/${id}`)}
 				onDelete={(id) => {
-					handleDeleteDialogOpenClose()
+					handleDeleteDialogOpenClose();
 					setPreDeletedItemId(id);
 				}}
 				refreshData={getUsers}
 			/>
-		</>
+		</div>
 	);
 };
 

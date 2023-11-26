@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { List } from "@mui/material";
+import { List, Typography } from "@mui/material";
 import { IRowCollection } from "../../../utils/interfaces/collection";
 import Loading from "../../loading/Loading";
 import CollectionCard from "../collections/show/CollectionCard";
@@ -77,6 +77,10 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 
 	return (
 		<div>
+			<ErrorComponent
+				show={error !== null}
+				errorMessage={String(error)}
+			/>
 			<List>
 				{collections.map((collection: IRowCollection, index) => (
 					<CollectionCard
@@ -88,10 +92,6 @@ const UserCollectionsList: React.FC<UserCollectionsListProps> = ({
 				<div ref={sentinelRef} style={{ height: "10px" }} />
 				{loading && <Loading />}
 			</List>
-			<ErrorComponent
-				show={error !== null}
-				errorMessage={String(error)}
-			/>
 		</div>
 	);
 };

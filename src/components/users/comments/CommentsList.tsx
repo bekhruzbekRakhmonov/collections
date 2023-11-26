@@ -9,6 +9,7 @@ import { IRowComment } from "../../../utils/interfaces/comment";
 import Loading from "../../loading/Loading";
 import LoginDialog from "../../auth/login/LoginDialog";
 import api from "../../../utils/api/api";
+import Cookies from "js-cookie";
 
 interface CommentsProp {
 	expanded: boolean;
@@ -16,7 +17,9 @@ interface CommentsProp {
 }
 
 const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
+	const accessToken = Cookies.get("accessToken");
 	const { user, isAuthenticated } = useAuth();
+	const [token, setToken] = useState<string | undefined>(accessToken);
 	const [newComment, setNewComment] = useState("");
 	const [comments, setComments] = useState <Partial<IRowComment>[]>([]);
 	const [error, setError] = useState<string | null>("null");
@@ -29,6 +32,9 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 
 	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
 		transports: ["websocket"],
+		auth: {
+			token
+		},
 	});
 
 	useEffect(() => {
@@ -48,8 +54,6 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 
 	useEffect(() => {
 		socket.on("connect", () => {
-			console.log("Connected to server");
-			// Join the room associated with the item
 			socket.emit("joinRoom", itemId);
 		});
 
@@ -65,6 +69,8 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 		socket.on("unauthenticated", async (data) => {
 			try {
 				await api.get("/auth");
+				const token = Cookies.get("accessToken");
+				setToken(token);
 				socket.connect();
 			} catch (error: any) {
 				console.error(error.message)	

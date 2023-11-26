@@ -3,19 +3,23 @@ import { Container, Tabs, Tab } from "@mui/material";
 import ProfileCard from "../../../components/users/profile/ProfileCard";
 import UserCollectionsList from "../../../components/users/profile/CollectionsList";
 import { useParams } from "react-router-dom";
-import { IRowUser } from "../../../utils/interfaces/user";
+import { IRowUser, IUserStatistics } from "../../../utils/interfaces/user";
 import { usersApi } from "../../../utils/api/users";
 
 const ProfilePage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<number>(0);
 	const [userData, setUserData] = useState<IRowUser | null>(null);
+	const [userStatistics, setUserStatistics] = useState<IUserStatistics | null>(null);
+
 	const { id } = useParams();
 
 	useEffect(() => {
 		(async () => {
 			try {
-				const data = await usersApi.getUser(String(id));
+				const data = await usersApi.getUser(Number(id));
 				setUserData(data);
+				const statistics = await usersApi.getStatisticsByUserId(Number(id))
+				setUserStatistics(statistics);
 			} catch (error: any) {
 				console.error(error.message)
 			}
@@ -33,7 +37,7 @@ const ProfilePage: React.FC = () => {
 	return (
 		<Container maxWidth="sm">
 			<br/>
-			{ userData && <ProfileCard user={userData} />}
+			{ userData && userStatistics && <ProfileCard userData={userData} userStatistics={userStatistics}/>}
 			<Tabs value={activeTab} onChange={handleTabChange} centered>
 				<Tab label="Collections" />
 			</Tabs>

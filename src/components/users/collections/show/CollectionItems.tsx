@@ -1,15 +1,8 @@
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material";
-import MDEditor from "@uiw/react-md-editor";
 import { IRowCollection } from "../../../../utils/interfaces/collection";
 import { usersApi } from "../../../../utils/api/users";
 import { useAuth } from "../../../../auth/AuthContext";
-import api from "../../../../utils/api/api";
-import CollectionCardHeader from "./CollectionCardHeader";
 
 import CollectionItem from "./CollectionItem";
 import CollectionCard from "./CollectionCard";
@@ -70,9 +63,14 @@ const CollectionItemsCard: React.FC<CollectionItemsCardProps> = ({
 	return (
 		<div style={{ display: "flex", justifyContent: "center" }}>
 			<Card
-				sx={{ marginTop: "15px", maxWidth: "600px", minWidth: "300px" }}
+				sx={{
+					boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+					marginTop: "15px",
+					maxWidth: `${window.innerWidth - 20}px`,
+					minWidth: "330px",
+				}}
 			>
-				<CollectionCard data={data} handleDelete={handleDelete}/>
+				<CollectionCard data={data} handleDelete={handleDelete} />
 				{data.items.map((item, index) => (
 					<CollectionItem
 						item={item}
