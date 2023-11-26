@@ -5,7 +5,7 @@ import { IItem } from "../../../utils/interfaces/item";
 import EditCollectionComponent from "../../../components/users/collections/edit/EditCollectionsComponent";
 import { usersApi } from "../../../utils/api/users";
 import { useNavigate, useParams } from "react-router-dom";
-import ErrorComponent from "../../../components/error/Error";
+import ErrorComponent from "../../../components/common/error/Error";
 
 const EditCollection = () => {
 	const { id } = useParams();

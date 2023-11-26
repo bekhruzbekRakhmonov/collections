@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
 import { IUser } from "../utils/interfaces/user";
 import { usersApi } from "../utils/api/users";
-import Loading from "../components/loading/Loading";
+import Loading from "../components/common/loading/Loading";
 
 interface AuthContextProps {
 	user: any;

@@ -2,7 +2,7 @@ import { Box, Typography, TextField, Button } from "@mui/material";
 import { error } from "console";
 import React from "react";
 import { Link } from "react-router-dom";
-import { ILogin } from "../../../utils/interfaces/login";
+import { ILogin } from "../../../../utils/interfaces/login";
 import { useTranslation } from "react-i18next";
 
 interface LoginComponentProps {

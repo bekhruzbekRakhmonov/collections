@@ -4,7 +4,7 @@ import { TextField, Button, Typography, Box } from "@mui/material";
 import { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ILogin } from "../../utils/interfaces/login";
-import LoginComponent from "../../components/auth/login/Login";
+import LoginComponent from "../../components/common/auth/login/Login";
 
 
 const Login = () => {

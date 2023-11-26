@@ -6,8 +6,8 @@ import CommentForm from "./CommentForm";
 import { io } from "socket.io-client";
 import { usersApi } from "../../../utils/api/users";
 import { IRowComment } from "../../../utils/interfaces/comment";
-import Loading from "../../loading/Loading";
-import LoginDialog from "../../auth/login/LoginDialog";
+import Loading from "../../common/loading/Loading";
+import LoginDialog from "../../common/auth/login/LoginDialog";
 import api from "../../../utils/api/api";
 import Cookies from "js-cookie";
 

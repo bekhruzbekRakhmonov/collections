@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { admin } from "../../../utils/api/admin";
 import { IRowUser, IUser } from "../../../utils/interfaces/user";
-import SnackbarAlert from "../../../components/utils/SnackbarAlert";
+import SnackbarAlert from "../../../components/common/utils/SnackbarAlert";
 
 interface AddUserProps {}
 

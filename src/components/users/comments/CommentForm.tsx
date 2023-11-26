@@ -1,7 +1,7 @@
 import { Send } from "@mui/icons-material";
 import { Box, FormControl, Input, InputAdornment, IconButton, useTheme } from "@mui/material";
 import React, { useState } from "react";
-import LoginDialog from "../../auth/login/LoginDialog";
+import LoginDialog from "../../common/auth/login/LoginDialog";
 
 interface Comment {
 	id: number;

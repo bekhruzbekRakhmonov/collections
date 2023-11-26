@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { IRegister } from "../../utils/interfaces/register";
-import RegisterComponent from "../../components/auth/register/Register";
+import RegisterComponent from "../../components/common/auth/register/Register";
 
 const Register = () => {
 	const navigate = useNavigate();

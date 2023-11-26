@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { List, Typography } from "@mui/material";
 import { IRowCollection } from "../../../utils/interfaces/collection";
-import Loading from "../../loading/Loading";
+import Loading from "../../common/loading/Loading";
 import CollectionCard from "../collections/show/CollectionCard";
 import { usersApi } from "../../../utils/api/users";
-import ErrorComponent from "../../error/Error";
+import ErrorComponent from "../../common/error/Error";
 
 interface UserCollectionsListProps {
     userId: number;

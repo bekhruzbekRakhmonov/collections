@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import NotFoundPage from "../components/error/NotFound";
+import NotFoundPage from "../components/common/error/NotFound";
 
 const PrivateAdminRoutes = () => {
 	const { isAuthenticated, user } = useAuth();

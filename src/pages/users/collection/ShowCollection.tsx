@@ -5,7 +5,7 @@ import { IRowCollection } from "../../../utils/interfaces/collection";
 import CollectionItemsCard from "../../../components/users/collections/show/CollectionItems";
 import DeleteDialog from "../../../components/users/collections/delete/DeleteDialog";
 import { usersApi } from "../../../utils/api/users";
-import ErrorComponent from "../../../components/error/Error";
+import ErrorComponent from "../../../components/common/error/Error";
 
 const ShowCollection = () => {
 	const { id } = useParams();

@@ -18,7 +18,7 @@ import ItemCardHeader from "../../../components/users/items/ItemCardHeader";
 import { useAuth } from "../../../auth/AuthContext";
 import ExpandMore from "../../../components/users/utils/ExpandMore";
 import CommentsList from "../../../components/users/comments/CommentsList";
-import ErrorComponent from "../../../components/error/Error";
+import ErrorComponent from "../../../components/common/error/Error";
 import RenderTags from "../../../components/users/collections/show/utils/RenderTags";
 
 interface ItemCardProps {}

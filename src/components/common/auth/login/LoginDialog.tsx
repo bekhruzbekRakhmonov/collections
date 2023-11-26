@@ -1,6 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button } from "@mui/material";
 import React from "react";
-import Login from "../../../pages/auth/Login";
+import Login from "../../../../pages/auth/Login";
 
 interface LoginDialogProps {
     open: boolean;

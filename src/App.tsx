@@ -18,7 +18,7 @@ import UserSettings from "./pages/users/profile/UserSettings";
 import { Admin } from "./pages/admin";
 import SearchResult from "./pages/users/search/SearchResult";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
-import NotFoundPage from "./components/error/NotFound";
+import NotFoundPage from "./components/common/error/NotFound";
 import ShowItem from "./pages/users/item/ShowItem";
 import PrivateAdminRoutes from "./auth/PrivateAdminRoutes";
 import Logout from "./pages/auth/Logout";

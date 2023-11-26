@@ -4,8 +4,8 @@ import { Box, List } from "@mui/material";
 import { getCollections } from "../../../../utils/api/users/collections";
 import CollectionCard from "./CollectionCard";
 import { IRowCollection } from "../../../../utils/interfaces/collection";
-import Loading from "../../../loading/Loading";
-import ErrorComponent from "../../../error/Error";
+import Loading from "../../../common/loading/Loading";
+import ErrorComponent from "../../../common/error/Error";
 
 interface CollectionsListProps {
 	handleDelete: (id: number) => void;

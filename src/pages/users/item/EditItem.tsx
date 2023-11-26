@@ -6,7 +6,7 @@ import { Button, Card, Container, FormControl, FormLabel, TextField, Typography 
 import { IRowItem } from "../../../utils/interfaces/item";
 import Tags from "../../../components/users/collections/create/utils/Tags";
 import { useAuth } from "../../../auth/AuthContext";
-import ErrorComponent from "../../../components/error/Error";
+import ErrorComponent from "../../../components/common/error/Error";
 
 interface EditItemProps {}
 
