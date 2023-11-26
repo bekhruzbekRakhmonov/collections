@@ -42,7 +42,6 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({
 
 	const pages = [
 		{ label: "Feed", link: "/" },
-		{ label: "Profile", link: isAuthenticated ? `/users/${user.id}` : '/login' },
 	];
 	const settings = [
 		{ label: "Profile", link: `/users/${user?.id || ''}` },
