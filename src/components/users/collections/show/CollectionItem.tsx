@@ -7,6 +7,8 @@ import { Favorite } from "@mui/icons-material";
 import { IRowItem } from "../../../../utils/interfaces/item";
 import { useAuth } from "../../../../auth/AuthContext";
 import RenderTags from "./utils/RenderTags";
+import Cookies from "js-cookie";
+import { io } from "socket.io-client";
 
 interface CollectionItemProps {
 	item: IRowItem;
@@ -26,6 +28,15 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
     expandedItems,
 }) => {
     const {isAuthenticated} = useAuth();
+
+	const token = Cookies.get("accessToken");
+	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
+		transports: ["websocket"],
+		auth: {
+			token,
+		},
+		reconnection: true,
+	});
 	return (
 		<Card
 			key={item.id}
@@ -36,8 +47,9 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
 		>
 			<CardContent>
 				<Typography variant="h6">{item.name}</Typography>
-				{item.custom_fields?.map((field) => (
+				{item.custom_fields?.map((field, index) => (
 					<Box
+						key={index}
 						sx={{
 							display: "flex",
 							alignItems: "center",
@@ -108,6 +120,7 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
 				</Box>
 			</CardActions>
 			<CommentsList
+				socket={socket}
 				expanded={expandedItems.includes(item.id)}
 				itemId={item.id}
 			/>

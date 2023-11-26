@@ -73,6 +73,7 @@ const CollectionItemsCard: React.FC<CollectionItemsCardProps> = ({
 				<CollectionCard data={data} handleDelete={handleDelete} />
 				{data.items.map((item, index) => (
 					<CollectionItem
+						key={index}
 						item={item}
 						itemIndex={index}
 						expandedItems={expandedItems}

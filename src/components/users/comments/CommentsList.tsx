@@ -3,7 +3,7 @@ import Comment from "./Comment";
 import { Alert, CardContent, CircularProgress, Collapse } from "@mui/material";
 import { useAuth } from "../../../auth/AuthContext";
 import CommentForm from "./CommentForm";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import { usersApi } from "../../../utils/api/users";
 import { IRowComment } from "../../../utils/interfaces/comment";
 import Loading from "../../common/loading/Loading";
@@ -14,9 +14,10 @@ import Cookies from "js-cookie";
 interface CommentsProp {
 	expanded: boolean;
 	itemId: number;
+	socket: Socket;
 }
 
-const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
+const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
 	const accessToken = Cookies.get("accessToken");
 	const { user, isAuthenticated } = useAuth();
 	const [token, setToken] = useState<string | undefined>(accessToken);
@@ -29,13 +30,6 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
-
-	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
-		transports: ["websocket"],
-		auth: {
-			token
-		},
-	});
 
 	useEffect(() => {
 		setLoading(true);
@@ -51,36 +45,38 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 		})();
 	}, [itemId]);
 
-	socket.on("connect", () => {
-		socket.emit("joinRoom", itemId);
-	});
-
-	socket.on("error", (error) => {
-		console.error(error);
-	});
-
-	socket.on("newComment", (data) => {
-		const { item, ...rest } = data;
-		setComments((prevComments) => [rest, ...prevComments]);
-	});
-
-	socket.on("unauthenticated", async (data) => {
-		try {
-			await api.get("/auth");
-			const token = Cookies.get("accessToken");
-			setToken(token);
-			socket.connect();
-		} catch (error: any) {
-			console.error(error.message);
-		}
-	});
-
-	socket.on("unauthenticated-retry", async (data) => {
-		console.log(data);
-	});
-
-
 	useEffect(() => {
+
+		socket.on("connect", () => {
+			console.log("[Connected to Websocket]")
+			socket.emit("joinRoom", itemId);
+		});
+
+		socket.on("error", (error) => {
+			console.error(error);
+		});
+
+		socket.on("newComment", (data) => {
+			console.log("[New Comment]", data)
+			const { item, ...rest } = data;
+			setComments((prevComments) => [rest, ...prevComments]);
+		});
+
+		socket.on("unauthenticated", async (data) => {
+			try {
+				await api.get("/auth");
+				const token = Cookies.get("accessToken");
+				setToken(token);
+				socket.connect();
+			} catch (error: any) {
+				console.error(error.message);
+			}
+		});
+
+		socket.on("unauthenticated-retry", async (data) => {
+			console.log(data);
+		});
+
 		return () => {
 			socket.emit("leaveRoom", itemId);
 			socket.disconnect();

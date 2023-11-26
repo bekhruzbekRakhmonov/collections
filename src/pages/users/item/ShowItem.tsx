@@ -20,6 +20,8 @@ import ExpandMore from "../../../components/users/utils/ExpandMore";
 import CommentsList from "../../../components/users/comments/CommentsList";
 import ErrorComponent from "../../../components/common/error/Error";
 import RenderTags from "../../../components/users/collections/show/utils/RenderTags";
+import { io } from "socket.io-client";
+import Cookies from "js-cookie";
 
 interface ItemCardProps {}
 
@@ -34,6 +36,15 @@ const ShowItem: React.FC<ItemCardProps> = () => {
 	const handleExpandClick = () => {
 		setExpanded(!expanded)
 	};
+
+	const token = Cookies.get("accessToken");
+	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
+		transports: ["websocket"],
+		auth: {
+			token,
+		},
+		reconnection: true,
+	});
 
 	useEffect(() => {
 		const fetchItem = async () => {
@@ -161,7 +172,7 @@ const ShowItem: React.FC<ItemCardProps> = () => {
 							</ExpandMore>
 						</Box>
 					</CardActions>
-					<CommentsList expanded={expanded} itemId={item.id} />
+					<CommentsList socket={socket} expanded={expanded} itemId={item.id} />
 				</Card>
 			)}
 		</div>

@@ -22,7 +22,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleDelete }) =
 	const [isDeleteDialogOpen, setDeleteDialogOpen] = React.useState<boolean>(false);
 
 	return (
-		<>
+		<div>
 			<DeleteDialog
 				open={isDeleteDialogOpen}
 				onClose={() => setDeleteDialogOpen(false)}
@@ -93,7 +93,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleDelete }) =
 					</CardContent>
 				</CardActionArea>
 			</Card>
-		</>
+		</div>
 	);
 };
 
