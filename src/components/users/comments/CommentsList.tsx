@@ -51,40 +51,40 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId }) => {
 		})();
 	}, [itemId]);
 
+	socket.on("connect", () => {
+		socket.emit("joinRoom", itemId);
+	});
+
+	socket.on("error", (error) => {
+		console.error(error);
+	});
+
+	socket.on("newComment", (data) => {
+		const { item, ...rest } = data;
+		setComments((prevComments) => [rest, ...prevComments]);
+	});
+
+	socket.on("unauthenticated", async (data) => {
+		try {
+			await api.get("/auth");
+			const token = Cookies.get("accessToken");
+			setToken(token);
+			socket.connect();
+		} catch (error: any) {
+			console.error(error.message);
+		}
+	});
+
+	socket.on("unauthenticated-retry", async (data) => {
+		console.log(data);
+	});
+
 
 	useEffect(() => {
-		socket.on("connect", () => {
-			socket.emit("joinRoom", itemId);
-		});
-
-		socket.on("error", (error) => {
-			console.error(error);
-		});
-
-		socket.on("newComment", (data) => {
-			const { item, ...rest } = data;
-			setComments((prevComments) => [rest, ...prevComments]);
-		});
-
-		socket.on("unauthenticated", async (data) => {
-			try {
-				await api.get("/auth");
-				const token = Cookies.get("accessToken");
-				setToken(token);
-				socket.connect();
-			} catch (error: any) {
-				console.error(error.message)	
-			}
-		});
-
-		socket.on("unauthenticated-retry", async (data) => {
-			console.log(data)
-		});
-
-		// return () => {
-		// 	socket.emit("leaveRoom", itemId);
-		// 	socket.disconnect();
-		// };
+		return () => {
+			socket.emit("leaveRoom", itemId);
+			socket.disconnect();
+		};
 	}, [itemId, socket]);
 
 	const handleCommentChange = (
