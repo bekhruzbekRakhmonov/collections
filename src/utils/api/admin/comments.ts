@@ -42,6 +42,8 @@ export const deleteComment = async (commentId: number): Promise<void> => {
 };
 
 export const getComments = async (
+	columnName?: string,
+	q?: string,
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
@@ -50,6 +52,8 @@ export const getComments = async (
 	try {
 		const response = await api.get("/comments", {
 			params: {
+				q,
+				columnName,
 				page,
 				limit,
 				order,

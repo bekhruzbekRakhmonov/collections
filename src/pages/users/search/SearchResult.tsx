@@ -30,12 +30,13 @@ const SearchResult: React.FC = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
+				const searchQuery = decodeURIComponent(search);
 				const {
 					itemResults,
 					userResults,
 					collectionResults,
 					commentResults,
-				} = await usersApi.search(search.split("=")[1]);
+				} = await usersApi.search(searchQuery.split("=")[1]);
 				setSearchResults({
 					items: itemResults,
 					people: userResults,

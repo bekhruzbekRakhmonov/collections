@@ -4,13 +4,16 @@ import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import { IRowComment } from "../../../../utils/interfaces/comment";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
-import { Button } from "@mui/material";
-
-const commentColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "owner", label: "Author" },
-	{ id: "content", label: "Content" },
-];
+import {
+	Button,
+	TextField,
+	Select,
+	MenuItem,
+	FormControl,
+	SelectChangeEvent,
+	Box,
+} from "@mui/material";
+import { commentColumns, customFieldColumns } from "../../../../components/admin/table/columns";
 
 const CommentsTable: React.FC = () => {
 	const navigate = useNavigate();
@@ -19,10 +22,13 @@ const CommentsTable: React.FC = () => {
 	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
 		null
 	);
-	const [commentsData, setCommentsData] = React.useState<{
+	const [commentsData, setCommentsData] = useState<{
 		data: IRowComment[];
 		total: number;
 	}>({ data: [], total: 0 });
+
+	const [searchValue, setSearchValue] = useState<string>("");
+	const [columnName, setColumnName] = useState<string>(commentColumns[0].id);
 
 	const getComments = async (
 		page?: number,
@@ -30,8 +36,23 @@ const CommentsTable: React.FC = () => {
 		order?: string,
 		orderBy?: string
 	) => {
-		const result = await admin.getComments(page, limit, order, orderBy);
+		const result = await admin.getComments(
+			columnName,
+			searchValue,
+			page,
+			limit,
+			order,
+			orderBy
+		);
 		setCommentsData(result);
+	};
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
+	const handleColumnName = (e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>) => {
+		setColumnName(e.target.value);
 	};
 
 	const handleDelete = async () => {
@@ -61,17 +82,34 @@ const CommentsTable: React.FC = () => {
 
 	useEffect(() => {
 		getComments();
-	}, []);
+	}, [searchValue]);
 
 	return (
 		<div>
-			<Button
-				variant="contained"
-				sx={{ float: "right", margin: "10px" }}
-				onClick={() => navigate("/admin/add-comment")}
+			<Box
+				sx={{
+					marginTop: "60px",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
 			>
-				Add Comment
-			</Button>
+				<FormControl sx={{ display: "flex", flexDirection: "row" }}>
+					<Select value={columnName} onChange={handleColumnName}>
+						{commentColumns.map((column) => (
+							<MenuItem key={column.id} value={column.id}>
+								{column.id}
+							</MenuItem>
+						))}
+					</Select>
+					<TextField value={searchValue} onChange={handleSearch} />
+				</FormControl>
+				<Button
+					variant="contained"
+					onClick={() => navigate("/admin/add-comment")}
+				>
+					Add Comment
+				</Button>
+			</Box>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}

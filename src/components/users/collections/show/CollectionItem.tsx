@@ -29,12 +29,8 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
 }) => {
     const {isAuthenticated} = useAuth();
 
-	const token = Cookies.get("accessToken");
 	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
 		transports: ["websocket"],
-		auth: {
-			token,
-		},
 		reconnection: true,
 	});
 	return (

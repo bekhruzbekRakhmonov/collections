@@ -14,6 +14,8 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
 
 
 export const getUsers = async (
+	columnName?: string,
+	q?: string,
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
@@ -22,6 +24,8 @@ export const getUsers = async (
 	try {
 		const response = await api.get("/users", {
 			params: {
+				q,
+				columnName,
 				page,
 				limit,
 				order,

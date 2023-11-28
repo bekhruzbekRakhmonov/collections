@@ -18,17 +18,15 @@ interface CommentsProp {
 }
 
 const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
-	const accessToken = Cookies.get("accessToken");
 	const { user, isAuthenticated } = useAuth();
-	const [token, setToken] = useState<string | undefined>(accessToken);
 	const [newComment, setNewComment] = useState("");
 	const [comments, setComments] = useState <Partial<IRowComment>[]>([]);
 	const [error, setError] = useState<string | null>("null");
 	const [loading, setLoading] = useState<boolean>(false);
-	const [open, setOpen] = useState(false);
+	const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
 	const handleClose = () => {
-		setOpen(false);
+		setOpenLoginDialog(false);
 	};
 
 	useEffect(() => {
@@ -65,16 +63,10 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
 		socket.on("unauthenticated", async (data) => {
 			try {
 				await api.get("/auth");
-				const token = Cookies.get("accessToken");
-				setToken(token);
 				socket.connect();
 			} catch (error: any) {
 				console.error(error.message);
 			}
-		});
-
-		socket.on("unauthenticated-retry", async (data) => {
-			console.log(data);
 		});
 
 		return () => {
@@ -91,7 +83,7 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
 
 	const handleAddComment = () => {
 		if (!isAuthenticated) {
-			setOpen(true);
+			setOpenLoginDialog(true);
 			return;
 		}
 
@@ -99,6 +91,7 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
 			socket.emit("createComment", {
 				content: newComment,
 				item_id: itemId,
+				user_id: user.id
 			});
 
 			setNewComment("");
@@ -107,7 +100,7 @@ const CommentsList: React.FC<CommentsProp> = ({ expanded, itemId, socket }) => {
 
 	return (
 		<>
-			{open && <LoginDialog open={open} handleClose={handleClose}/>}
+			
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent>
 					<CommentForm

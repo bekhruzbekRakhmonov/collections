@@ -3,15 +3,17 @@ import SimpleTable, { Column } from "../../../../components/admin/table/Table";
 import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
-import { Button } from "@mui/material";
+import {
+	Box,
+	Button,
+	FormControl,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
+	TextField,
+} from "@mui/material";
 import { IRowCustomField } from "../../../../utils/interfaces/custom-fields";
-
-const customFieldColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "type", label: "Type" },
-	{ id: "value", label: "Value" },
-];
+import { customFieldColumns } from "../../../../components/admin/table/columns";
 
 const CustomFieldsTable: React.FC = () => {
 	const navigate = useNavigate();
@@ -20,7 +22,12 @@ const CustomFieldsTable: React.FC = () => {
 	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
 		null
 	);
-	const [customFieldsData, setCustomFieldsData] = React.useState<{
+
+	const [columnName, setColumnName] = useState<string>(
+		customFieldColumns[0].id
+	);
+	const [searchValue, setSearchValue] = useState<string>("");
+	const [customFieldsData, setCustomFieldsData] = useState<{
 		data: IRowCustomField[];
 		total: number;
 	}>({ data: [], total: 0 });
@@ -31,8 +38,14 @@ const CustomFieldsTable: React.FC = () => {
 		order?: string,
 		orderBy?: string
 	) => {
-		const result = await admin.getCustomFields(page, limit, order, orderBy);
-        console.log("result", result)
+		const result = await admin.getCustomFields(
+			columnName,
+			searchValue,
+			page,
+			limit,
+			order,
+			orderBy
+		);
 		setCustomFieldsData(result);
 	};
 
@@ -61,20 +74,44 @@ const CustomFieldsTable: React.FC = () => {
 		setOpenDeleteDialog(!openDeleteDialog);
 	};
 
+	const handleColumnName = (e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>) => {
+		setColumnName(e.target.value);
+	};
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
 	useEffect(() => {
 		getCustomFields();
-        console.log(customFieldsData)
-	}, []);
+	}, [searchValue]);
 
 	return (
 		<div>
-			<Button
-				variant="contained"
-				sx={{ float: "right", margin: "10px" }}
-				onClick={() => navigate("/admin/add-custom-field")}
+			<Box
+				sx={{
+					marginTop: "60px",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
 			>
-				Add Custom Field
-			</Button>
+				<FormControl sx={{ display: "flex", flexDirection: "row" }}>
+					<Select value={columnName} onChange={handleColumnName}>
+						{customFieldColumns.map((column) => (
+							<MenuItem key={column.id} value={column.id}>
+								{column.id}
+							</MenuItem>
+						))}
+					</Select>
+					<TextField value={searchValue} onChange={handleSearch} />
+				</FormControl>
+				<Button
+					variant="contained"
+					onClick={() => navigate("/admin/add-user")}
+				>
+					Add Custom Field
+				</Button>
+			</Box>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}

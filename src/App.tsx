@@ -82,7 +82,17 @@ const App: React.FC = () => {
 							path="/show-collection/:id"
 							element={<ShowCollection />}
 						/>
+						<Route
+								path="/users/:id"
+								element={<ProfilePage />}
+							/>
+							<Route
+								path="/show-item/:id"
+								element={<ShowItem />}
+							/>
 						<Route path="/search" element={<SearchResult />} />
+
+						{/* Private user routes */}
 						<Route element={<PrivateRoutes />}>
 							<Route path="/logout" element={<Logout />} />
 							<Route
@@ -94,14 +104,6 @@ const App: React.FC = () => {
 								element={<EditCollection />}
 							/>
 							<Route
-								path="/users/:id"
-								element={<ProfilePage />}
-							/>
-							<Route
-								path="/show-item/:id"
-								element={<ShowItem />}
-							/>
-							<Route
 								path="/edit-item/:id"
 								element={<EditItem />}
 							/>
@@ -110,6 +112,8 @@ const App: React.FC = () => {
 								element={<UserSettings />}
 							/>
 						</Route>
+
+						{/* Private admin routes */}
 						<Route element={<PrivateAdminRoutes />}>
 							<Route path="/admin" element={<Dashboard />} />
 							<Route

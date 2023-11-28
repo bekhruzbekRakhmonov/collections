@@ -4,19 +4,14 @@ import { IRowUser } from "../../../../utils/interfaces/user";
 import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
-import { Button, Container } from "@mui/material";
-
-const userColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "email", label: "Email" },
-	{ id: "role", label: "Role" },
-	{ id: "status", label: "Status" },
-	{ id: "created_at", label: "Joined" },
-];
+import { Box, Button, Container, FormControl, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { userColumns } from "../../../../components/admin/table/columns";
 
 const UsersTable: React.FC = () => {
 	const navigate = useNavigate();
+
+	const [columnName, setColumnName] = useState<string>(userColumns[0].id)
+	const [searchValue, setSearchValue] = useState<string>("");
 
 	const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
@@ -27,19 +22,29 @@ const UsersTable: React.FC = () => {
 		total: number;
 	}>({ data: [], total: 0 });
 
+	const handleColumnName = (e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>) => {
+		setColumnName(e.target.value);
+	}
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log(typeof e.target.value);
+		setSearchValue(e.target.value)
+	}
+
 	const getUsers = async (
 		page?: number,
 		limit?: number,
 		order?: string,
 		orderBy?: string
 	) => {
-		const result = await admin.getUsers(page, limit, order, orderBy);
+		const result = await admin.getUsers(columnName, searchValue, page, limit, order, orderBy);
 		setUsersData(result);
 	};
 
 	useEffect(() => {
 		getUsers();
-	}, []);
+	}, [searchValue]);
+	
 	const handleDelete = async () => {
 		try {
 			if (preDeletedItemId) {
@@ -67,7 +72,31 @@ const UsersTable: React.FC = () => {
 
 	return (
 		<div>
-			<Button variant="contained" sx={{ float: "right", margin: "10px" }} onClick={() => navigate("/admin/add-user")}>Add User</Button>
+			<Box
+				sx={{
+					marginTop: "60px",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
+			>
+				<FormControl sx={{ display: "flex", flexDirection: "row" }}>
+					<Select value={columnName} onChange={handleColumnName}>
+						{userColumns.map((column) => (
+							<MenuItem key={column.id} value={column.id}>
+								{column.id}
+							</MenuItem>
+						))}
+					</Select>
+					<TextField value={searchValue} onChange={handleSearch} />
+				</FormControl>
+				<Button
+					variant="contained"
+					// sx={{ float: "right", margin: "10px" }}
+					onClick={() => navigate("/admin/add-user")}
+				>
+					Add User
+				</Button>
+			</Box>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}

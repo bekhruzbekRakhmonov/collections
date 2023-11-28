@@ -35,7 +35,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, handleCommentChan
 				maxWidth: "350px",
 			}}
 		>
-			{ open && <LoginDialog open={open} handleClose={handleClose}/> }
+			{ open && <LoginDialog title="Login to add comment" open={open} handleClose={handleClose}/> }
 			<FormControl
 				fullWidth
 				variant="standard"

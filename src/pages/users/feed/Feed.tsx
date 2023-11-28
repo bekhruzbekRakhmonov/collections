@@ -54,22 +54,6 @@ const Feed: React.FC = () => {
 			}}
 		>
 			<CollectionsList handleDelete={handleDelete} fetchCollections={fetchCollections} collections={collections} error={error} page={page} loading={loading}/>
-			{isAuthenticated && (
-				<>
-					<Fab
-						color="primary"
-						aria-label="add"
-						onClick={() => navigate("/create-collection")}
-						style={{
-							position: "fixed",
-							bottom: 16,
-							right: 16,
-						}}
-					>
-						<Add />
-					</Fab>
-				</>
-			)}
 		</div>
 	);
 };

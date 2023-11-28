@@ -2,6 +2,8 @@ import { adminApi as api } from "./api";
 import { IItem, IRowItem } from "../../interfaces/item";
 
 export const getItems = async (
+	columnName?: string,
+	q?: string,
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
@@ -10,6 +12,8 @@ export const getItems = async (
 	try {
 		const response = await api.get("/items", {
 			params: {
+				q,
+				columnName,
 				page,
 				limit,
 				order,

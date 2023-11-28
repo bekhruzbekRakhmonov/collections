@@ -4,13 +4,9 @@ import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import { IRowCollection } from "../../../../utils/interfaces/collection";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
-import { Button } from "@mui/material";
+import { Button, TextField, FormControl, SelectChangeEvent, Box, MenuItem, Select } from "@mui/material";
+import { collectionColumns, commentColumns } from "../../../../components/admin/table/columns";
 
-const collectionColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "description", label: "Description" },
-];
 interface IResult {
 	data: IRowCollection[];
 	total: number;
@@ -23,6 +19,8 @@ const CollectionsTable: React.FC = () => {
 	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
 		null
 	);
+	const [searchValue, setSearchValue] = useState<string>("");
+	const [columnName, setColumnName] = useState<string>(commentColumns[0].id);
 	const [collectionsData, setCollectionsData] = useState<IResult>({
 		data: [],
 		total: 0,
@@ -34,8 +32,25 @@ const CollectionsTable: React.FC = () => {
 		order?: string,
 		orderBy?: string
 	) => {
-		const result = await admin.getCollections(page, limit, order, orderBy);
+		const result = await admin.getCollections(
+			columnName,
+			searchValue,
+			page,
+			limit,
+			order,
+			orderBy
+		);
 		setCollectionsData(result);
+	};
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
+	const handleColumnName = (
+		e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>
+	) => {
+		setColumnName(e.target.value);
 	};
 
 	const handleDelete = async () => {
@@ -66,17 +81,34 @@ const CollectionsTable: React.FC = () => {
 
 	useEffect(() => {
 		getCollections();
-	}, []);
+	}, [searchValue]);
 
 	return (
 		<div>
-			<Button
-				variant="contained"
-				sx={{ float: "right", margin: "10px" }}
-				onClick={() => navigate("/admin/add-collection")}
+			<Box
+				sx={{
+					marginTop: "60px",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
 			>
-				Add Collection
-			</Button>
+				<FormControl sx={{ display: "flex", flexDirection: "row" }}>
+					<Select value={columnName} onChange={handleColumnName}>
+						{collectionColumns.map((column) => (
+							<MenuItem key={column.id} value={column.id}>
+								{column.id}
+							</MenuItem>
+						))}
+					</Select>
+					<TextField value={searchValue} onChange={handleSearch} />
+				</FormControl>
+				<Button
+					variant="contained"
+					onClick={() => navigate("/admin/add-collection")}
+				>
+					Add Collection
+				</Button>
+			</Box>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}

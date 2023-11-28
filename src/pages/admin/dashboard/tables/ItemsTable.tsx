@@ -4,37 +4,39 @@ import { admin } from "../../../../utils/api/admin";
 import { useNavigate } from "react-router-dom";
 import { IRowItem } from "../../../../utils/interfaces/item";
 import DeleteDialog from "../../../../components/users/collections/delete/DeleteDialog";
-import { Button } from "@mui/material";
-
-const itemColumns: Column[] = [
-	{ id: "id", label: "ID" },
-	{ id: "name", label: "Name" },
-	{ id: "tags", label: "Tags" },
-];
+import {
+	Box,
+	Button,
+	FormControl,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
+	TextField,
+} from "@mui/material";
+import { itemColumns } from "../../../../components/admin/table/columns";
 
 const ItemsTable: React.FC = () => {
 	const navigate = useNavigate();
 
+	const [columnName, setColumnName] = useState<string>(itemColumns[0].id);
+	const [searchValue, setSearchValue] = useState<string>("");
 	const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(null)
+	const [preDeletedItemId, setPreDeletedItemId] = useState<number | null>(
+		null
+	);
 	const [itemsData, setItemsData] = useState<{
 		data: IRowItem[];
 		total: number;
 	}>({ data: [], total: 0 });
 
-    const getItems = async (
+	const getItems = async (
 		page?: number,
 		limit?: number,
 		order?: string,
 		orderBy?: string
 	) => {
-			const result = await admin.getItems(
-				page,
-				limit,
-				order,
-				orderBy
-			);
-			setItemsData(result);
+		const result = await admin.getItems(columnName, searchValue, page, limit, order, orderBy);
+		setItemsData(result);
 	};
 
 	const handleDelete = async () => {
@@ -60,21 +62,46 @@ const ItemsTable: React.FC = () => {
 
 	const handleDeleteDialogOpenClose = () => {
 		setOpenDeleteDialog(!openDeleteDialog);
-	}
+	};
+
+	const handleColumnName = (e: React.ChangeEvent<HTMLSelectElement> | SelectChangeEvent<string>) => {
+		setColumnName(e.target.value);
+	};
+
+	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
 
 	useEffect(() => {
 		getItems();
-	}, []);
+	}, [searchValue]);
 
 	return (
 		<div>
-			<Button
-				variant="contained"
-				sx={{ float: "right", margin: "10px" }}
-				onClick={() => navigate("/admin/add-item")}
+			<Box
+				sx={{
+					marginTop: "60px",
+					display: "flex",
+					justifyContent: "space-between",
+				}}
 			>
-				Add Item
-			</Button>
+				<FormControl sx={{ display: "flex", flexDirection: "row" }}>
+					<Select value={columnName} onChange={handleColumnName}>
+						{itemColumns.map((column) => (
+							<MenuItem key={column.id} value={column.id}>
+								{column.id}
+							</MenuItem>
+						))}
+					</Select>
+					<TextField value={searchValue} onChange={handleSearch} />
+				</FormControl>
+				<Button
+					variant="contained"
+					onClick={() => navigate("/admin/add-user")}
+				>
+					Add Item
+				</Button>
+			</Box>
 			<DeleteDialog
 				open={openDeleteDialog}
 				onClose={handleDeleteDialogOpenClose}

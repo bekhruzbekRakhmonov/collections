@@ -18,6 +18,8 @@ export const createCustomField = async (
 };
 
 export const getCustomFields = async (
+	columnName?: string,
+	q?: string,
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
@@ -26,6 +28,8 @@ export const getCustomFields = async (
 	try {
 		const response = await api.get("/custom-fields", {
 			params: {
+				q,
+				columnName,
 				page,
 				limit,
 				order,

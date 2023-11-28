@@ -3,7 +3,6 @@ import {
 	Card,
 	CardContent,
 	Typography,
-	Chip,
 	Box,
 	IconButton,
 	CardActions,
@@ -18,10 +17,8 @@ import ItemCardHeader from "../../../components/users/items/ItemCardHeader";
 import { useAuth } from "../../../auth/AuthContext";
 import ExpandMore from "../../../components/users/utils/ExpandMore";
 import CommentsList from "../../../components/users/comments/CommentsList";
-import ErrorComponent from "../../../components/common/error/Error";
 import RenderTags from "../../../components/users/collections/show/utils/RenderTags";
 import { io } from "socket.io-client";
-import Cookies from "js-cookie";
 
 interface ItemCardProps {}
 
@@ -37,12 +34,8 @@ const ShowItem: React.FC<ItemCardProps> = () => {
 		setExpanded(!expanded)
 	};
 
-	const token = Cookies.get("accessToken");
 	const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
 		transports: ["websocket"],
-		auth: {
-			token,
-		},
 		reconnection: true,
 	});
 

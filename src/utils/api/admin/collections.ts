@@ -2,6 +2,8 @@ import { adminApi as api } from "./api";
 import { ICollection, IRowCollection } from "../../interfaces/collection";
 
 export const getCollections = async (
+	columnName?: string,
+	q?: string,
 	page: number = 1,
 	limit: number = 5,
 	order?: string,
@@ -10,6 +12,8 @@ export const getCollections = async (
 	try {
 		const response = await api.get("/collections", {
 			params: {
+				q,
+				columnName,
 				page,
 				limit,
 				order,
@@ -26,6 +30,7 @@ export const getCollections = async (
 		);
 	}
 };
+
 
 export const getCollection = async (
 	collectionId: number

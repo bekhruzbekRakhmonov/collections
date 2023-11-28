@@ -3,14 +3,15 @@ import React from "react";
 import Login from "../../../../pages/auth/Login";
 
 interface LoginDialogProps {
+	title: string;
     open: boolean;
     handleClose: () => void;
 }
 
-const LoginDialog: React.FC<LoginDialogProps> = ({ open, handleClose }) => {
+const LoginDialog: React.FC<LoginDialogProps> = ({ title, open, handleClose }) => {
     return (
 		<Dialog open={open} onClose={handleClose}>
-			<DialogTitle>Login to add Comment</DialogTitle>
+			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
 				<Login />
 			</DialogContent>
