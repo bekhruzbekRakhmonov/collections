@@ -51,7 +51,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({ data, handleDelete }) =
 					}}
 				/>
 				<CardActionArea
-					onClick={() => navigate(`/show-collection/${data.id}`)}
+					onClick={() => navigate(`/collection/${data.id}`)}
 				>
 					{data.photo && (
 						<CardMedia

@@ -42,7 +42,7 @@ const CreateCollection = () => {
 			const newItems = await usersApi.createItems(newCollection.id, items);
 			const newItemsIds = newItems.map(({ id }) => id);
 			await usersApi.createCustomFields(newItemsIds, itemCustomFields)
-            navigate(`/show-collection/${newCollection.id}`);
+            navigate(`/collection/${newCollection.id}`);
         } catch (error: any) {
             console.error(error.message)
         }

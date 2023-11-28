@@ -150,7 +150,7 @@ const CollectionCardHeader: React.FC<CollectionCardHeaderProps> = ({ owner, crea
 								onClick={() => {
 									copyToClipboard(
 										window.location.host +
-											`/show-collection/${collectionId}`
+											`/collection/${collectionId}`
 									);
 									handleClose();
 								}}

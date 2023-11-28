@@ -85,7 +85,7 @@ const CreateCustomFieldStep: React.FC<CreateCustomFieldStepProps> = ({
 	return (
 		<div>
 			<h2>Create Custom Field</h2>
-			{customFields.map((field, index) => (
+			{customFields?.map((field, index) => (
 				<Box
 					key={index}
 					display="flex"

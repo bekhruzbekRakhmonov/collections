@@ -112,7 +112,7 @@ const EditCollection = () => {
 			removedItemCustomFieldsIds
 		);
 
-		navigate(`/show-collection/${updatedCollection.id}`);
+		navigate(`/collection/${updatedCollection.id}`);
 	};
 
 	return (

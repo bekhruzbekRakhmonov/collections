@@ -79,7 +79,7 @@ const App: React.FC = () => {
 
 						<Route path="/" element={<Feed />} />
 						<Route
-							path="/show-collection/:id"
+							path="/collection/:id"
 							element={<ShowCollection />}
 						/>
 						<Route
