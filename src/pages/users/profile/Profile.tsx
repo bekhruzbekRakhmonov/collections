@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Container, Tabs, Tab } from "@mui/material";
+import { Container, Tabs, Tab, Fab } from "@mui/material";
 import ProfileCard from "../../../components/users/profile/ProfileCard";
 import UserCollectionsList from "../../../components/users/profile/CollectionsList";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IRowUser, IUserStatistics } from "../../../utils/interfaces/user";
 import { usersApi } from "../../../utils/api/users";
+import { Add } from "@mui/icons-material";
 
 const ProfilePage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<number>(0);
@@ -12,6 +13,7 @@ const ProfilePage: React.FC = () => {
 	const [userStatistics, setUserStatistics] = useState<IUserStatistics | null>(null);
 
 	const { id } = useParams();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		(async () => {
@@ -36,12 +38,35 @@ const ProfilePage: React.FC = () => {
 
 	return (
 		<Container maxWidth="sm">
-			<br/>
-			{ userData && userStatistics && <ProfileCard userData={userData} userStatistics={userStatistics}/>}
+			<br />
+			{userData && userStatistics && (
+				<ProfileCard
+					userData={userData}
+					userStatistics={userStatistics}
+				/>
+			)}
 			<Tabs value={activeTab} onChange={handleTabChange} centered>
 				<Tab label="Collections" />
 			</Tabs>
-			{activeTab === 0 && <UserCollectionsList userId={Number(id)} />}
+			{activeTab === 0 && (
+				<>
+					<UserCollectionsList userId={Number(id)} /> isAuthenticated
+					&& (
+					<Fab
+						color="primary"
+						aria-label="add"
+						onClick={() => navigate("/create-collection")}
+						style={{
+							position: "fixed",
+							bottom: 16,
+							right: 16,
+						}}
+					>
+						<Add />
+					</Fab>
+					)
+				</>
+			)}
 		</Container>
 	);
 };
