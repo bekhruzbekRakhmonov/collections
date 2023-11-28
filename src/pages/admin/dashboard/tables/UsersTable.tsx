@@ -27,7 +27,6 @@ const UsersTable: React.FC = () => {
 	}
 
 	const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log(typeof e.target.value);
 		setSearchValue(e.target.value)
 	}
 
@@ -44,7 +43,7 @@ const UsersTable: React.FC = () => {
 	useEffect(() => {
 		getUsers();
 	}, [searchValue]);
-	
+
 	const handleDelete = async () => {
 		try {
 			if (preDeletedItemId) {

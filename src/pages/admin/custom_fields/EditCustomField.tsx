@@ -61,8 +61,6 @@ export const EditCustomField: React.FC<EditCustomFieldProps> = () => {
 		}
 	};
 
-	console.log(register("type"), watch().type);
-
 	return (
 		<Container>
 			<Typography variant="h4" gutterBottom>

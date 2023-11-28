@@ -102,8 +102,6 @@ export default function Dashboard() {
 		window.location.hash = option.split(" ").join("");
 	};
 
-	console.log(window.location.hash);
-
 	const renderMainContent = () => {
 		switch (selectedOption) {
 			case "Users":

@@ -42,20 +42,9 @@ export const AddCustomField: React.FC<AddCustomFieldProps> = () => {
 		}
 	};
 
-	const windowFeatures = "popup=true,left=100,top=100,width=320,height=320";
+	// const windowFeatures = "popup=true,left=100,top=100,width=320,height=320";
 
-	const myWindow = window.open("/admin/add-item", "_blank", windowFeatures);
-	console.log(myWindow)
-	myWindow?.addEventListener('submit', () => {
-		console.log("Submitted")
-	})
-	console.log(myWindow?.document.forms)
-	if (myWindow) {
-		console.log(myWindow.document.forms)
-		myWindow.onformdata = (e) => {
-			console.log(e)
-		}
-	}
+	// const myWindow = window.open("/admin/add-item", "_blank", windowFeatures);
 	return (
 		<Container>
 			<Typography variant="h4" gutterBottom>

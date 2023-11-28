@@ -36,7 +36,6 @@ export const getCustomFields = async (
 				orderBy,
 			},
 		});
-		console.log(response.data.data.result);
 		return {
 			data: response.data.data.result,
 			total: response.data.data.total,
